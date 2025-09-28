@@ -73,7 +73,6 @@ class A2Geometry:
                         continue
                     elif self._point_in_polygon(self.a2_trunc(pt), self.a2_trunc(verts)): 
                         occupancies[tuple(pt)] = 12
-            print({'verts': verts, 'occupancies': occupancies})
             templates.append({'verts': verts, 'occupancies': occupancies})
         return templates
 
@@ -222,7 +221,7 @@ class HeeschTiler:
         idx_to_remove = next((i for i, p in enumerate(target_list) if p['tile_name'] == placement_ref['tile_name'] and p['iso_idx'] == placement_ref['iso_idx'] and np.array_equal(p['translation'], placement_ref['translation'])), -1)
         if idx_to_remove != -1: target_list.pop(idx_to_remove)
         for p in undo_info['occupancies']:
-            self.occupancies[p] -= undo_info['occupancies'].get(p, 0)
+            self.occupancies[p] -= undo_info['occupancies'][p]
             if self.occupancies[p] == 0: del self.occupancies[p]
         if 'stripes' in undo_info and self.enable_stripe_heuristic:
             for sid in undo_info['stripes']:
@@ -512,18 +511,17 @@ class StaticVisualizer:
             self.ax_main.set_xlim(min_c[0]-5,max_c[0]+5); self.ax_main.set_ylim(min_c[1]-5,max_c[1]+5)
         
         # --- Visualize all_frontier_edges ---
-        all_frontier_edges_for_vis = [{'p1': p1, 'p2': p2} for (p1, p2), c in tiler.edge_registry.items() if c == 1]
-        
-        for edge_info in all_frontier_edges_for_vis:
-            p1_a2, p2_a2 = np.array(edge_info['p1']), np.array(edge_info['p2'])
-            p1_cart, p2_cart = GEOMETRY.a2_to_cartesian(p1_a2), GEOMETRY.a2_to_cartesian(p2_a2)
+        # all_frontier_edges_for_vis = [{'p1': p1, 'p2': p2} for (p1, p2), c in tiler.edge_registry.items() if c == 1]
+        # for edge_info in all_frontier_edges_for_vis:
+        #     p1_a2, p2_a2 = np.array(edge_info['p1']), np.array(edge_info['p2'])
+        #     p1_cart, p2_cart = GEOMETRY.a2_to_cartesian(p1_a2), GEOMETRY.a2_to_cartesian(p2_a2)
             
-            line = self.ax_main.plot(
-                [p1_cart[0], p2_cart[0]],
-                [p1_cart[1], p2_cart[1]],
-                color='green', linewidth=3.5, linestyle='-', alpha=0.8, zorder=10
-            )
-            self.temporary_artists.extend(line) # Add to temporary_artists for clearing
+        #     line = self.ax_main.plot(
+        #         [p1_cart[0], p2_cart[0]],
+        #         [p1_cart[1], p2_cart[1]],
+        #         color='green', linewidth=3.5, linestyle='-', alpha=0.8, zorder=10
+        #     )
+        #     self.temporary_artists.extend(line) # Add to temporary_artists for clearing
 
         counts = Counter(p['iso_idx'] for p in all_placements)
         for i in range(6):
@@ -563,9 +561,10 @@ if __name__ == "__main__":
     config_propeller = {
         'initial_placements': [
             {'tile_name':'Propeller', 'iso_idx':0, 'translation':np.array([0,0,0])},
-            {'tile_name':'Turtle', 'iso_idx':8, 'translation':np.array([7,8,-15])},
-            # {'tile_name':'Turtle', 'iso_idx':6, 'translation':np.array([-15,7,8])},
-            # {'tile_name':'Turtle', 'iso_idx':10, 'translation':np.array([8,-16,7])},
+            {'tile_name':'Propeller', 'iso_idx':1, 'translation':np.array([6,8,-14])},
+            # {'tile_name':'Turtle', 'iso_idx':7, 'translation':np.array([6,7,-13])},
+            # {'tile_name':'Turtle', 'iso_idx':11, 'translation':np.array([-13,6,7])},
+            # {'tile_name':'Turtle', 'iso_idx':9, 'translation':np.array([7,-13,6])},
         ],
         'tiling_prototiles': ['Turtle'],
         'tiling_mode': 'plane_filling', 'max_tiles': 10000,
