@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
 import matplotlib.lines as mlines
-from collections import Counter, defaultdict
+from collections import defaultdict
 import time
 import math
 import random
 import json
 from datetime import datetime
+import copy
 
 class A2Geometry:
     def __init__(self):
@@ -27,6 +28,13 @@ class A2Geometry:
     def a2_trunc(self, v):
         v = np.array(v)
         return v[:2] if v.ndim==1 else v[:,:2,np.newaxis]
+
+    def cartesian_to_a2(self, cart_coords):
+        cart_x, cart_y = cart_coords[0], cart_coords[1]
+        v2_float = cart_y / (np.sqrt(3) / 2)
+        v0_float = cart_x + 0.5 * v2_float
+        v1_float = -v0_float - v2_float 
+        return np.array([round(v0_float), round(v1_float), round(v2_float)], dtype=int)
 
     def _point_in_polygon(self, p, poly):
         x, y = p
@@ -119,18 +127,15 @@ class Prototile:
         self.visual_templates = GEOMETRY.generate_visual_templates(self, self.allowed_iso_indices)
         self.dual_info = GEOMETRY.generate_dual_information(self, self.allowed_iso_indices)
 
-    # Modified to accept a list of heuristic functions and a single heuristic_data dict
     def are_heuristics_valid(self, placement, heuristic_data, heuristics_to_apply):
         for heuristic_func in heuristics_to_apply:
             if not heuristic_func(self, placement, heuristic_data):
                 return False
         return True
 
-# Define individual heuristic functions outside the Prototile class
-# Each now expects the heuristic_data dict
-def stripe_heuristic(prototile, placement, heuristic_data):
-    global_stripe_occupancies = heuristic_data.get('global_stripe_occupancies')
-    if global_stripe_occupancies is None: # Heuristic not relevant/enabled or data missing
+def stripe_alignment_heuristic(prototile, placement, heuristic_data):
+    global_stripe_occupancies = heuristic_data.get('global_stripe_occupancies') 
+    if global_stripe_occupancies is None: 
         return True 
 
     if prototile.matching_rule_type == 'long_range_stripes':
@@ -146,9 +151,9 @@ def stripe_heuristic(prototile, placement, heuristic_data):
                     return False
     return True
 
-def mod_6_heuristic(prototile, placement, heuristic_data):
-    initial_mod_6_d_residues = heuristic_data.get('initial_mod_6_d_residues')
-    if initial_mod_6_d_residues is None: # Heuristic not relevant/enabled or data missing
+def stripe_separation_heuristic(prototile, placement, heuristic_data):
+    initial_mod_3_d_residues = heuristic_data.get('initial_mod_3_d_residues')
+    if initial_mod_3_d_residues is None:
         return True
 
     stripes_to_check = prototile.dual_info[placement['iso_idx']]
@@ -157,9 +162,9 @@ def mod_6_heuristic(prototile, placement, heuristic_data):
         n, d0, c = s['params'][0], s['params'][1], s['color']
         d = d0 + np.dot(n, t)
         
-        if n in initial_mod_6_d_residues:
-            expected_residue = initial_mod_6_d_residues[n]
-            if d % 6 != expected_residue:
+        if n in initial_mod_3_d_residues:
+            expected_residue = initial_mod_3_d_residues[n]
+            if d % 3 != expected_residue:
                 return False
     return True
 
@@ -168,13 +173,13 @@ def TurtleTile(allowed_iso_indices=None):
     angles = [3,8,3,4,6,4,9,4,3,4,9,4,3,8]
     stripe_defs = [
         {'p1': [-1,-4,5], 'p2': [1,-2,1], 'color': 'blue'},
-        {'p1': [1,-2,1], 'p2': [-1,2,-1], 'color': 'red'},
+        {'p1': [2,-4,2], 'p2': [-2,4,-2], 'color': 'red'},
         {'p1': [2,-1,-1], 'p2': [-2,1,1], 'color': 'red'},
         {'p1': [-2,1,1], 'p2': [-4,-1,5], 'color': 'red'},
     ]
     return Prototile("Turtle", verts, angles, stripe_defs, matching_rule_type='long_range_stripes', allowed_iso_indices=allowed_iso_indices)
 
-def PropellerTile(allowed_iso_indices=[0,1,6,7]):
+def PropellerTile(allowed_iso_indices=[0,3,6,9]):
     verts = [[1,0,-1],[2,0,-2],[2,1,-3],[0,2,-2],[-1,1,0],[-2,2,0],[-3,2,1],[-2,0,2],[0,-1,1],[0,-2,2],[1,-3,2],[2,-2,0]]
     angles = [9,4,3,4] * 3
     stripe_defs = [
@@ -185,23 +190,19 @@ def PropellerTile(allowed_iso_indices=[0,1,6,7]):
     return Prototile("Propeller", verts, angles, stripe_defs, matching_rule_type='long_range_stripes', allowed_iso_indices=allowed_iso_indices)
 
 class HeeschTiler:
-    def __init__(self, config, visualizer=None, heuristics_to_apply=None): # Changed heuristics_to_enable to heuristics_to_apply
+    def __init__(self, config, visualizer=None, heuristics_to_apply=None):
         self.config = config
         self.live_visualizer = visualizer
         self.max_tiles, self.tiling_mode = config.get('max_tiles', 50), config.get('tiling_mode', 'plane_filling')
         
-        # Now we directly assign the list of function objects
         self.heuristics_to_apply = heuristics_to_apply if heuristics_to_apply is not None else []
         
-        # We also need to keep track of *which* data needs to be passed, based on the actual functions
-        # This mapping allows us to build the 'heuristic_data' dict dynamically
         self.required_heuristic_data = set()
         for func in self.heuristics_to_apply:
-            if func == stripe_heuristic:
+            if func == stripe_alignment_heuristic:
                 self.required_heuristic_data.add('global_stripe_occupancies')
-            elif func == mod_6_heuristic:
-                self.required_heuristic_data.add('initial_mod_6_d_residues')
-            # Add mappings for other heuristics here as needed
+            elif func == stripe_separation_heuristic:
+                self.required_heuristic_data.add('initial_mod_3_d_residues')
 
         self.description = config.get('description', '')
 
@@ -219,119 +220,143 @@ class HeeschTiler:
             elif tile_name == "Propeller":
                 self.prototiles[tile_name] = PropellerTile()
 
-        self.tiling_prototiles = {name: self.prototiles[name] for name in config['tiling_prototiles']} # Prototiles used for tiling
+        self.tiling_prototiles = {name: self.prototiles[name] for name in config['tiling_prototiles']}
 
-        self.placed_tiles, self.initial_placements = [], []
-        self.occupancies = {}
-
-        # These remain as member variables to hold the global state
-        self.global_stripe_occupancies = {}
-        self.initial_mod_6_d_residues = {} 
+        self.initial_placements = [] 
 
         self.start_time = None
-        self.edge_registry = Counter()
-        self.choice_indent_level = 0
         self.last_saved_tile_count = 0
         timestamp = datetime.now().strftime("tiling_%Y-%m-%d_%H-%M-%S")
         if self.description:
             self.output_filename = f"{timestamp}_{self.description}.json"
         else:
             self.output_filename = f"{timestamp}.json"
+        
+        self.largest_tiling_state = None
+        self.max_tiles_found_so_far = 0
 
     def _get_edges_of_placement(self, p):
         verts = self.prototiles[p['tile_name']].visual_templates[p['iso_idx']]['verts'] + p['translation']
         return [(tuple(verts[i-1]), tuple(verts[i])) for i in range(len(verts))]
 
-    def _apply_placement_to_state(self, placement, is_initial=False):
+    def _apply_placement_to_state(self, placement, current_tiling_state, is_initial=False):
         name, i, t = placement['tile_name'], placement['iso_idx'], placement['translation']
         prototile = self.prototiles[name]
         tile_data = prototile.visual_templates[i]
 
-        occupancies_added = {}
-        for pt in tile_data['occupancies']:
-            val = tile_data['occupancies'][pt]
-            current_count = self.occupancies.get(tuple(pt+t), 0)
-            if current_count + val > 12:
-                print(f"FATAL ERROR: Occupancy conflict at {tuple(pt+t)}: {current_count} + {val} > 12")
-                return None
-            self.occupancies[tuple(pt+t)] = current_count + val
-            occupancies_added[tuple(pt+t)] = val
+        new_edge_registry = current_tiling_state['edge_registry'].copy()
+        new_global_stripe_occupancies = current_tiling_state['global_stripe_occupancies'].copy()
+        new_initial_mod_3_d_residues = current_tiling_state['initial_mod_3_d_residues'].copy()
+        new_occupancies = current_tiling_state['occupancies'].copy()
+        new_placed_tiles = list(current_tiling_state['placed_tiles'])
 
-        newly_added_stripes_for_undo = []
-        # Check if global_stripe_occupancies is required by any enabled heuristic
+        occupancies_added_this_step = {}
+
+        for pt_local, val in tile_data['occupancies'].items():
+            pt_global = tuple(np.array(pt_local) + t)
+            current_count = new_occupancies.get(pt_global, 0)
+            if current_count + val > 12:
+                print('FATAL ERROR: Placement exceeds occupancy limit at point', pt_global, '--- Current:', current_count, 'Existing:', val)
+                if self.live_visualizer:
+                    self.live_visualizer.draw(tiler=self, tiling_state_to_draw=current_tiling_state,
+                                              title="FATAL ERROR: Occupancy conflict!",
+                                              failed_candidate=placement,
+                                              highlight_point=pt_global)
+                    plt.pause(0) 
+                    input("Press Enter to continue...")
+                return None
+            occupancies_added_this_step[pt_global] = val
+
+        for pt_global, val in occupancies_added_this_step.items():
+            new_occupancies[pt_global] = new_occupancies.get(pt_global, 0) + val
+
+
         if 'global_stripe_occupancies' in self.required_heuristic_data and prototile.matching_rule_type == 'long_range_stripes':
             for s in prototile.dual_info[i]:
                 n, d0, c = s['params'][0], s['params'][1], s['color']
                 d = d0 + np.dot(n, t)
                 stripe_id = (n, d)
-
                 if is_initial:
-                    if stripe_id in self.global_stripe_occupancies and self.global_stripe_occupancies[stripe_id] != c:
-                        print(f"FATAL ERROR: Initial placement {name} {t.tolist()} conflicts with already established stripe {stripe_id}. Existing color: {self.global_stripe_occupancies[stripe_id]}, New color: {c}")
-                        for pt_coords, val_undo in occupancies_added.items():
-                            self.occupancies[pt_coords] -= val_undo
-                            if self.occupancies[pt_coords] == 0: del self.occupancies[pt_coords]
-                        return None
-                    self.global_stripe_occupancies[stripe_id] = c
+                    if stripe_id in new_global_stripe_occupancies and new_global_stripe_occupancies[stripe_id] != c:
+                        print(f"FATAL ERROR: Initial placement {name} {t.tolist()} conflicts with already established stripe {stripe_id}. Existing color: {new_global_stripe_occupancies[stripe_id]}, New color: {c}")
+                        if self.live_visualizer:
+                            self.live_visualizer.draw(tiler=self, tiling_state_to_draw=current_tiling_state,
+                                                      title="FATAL ERROR: Stripe alignment conflict!",
+                                                      failed_candidate=placement,
+                                                      highlight_stripe=(n, d, c))
+                            plt.pause(0)
+                            input("Press Enter to continue...")
+                        return None 
+                    new_global_stripe_occupancies[stripe_id] = c
                 else:
-                    if stripe_id not in self.global_stripe_occupancies:
-                        self.global_stripe_occupancies[stripe_id] = c
-                        newly_added_stripes_for_undo.append(stripe_id)
+                    if stripe_id in new_global_stripe_occupancies and new_global_stripe_occupancies[stripe_id] != c:
+                        return None
+                    new_global_stripe_occupancies[stripe_id] = c
 
-        # Check if initial_mod_6_d_residues is required by any enabled heuristic
-        if is_initial and 'initial_mod_6_d_residues' in self.required_heuristic_data:
+        if is_initial and 'initial_mod_3_d_residues' in self.required_heuristic_data:
             for s in prototile.dual_info[i]:
                 n, d0, c = s['params'][0], s['params'][1], s['color']
                 d = d0 + np.dot(n, t)
-                current_residue = d % 6
-                if n in self.initial_mod_6_d_residues:
-                    if self.initial_mod_6_d_residues[n] != current_residue:
-                        print(f"FATAL ERROR: Initial placement {name} {t.tolist()} has stripe {n} with d%6={current_residue}, but another initial tile established d%6={self.initial_mod_6_d_residues[n]} for this 'n'.")
-                self.initial_mod_6_d_residues[n] = current_residue
+                current_residue = d % 3
+                if n in new_initial_mod_3_d_residues:
+                    if new_initial_mod_3_d_residues[n] != current_residue:
+                        print(f"FATAL ERROR: Initial placement {name} {t.tolist()} has stripe {n} with d%3={current_residue}, but another initial tile established d%3={new_initial_mod_3_d_residues[n]} for this 'n'.")
+                        if self.live_visualizer:
+                            self.live_visualizer.draw(tiler=self, tiling_state_to_draw=current_tiling_state,
+                                                      title="FATAL ERROR: Stripe separation conflict!",
+                                                      failed_candidate=placement,
+                                                      highlight_stripe=(n, d, c))
+                            plt.pause(0)
+                            input("Press Enter to continue...")
+                        return None 
+                new_initial_mod_3_d_residues[n] = current_residue
 
-        edges_added_for_undo = []
         for edge in self._get_edges_of_placement(placement):
             p1, p2 = edge
-            self.edge_registry[(p1, p2)] += 1
-            self.edge_registry[(p2, p1)] -= 1
-            edges_added_for_undo.append(edge)
+            new_edge_registry[(p1, p2)] += 1
+            new_edge_registry[(p2, p1)] -= 1
+            if new_edge_registry[(p1,p2)] == 0:
+                del new_edge_registry[(p1,p2)]
+            if new_edge_registry[(p2,p1)] == 0:
+                del new_edge_registry[(p2,p1)]
 
-        if is_initial: self.initial_placements.append(placement)
-        else: self.placed_tiles.append(placement)
+
+        placement_with_level = placement.copy()
+        placement_with_level['_level'] = placement.get('_level', 0)
+
+        if is_initial:
+            self.initial_placements.append(placement_with_level)
+        else:
+            new_placed_tiles.append(placement_with_level)
 
         return {
-            'occupancies_added': occupancies_added,
-            'newly_added_stripes': newly_added_stripes_for_undo,
-            'edges_added': edges_added_for_undo,
-            'is_initial': is_initial,
-            'placement_ref': placement,
-            'initial_mod_6_d_residues_snapshot': dict(self.initial_mod_6_d_residues) if is_initial else None
+            'edge_registry': new_edge_registry,
+            'global_stripe_occupancies': new_global_stripe_occupancies,
+            'initial_mod_3_d_residues': new_initial_mod_3_d_residues,
+            'occupancies': new_occupancies,
+            'placed_tiles': new_placed_tiles
         }
 
-    def _undo_placement(self, undo_info):
-        placement_ref = undo_info['placement_ref']
-        target_list = self.initial_placements if undo_info['is_initial'] else self.placed_tiles
-        idx_to_remove = next((i for i, p in enumerate(target_list) if p['tile_name'] == placement_ref['tile_name'] and p['iso_idx'] == placement_ref['iso_idx'] and np.array_equal(p['translation'], placement_ref['translation'])), -1)
-        if idx_to_remove != -1: target_list.pop(idx_to_remove)
-        for p_coords, val_removed in undo_info['occupancies_added'].items():
-            self.occupancies[p_coords] -= val_removed
-            if self.occupancies[p_coords] == 0: del self.occupancies[p_coords]
-        if not undo_info['is_initial']:
-            for stripe_id in undo_info['newly_added_stripes']:
-                if stripe_id in self.global_stripe_occupancies:
-                    del self.global_stripe_occupancies[stripe_id]
-        else:
-            if undo_info['initial_mod_6_d_residues_snapshot'] is not None:
-                 self.initial_mod_6_d_residues = undo_info['initial_mod_6_d_residues_snapshot']
+    def _is_placement_valid(self, p, tiling_state):
+        name, i, t = p['tile_name'], p['iso_idx'], p['translation']
+        prototile = self.prototiles[name]
+        tile = prototile.visual_templates[i]
+        
+        current_occupancies = tiling_state['occupancies'] 
 
-        for edge in undo_info['edges_added']:
-            p1, p2 = edge
-            self.edge_registry[(p1, p2)] -= 1
-            self.edge_registry[(p2, p1)] += 1
-            if self.edge_registry[(p1, p2)] == 0: del self.edge_registry[(p1, p2)]
-            if self.edge_registry[(p2, p1)] == 0: del self.edge_registry[(p2, p1)]
+        for pt in tile['occupancies']:
+            if current_occupancies.get(tuple(np.array(pt)+t), 0) + tile['occupancies'][tuple(pt)] > 12: 
+                return False
+        
+        heuristic_data = {}
+        if 'global_stripe_occupancies' in self.required_heuristic_data:
+            heuristic_data['global_stripe_occupancies'] = tiling_state['global_stripe_occupancies']
+        if 'initial_mod_3_d_residues' in self.required_heuristic_data:
+            heuristic_data['initial_mod_3_d_residues'] = tiling_state['initial_mod_3_d_residues']
 
-    def _get_candidate_placements(self, edge):
+        return prototile.are_heuristics_valid(p, heuristic_data, self.heuristics_to_apply)
+
+    def _get_candidate_placements(self, edge, level): 
         cands, p1, p2 = [], np.array(edge['p1']), np.array(edge['p2']); target = p1 - p2
         for name, prototile in self.tiling_prototiles.items():
             for i in prototile.allowed_iso_indices:
@@ -340,41 +365,51 @@ class HeeschTiler:
                 verts = template['verts']
                 for j in range(len(verts)):
                     if np.array_equal(verts[j] - verts[j-1], target):
-                        cands.append({'tile_name': name, 'iso_idx': i, 'translation': p1 - verts[j]})
+                        cands.append({'tile_name': name, 'iso_idx': i, 'translation': p1 - verts[j], '_level': level}) 
         return cands
 
-    def _is_placement_valid(self, p):
-        name, i, t = p['tile_name'], p['iso_idx'], p['translation']
-        prototile = self.prototiles[name]
-        tile = prototile.visual_templates[i]
-        for pt in tile['occupancies']:
-            if self.occupancies.get(tuple(pt+t), 0) + tile['occupancies'][tuple(pt)] > 12:
-                return False
-        
-        # Construct heuristic_data based on self.required_heuristic_data
-        heuristic_data = {}
-        if 'global_stripe_occupancies' in self.required_heuristic_data:
-            heuristic_data['global_stripe_occupancies'] = self.global_stripe_occupancies
-        if 'initial_mod_6_d_residues' in self.required_heuristic_data:
-            heuristic_data['initial_mod_6_d_residues'] = self.initial_mod_6_d_residues
-
-        # Pass heuristic_data to the general heuristic validation method
-        return prototile.are_heuristics_valid(p, heuristic_data, self.heuristics_to_apply)
-
-    def _save_tiling_state(self):
+    def _save_tiling_state(self, tiling_state, filename=None):
         all_tiles_for_save = []
-        for p in self.initial_placements + self.placed_tiles:
-            all_tiles_for_save.append({
+        for p in self.initial_placements:
+            tile_data = {
                 'tile_name': p['tile_name'],
                 'iso_idx': p['iso_idx'],
-                'translation': p['translation'].tolist()
-            })
+                'translation': p['translation'].tolist(),
+                'level': p.get('_level', 0)
+            }
+            all_tiles_for_save.append(tile_data)
+        
+        for p in tiling_state['placed_tiles']:
+            tile_data = {
+                'tile_name': p['tile_name'],
+                'iso_idx': p['iso_idx'],
+                'translation': p['translation'].tolist(),
+                'level': p.get('_level', 0)
+            }
+            all_tiles_for_save.append(tile_data)
 
-        with open(self.output_filename, 'w') as f:
+        output_file = filename if filename else self.output_filename
+        with open(output_file, 'w') as f:
             json.dump(all_tiles_for_save, f, indent=4)
-        print(f"Saved {len(all_tiles_for_save)} tiles to {self.output_filename}")
 
-    def _search(self, last_choice_edge, level=0, history_is_last_choice=()):
+    def _update_max_tiling(self, current_tiling_state, indent_str=''):
+        current_total_tiles = len(current_tiling_state['placed_tiles']) + len(self.initial_placements)
+        if current_total_tiles > self.max_tiles_found_so_far:
+            self.max_tiles_found_so_far = current_total_tiles
+            self.largest_tiling_state = {
+                'edge_registry': current_tiling_state['edge_registry'].copy(),
+                'global_stripe_occupancies': current_tiling_state['global_stripe_occupancies'].copy(),
+                'initial_mod_3_d_residues': current_tiling_state['initial_mod_3_d_residues'].copy(),
+                'occupancies': current_tiling_state['occupancies'].copy(),
+                'placed_tiles': copy.deepcopy(current_tiling_state['placed_tiles'])
+            }
+            self._save_tiling_state(self.largest_tiling_state)
+            if self.live_visualizer:
+                combined_placements = self.initial_placements + self.largest_tiling_state['placed_tiles']
+                self.live_visualizer.update_background_tiling(combined_placements, self.prototiles)
+                print(f"{indent_str} Updating live background with {self.max_tiles_found_so_far} tiles")
+
+    def _search(self, tiling_state, last_choice_edge, level=0, history_is_last_choice=()):
         indent_parts = []
         for i in range(level):
             if i < len(history_is_last_choice) and history_is_last_choice[i]:
@@ -382,62 +417,79 @@ class HeeschTiler:
             else:
                 indent_parts.append('│')
         indent_str = "".join(indent_parts)
-        undo_stack_for_this_level = []
+        
         try:
-            all_forced_moves = []
-            while True:
-                total_tiles_count = len(self.placed_tiles) + len(self.initial_placements)
-                if (total_tiles_count // 100) * 100 > self.last_saved_tile_count:
-                    save_threshold = (total_tiles_count // 100) * 100
-                    self._save_tiling_state()
-                    self.last_saved_tile_count = save_threshold
-                    if self.live_visualizer:
-                        self.live_visualizer.draw(self, f"Autosaved {total_tiles_count} tiles", forced_move_history=all_forced_moves)
+            forced_moves_count = []
 
+            while True:
+                if self.live_visualizer and self.live_visualizer.quit_flag:
+                    print(f"QUIT detected! Current tiles: {len(tiling_state['placed_tiles']) + len(self.initial_placements)}")
+                    return False
+
+                total_tiles_count = len(tiling_state['placed_tiles']) + len(self.initial_placements)
                 if total_tiles_count >= self.max_tiles: return True
 
-                all_frontier_edges = [{'p1': p1, 'p2': p2} for (p1, p2), c in self.edge_registry.items() if c == 1]
-                if not all_frontier_edges: return True
-                forced_placements_map, choice_edges = {}, []
-                for edge in all_frontier_edges:
-                    placements = [tile for tile in self._get_candidate_placements(edge) if self._is_placement_valid(tile)]
+                current_frontier_edges_list = [{'p1': p1, 'p2': p2} for (p1, p2), c in tiling_state['edge_registry'].items() if c == 1]
+                
+                if not current_frontier_edges_list:
+                    forced_moves_count.append(0) 
+                    if self.live_visualizer:
+                        self.live_visualizer.draw(tiler=self, tiling_state_to_draw=tiling_state,
+                            title="Tiling Complete for Branch", forced_move_history=forced_moves_count)
+                    self._update_max_tiling(tiling_state, indent_str)
+                    return True
+
+                found_forced_move_in_this_pass = False
+                forced_moves_count_in_this_pass = 0
+                
+                choice_edges_for_this_scan = [] 
+
+                for edge in list(current_frontier_edges_list): 
+                    p1_tuple, p2_tuple = edge['p1'], edge['p2']
+                    if tiling_state['edge_registry'].get((p1_tuple, p2_tuple), 0) != 1:
+                        continue
+                    placements = [tile for tile in self._get_candidate_placements(edge, level) if self._is_placement_valid(tile, tiling_state)]
                     if len(placements) == 0:
-                        all_forced_moves.append(0)
-                        if self.live_visualizer: self.live_visualizer.draw(self, "Dead End on Frontier", forced_move_history=all_forced_moves)
-                        for u in reversed(undo_stack_for_this_level): self._undo_placement(u)
+                        forced_moves_count.append(0) 
+                        if self.live_visualizer:
+                            self.live_visualizer.draw(tiler=self, tiling_state_to_draw=tiling_state,
+                                title="Dead End on Frontier (No Candidates)", forced_move_history=forced_moves_count)
+                        self._update_max_tiling(tiling_state, indent_str)
                         return False
                     elif len(placements) == 1:
-                        tile = placements[0]
-                        key = (tile['tile_name'], tile['iso_idx'], tuple(tile['translation']))
-                        if key not in forced_placements_map: forced_placements_map[key] = tile
+                        placement = placements[0]
+                        new_state_after_forced_move = self._apply_placement_to_state(placement, tiling_state)
+                        if new_state_after_forced_move is None:
+                            print('FATAL ERROR: A conflicting forced move during immediate application.')
+                            self._update_max_tiling(tiling_state, indent_str)
+                            return False
+                        tiling_state = new_state_after_forced_move
+                        forced_moves_count_in_this_pass += 1
+                        found_forced_move_in_this_pass = True
                     else:
-                        choice_edges.append({'edge': edge, 'placements': placements})
+                        choice_edges_for_this_scan.append({'edge': edge, 'placements': placements})
+                
+                forced_moves_count.append(forced_moves_count_in_this_pass)
+                
+                if self.live_visualizer:
+                    self.live_visualizer.draw(tiler=self, tiling_state_to_draw=tiling_state,
+                        title=f"Applied {forced_moves_count_in_this_pass} Forced Moves",
+                        forced_move_history=forced_moves_count)
 
-                if forced_placements_map:
-                    forced_moves = 0
-                    for p in forced_placements_map.values():
-                        if not self._is_placement_valid(p):
-                            all_forced_moves.append(forced_moves)
-                            if self.live_visualizer: self.live_visualizer.draw(self, "Dead End on Frontier", forced_move_history=all_forced_moves)
-                            for u in reversed(undo_stack_for_this_level): self._undo_placement(u)
-                            return False
-                        undo_info = self._apply_placement_to_state(p)
-                        if undo_info is None:
-                            for u in reversed(undo_stack_for_this_level): self._undo_placement(u)
-                            return False
-                        undo_stack_for_this_level.append(undo_info)
-                        forced_moves += 1
-                    all_forced_moves.append(forced_moves)
-                    if self.live_visualizer:
-                        self.live_visualizer.draw(self, f"Applying Forced Moves", forced_move_history=all_forced_moves)
-                else:
-                    break
+                if not found_forced_move_in_this_pass:
+                    break 
 
-            if not choice_edges: return True
-            current_choice_info = choice_edges[0]
-            current_choice_edge = current_choice_info['edge']
+            if not choice_edges_for_this_scan: 
+                forced_moves_count.append(0) 
+                if self.live_visualizer:
+                    self.live_visualizer.draw(tiler=self, tiling_state_to_draw=tiling_state,
+                        title="Tiling Complete (No Choices Left)", forced_move_history=forced_moves_count)
+                self._update_max_tiling(tiling_state, indent_str)
+                return True 
+
+            current_choice_info = choice_edges_for_this_scan[0] 
             num_choices = len(current_choice_info['placements'])
-            N = len(self.placed_tiles) + len(self.initial_placements)
+            N = len(tiling_state['placed_tiles']) + len(self.initial_placements)
 
             for i, placement in enumerate(current_choice_info['placements']):
                 is_current_choice_last = (i == num_choices - 1)
@@ -445,63 +497,108 @@ class HeeschTiler:
                     print(f"{indent_str}└[{N}] branch {i+1}/{num_choices}")
                 else:
                     print(f"{indent_str}├[{N}] branch {i+1}/{num_choices}")
-                if not self._is_placement_valid(placement):
-                    # This case should ideally not be hit if _get_candidate_placements is robust,
-                    # but it's a safeguard against complex interactions not caught earlier.
-                    # print(f"DEBUG: Skipping invalid placement in choice branch. Tile: {placement['tile_name']} iso:{placement['iso_idx']} trans:{placement['translation'].tolist()}")
+
+                if not self._is_placement_valid(placement, tiling_state):
                     continue
 
-                undo_info = self._apply_placement_to_state(placement)
-                if undo_info is None:
+                next_tiling_state = self._apply_placement_to_state(placement, tiling_state)
+                if next_tiling_state is None:
                     print(f"FATAL ERROR during choice branch placement. Backtracking.")
-                    continue
+                    self._update_max_tiling(tiling_state, indent_str)
+                    continue 
 
                 if self.live_visualizer:
-                    self.live_visualizer.draw(self, f"Applied choice {i+1}/{num_choices}", forced_move_history=all_forced_moves)
-                next_history = history_is_last_choice + (is_current_choice_last,)
-                if self._search(last_choice_edge=current_choice_edge, level=level + 1, history_is_last_choice=next_history):
-                    return True
-                self._undo_placement(undo_info)
+                    self.live_visualizer.draw(tiler=self, tiling_state_to_draw=next_tiling_state,
+                        title=f"Apply choice {i+1}/{num_choices}", forced_move_history=forced_moves_count)
+                    if self.live_visualizer.quit_flag:
+                        print(f"QUIT detected during choice branch. Current tiles: {len(next_tiling_state['placed_tiles']) + len(self.initial_placements)}")
+                        return False
 
-            for u in reversed(undo_stack_for_this_level):
-                self._undo_placement(u)
-            return False
+                next_history = history_is_last_choice + (is_current_choice_last,)
+
+                if self._search(next_tiling_state, last_choice_edge=current_choice_info['edge'], level=level + 1, history_is_last_choice=next_history):
+                    return True 
+            return False 
         finally:
             pass
 
     def tile(self):
         print(f"\n--- Tiling with '{','.join(self.tiling_prototiles.keys())}' on A2 Geometry (Mode: {self.tiling_mode}) ---")
 
+        current_tiling_state = {
+            'edge_registry': defaultdict(int),
+            'global_stripe_occupancies': {},
+            'initial_mod_3_d_residues': {},
+            'occupancies': defaultdict(int),
+            'placed_tiles': []
+        }
+
+        self.largest_tiling_state = None
+        self.max_tiles_found_so_far = 0
+        self.initial_placements = []
+
+
         for i, p_data in enumerate(self.config['initial_placements']):
-            print(f"Attempting initial placement #{i+1}: {p_data['tile_name']} (iso_idx: {p_data['iso_idx']}, translation: {p_data['translation']})")
-            current_mod_6_residues_snapshot = dict(self.initial_mod_6_d_residues)
-            undo_info = self._apply_placement_to_state(p_data, is_initial=True)
-            if undo_info is None:
+            p_data['_level'] = 0
+            p_data['translation'] = np.array(p_data['translation'], dtype=int)
+            print(f"Attempting initial placement #{i+1}: {p_data['tile_name']} (iso_idx: {p_data['iso_idx']}, translation: {p_data['translation'].tolist()}, level: {p_data['_level']})")
+
+
+            updated_state = self._apply_placement_to_state(p_data, current_tiling_state, is_initial=True)
+            if updated_state is None:
                 print(f"Tiling aborted due to fatal error in initial placement #{i+1}.")
-                self.initial_mod_6_d_residues = current_mod_6_residues_snapshot
-                return
+                return False 
+
+            current_tiling_state = updated_state
 
             if self.live_visualizer:
-                self.live_visualizer.draw(self, f"Initial Placement #{i+1} Applied", forced_move_history=[])
+                self.live_visualizer.draw(tiler=self, tiling_state_to_draw=current_tiling_state,
+                    title=f"Initial Placement #{i+1} Applied", forced_move_history=[])
+                if self.live_visualizer.quit_flag:
+                    print(f"QUIT detected during initial placements. Current tiles: {len(current_tiling_state['placed_tiles']) + len(self.initial_placements)}")
+                    return False
 
         self.global_center_emb = np.mean([p['translation'] for p in self.initial_placements], axis=0) if self.initial_placements else np.array([0,0,0])
         if self.live_visualizer:
-            self.live_visualizer.draw(self, "Initial State Ready", forced_move_history=[])
+            self.live_visualizer.draw(tiler=self, tiling_state_to_draw=current_tiling_state,
+                title="Initial State Ready", forced_move_history=[])
+            if self.live_visualizer.quit_flag:
+                print(f"QUIT detected before search. Current tiles: {len(current_tiling_state['placed_tiles']) + len(self.initial_placements)}")
+                return False
 
         print("\n--- Starting Search ---"); self.start_time = time.time()
-        success = self._search(last_choice_edge=None, level=0)
+        final_tiling_state_result = self._search(current_tiling_state, last_choice_edge=None, level=0)
+        
+        if self.live_visualizer and self.live_visualizer.quit_flag:
+            print(f"Tiling search was quit by user. Largest tiling state found: {self.max_tiles_found_so_far} tiles.")
+            return False
+
+        success = final_tiling_state_result is not None and final_tiling_state_result is not False 
+
         print(f"\n--- Search Complete in {time.time() - self.start_time:.2f}s ---")
-        print(f"Result: {'SUCCESS' if success else 'FAILURE'} | Total Tiles: {len(self.placed_tiles) + len(self.initial_placements)}")
+        
+        if success and isinstance(final_tiling_state_result, dict):
+            final_tiles_count = len(final_tiling_state_result['placed_tiles']) + len(self.initial_placements)
+            print(f"Result: SUCCESS | Total Tiles: {final_tiles_count}")
+            if final_tiles_count > self.last_saved_tile_count:
+                self._save_tiling_state(final_tiling_state_result)
+            if self.live_visualizer:
+                self.live_visualizer.draw(tiler=self, tiling_state_to_draw=final_tiling_state_result,
+                    title="Final Tiling - SUCCESS", forced_move_history=[])
+        else:
+            final_tiles_count = len(self.largest_tiling_state['placed_tiles']) + len(self.initial_placements)
+            print(f"Result: FAILURE | Reported Tiles: {final_tiles_count} (Largest tiling state found)")
+            if final_tiles_count > self.last_saved_tile_count:
+                self._save_tiling_state(self.largest_tiling_state) 
+            if self.live_visualizer:
+                self.live_visualizer.draw(tiler=self, tiling_state_to_draw=self.largest_tiling_state,
+                    title="Final State - FAILURE (Largest Tiling)", forced_move_history=[])
 
-        if (len(self.placed_tiles) + len(self.initial_placements)) > self.last_saved_tile_count:
-            self._save_tiling_state()
+        return success
 
-        if self.live_visualizer:
-            self.live_visualizer.draw(self, "Final Tiling - SUCCESS" if success else "Final State - FAILURE", forced_move_history=[])
-            plt.ioff(); plt.show()
 
 class StaticVisualizer:
-    def __init__(self, show_coronas=True, initial_enable_stripe_heuristic=True, background_tiling_file=None):
+    def __init__(self, background_tiling_file=None):
         self.fig = plt.figure(figsize=(12, 10))
         gs = self.fig.add_gridspec(10, 8)
         self.ax_main = self.fig.add_subplot(gs[:, 0:7])
@@ -510,8 +607,13 @@ class StaticVisualizer:
         self.fig.canvas.manager.set_window_title("Heesch Tiler")
         self.tiler = None
         self.color_map = {0:'magenta', 1:'lime', 2:'yellow'}
-        self.drawn_placed_artists = {}
-        self.drawn_boundary_artists = {}
+        
+        self.drawn_dynamic_tiles = {} 
+        
+        self.permanent_background_face_artists = [] 
+        self.permanent_background_stripe_artists = []
+        self._background_drawn_once = False 
+
         self.temporary_artists = []
         self.palette_xlim, self.palette_ylim = None, None
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
@@ -521,78 +623,116 @@ class StaticVisualizer:
         self.last_dominant_color = None
         self.max_tiles_reached = 0
         self.background_tiling_file = background_tiling_file
-        self.background_placements = []
-        self.permanent_background_face_artists = [] 
-        self.permanent_background_stripe_artists = []
-        self.all_active_stripe_artists_info = []
+        
+        self.all_active_stripe_artists_info = [] 
+        
         self.ax_radio_stripes = self.fig.add_subplot(gs[2:7, 7])
         radio_labels = ('Blue Stripes', 'Red Stripes', 'Both Stripes', 'No Stripes')
         self.radio_buttons = RadioButtons(self.ax_radio_stripes, radio_labels)
         self.radio_buttons.on_clicked(self._on_radio_select)
-        self.current_stripe_display_mode = 'Blue Stripes'
-        self.radio_buttons.set_active(0)
+        self.current_stripe_display_mode = 'No Stripes' 
+        self.radio_buttons.set_active(3) 
         self.ax_radio_stripes.set_facecolor('lightgrey')
         self.ax_radio_stripes.tick_params(axis='both', which='both', length=0)
         self.ax_radio_stripes.set_xticks([])
         self.ax_radio_stripes.set_yticks([])
         self.ax_radio_stripes.set_title('Stripe Display')
 
-        if self.background_tiling_file:
-            print(f"Loading background tiling from: {self.background_tiling_file}")
-            self._load_and_draw_background()
+        self.show_background_stripes = False
 
-    def _load_and_draw_background(self):
-        if not self.background_tiling_file or self.permanent_background_face_artists:
+        self.ax_button_quit = self.fig.add_subplot(gs[0:1, 7])
+        self.quit_button = Button(self.ax_button_quit, 'QUIT', color='salmon', hovercolor='red')
+        self.quit_button.on_clicked(self._on_quit_button_clicked)
+        self.ax_button_quit.set_facecolor('lightgrey')
+        self.ax_button_quit.tick_params(axis='both', which='both', length=0)
+        self.ax_button_quit.set_xticks([])
+        self.ax_button_quit.set_yticks([])
+
+        self.quit_flag = False 
+
+        if self.background_tiling_file:
+            print(f"Loading initial static background from: {self.background_tiling_file}")
+            self._load_and_draw_background_from_file()
+
+    def _on_quit_button_clicked(self, event):
+        self.quit_flag = True
+        print("QUIT button clicked. Signaling current run to stop.")
+
+    def update_background_tiling(self, placements_to_be_background, prototiles_dict):
+        """
+        Updates the permanent background layer with a new "largest tiling state".
+        This will clear the *current* permanent background and redraw it.
+        This method is called by the tiler when a new largest tiling is found.
+        """
+        if self.background_tiling_file and self._background_drawn_once:
+            return
+
+        for artist in self.permanent_background_face_artists:
+            if artist.get_figure(): artist.remove()
+        self.permanent_background_face_artists = []
+        for artist in self.permanent_background_stripe_artists:
+            if artist.get_figure(): artist.remove()
+        self.permanent_background_stripe_artists = []
+
+        for p in placements_to_be_background:
+            name, i, t = p['tile_name'], p['iso_idx'], p['translation']
+            prototile = prototiles_dict.get(name) 
+            if prototile:
+                temp_p = {'tile_name': name, 'iso_idx': i, 'translation': t} 
+                tile_geometry = self._get_tile_geometry(temp_p, prototile=prototile)
+
+                if tile_geometry:
+                    patch = self.ax_main.fill(*tile_geometry['cartesian_verts'], facecolor=tile_geometry['face_color'],
+                                              edgecolor='black', lw=0.5, alpha=0.3, zorder=0)
+                    self.permanent_background_face_artists.extend(patch)
+                    
+                    if self.show_background_stripes:
+                        for stripe in tile_geometry['stripes']:
+                            line = self.ax_main.plot([stripe['p1c'][0], stripe['p2c'][0]],
+                                                      [stripe['p1c'][1], stripe['p2c'][1]],
+                                                      c=stripe['color'], lw=0.5, alpha=0.1, zorder=0.1)
+                            self.permanent_background_stripe_artists.extend(line)
+            else:
+                print(f"Warning: Prototile '{name}' for background not found during drawing.")
+        
+        self._calculate_palette_limits() 
+        if self.palette_xlim and self.palette_ylim:
+            self.ax_main.set_xlim(self.palette_xlim)
+            self.ax_main.set_ylim(self.palette_ylim)
+        
+        self.fig.canvas.draw_idle()
+        self._background_drawn_once = True
+
+    def _load_and_draw_background_from_file(self):
+        """
+        Loads background tiling data from a JSON file and draws it permanently.
+        This is typically for an initial, pre-computed background.
+        """
+        if not self.background_tiling_file:
             return
 
         try:
             with open(self.background_tiling_file, 'r') as f:
                 data = json.load(f)
-            background_prototiles = {}
-            for p_data in data:
-                tile_name = p_data['tile_name']
-                if tile_name not in background_prototiles:
-                    if tile_name == "Turtle":
-                        background_prototiles[tile_name] = TurtleTile()
-                    elif tile_name == "Propeller":
-                        background_prototiles[tile_name] = PropellerTile()
-
+            
+            file_placements = []
+            file_prototiles_temp = {}
             for p_data in data:
                 translation_array = np.array(p_data['translation'], dtype=int)
-                self.background_placements.append({
+                file_placements.append({
                     'tile_name': p_data['tile_name'],
                     'iso_idx': p_data['iso_idx'],
                     'translation': translation_array
                 })
+                tile_name = p_data['tile_name']
+                if tile_name not in file_prototiles_temp:
+                    if tile_name == "Turtle":
+                        file_prototiles_temp[tile_name] = TurtleTile()
+                    elif tile_name == "Propeller":
+                        file_prototiles_temp[tile_name] = PropellerTile()
 
-            print(f"Successfully loaded {len(self.background_placements)} tiles for background.")
-
-            # Create a dummy tiler for background with no heuristics applied
-            temp_tiler = HeeschTiler(config={'initial_placements': [], 'tiling_prototiles': list(background_prototiles.keys())}, heuristics_to_apply=[]) 
-            temp_tiler.prototiles.update(background_prototiles)
-
-            for p in self.background_placements:
-                name, i, t = p['tile_name'], p['iso_idx'], p['translation']
-                prototile = background_prototiles.get(name) 
-                if prototile:
-                    temp_p = {'tile_name': name, 'iso_idx': i, 'translation': t}
-                    tile_geometry = self._get_tile_geometry(temp_p, prototile=prototile)
-
-                    patch = self.ax_main.fill(*tile_geometry['cartesian_verts'], facecolor=tile_geometry['face_color'],
-                                              edgecolor='black', lw=1.0, alpha=0.3, zorder=0)
-                    self.permanent_background_face_artists.extend(patch)
-
-                    # for stripe in tile_geometry['stripes']:
-                    #     line = self.ax_main.plot([stripe['p1c'][0], stripe['p2c'][0]],
-                    #                               [stripe['p1c'][1], stripe['p2c'][1]],
-                    #                               c=stripe['color'], lw=2.5, alpha=0.5, zorder=0.1)
-                    #     for l in line:
-                    #         l.set_visible(self._should_draw_stripe(stripe['color'])) 
-                    #         self.permanent_background_stripe_artists.append({'artist': l, 'color': stripe['color']})
-                    #         self.all_active_stripe_artists_info.append({'artist': l, 'color': stripe['color']})
-                else:
-                    print(f"Warning: Prototile '{name}' for background not found during loading.")
-            self.fig.canvas.draw_idle() 
+            print(f"Successfully loaded {len(file_placements)} tiles for initial background from file.")
+            self.update_background_tiling(file_placements, file_prototiles_temp)
 
         except FileNotFoundError:
             print(f"Error: Background tiling file not found at {self.background_tiling_file}")
@@ -600,6 +740,7 @@ class StaticVisualizer:
             print(f"Error: Could not decode JSON from {self.background_tiling_file}")
         except Exception as e:
             print(f"An unexpected error occurred while loading background tiling: {e}")
+
 
     def on_scroll(self, event):
         if event.inaxes != self.ax_main: return
@@ -632,42 +773,41 @@ class StaticVisualizer:
     def _redraw_main_stripes(self):
         for stripe_info in self.all_active_stripe_artists_info:
             stripe_info['artist'].set_visible(self._should_draw_stripe(stripe_info['color']))
+        
+        for artist in self.permanent_background_stripe_artists:
+            if self.current_stripe_display_mode == 'Both Stripes':
+                artist.set_visible(True)
+            elif self.current_stripe_display_mode == 'No Stripes':
+                artist.set_visible(False)
 
     def _calculate_palette_limits(self):
         min_x, max_x, min_y, max_y = float('inf'), float('-inf'), float('inf'), float('-inf')
 
         if self.tiler and self.tiler.prototiles:
-            for p in self.tiler.initial_placements + self.tiler.placed_tiles:
-                key = (p['tile_name'], p['iso_idx'], tuple(p['translation']))
-                if key in self.drawn_placed_artists:
-                    tile_info = self.drawn_placed_artists[key]
-                    verts_cart = tile_info['tile_geometry']['cartesian_verts'].T
-                elif key in self.drawn_boundary_artists:
-                    tile_info = self.drawn_boundary_artists[key]
-                    verts_cart = tile_info['tile_geometry']['cartesian_verts'].T
-                else:
-                    tile_geometry = self._get_tile_geometry(p)
-                    verts_cart = tile_geometry['cartesian_verts'].T
-
+            for key, tile_info in self.drawn_dynamic_tiles.items():
+                verts_cart = tile_info['tile_geometry']['cartesian_verts'].T
                 min_x, max_x = min(min_x, verts_cart[:, 0].min()), max(max_x, verts_cart[:, 0].max())
                 min_y, max_y = min(min_y, verts_cart[:, 1].min()), max(max_y, verts_cart[:, 1].max())
 
         if self.permanent_background_face_artists:
             for patch in self.permanent_background_face_artists:
                 verts_cart = patch.get_path().vertices
-                min_x, max_x = min(min_x, verts_cart[:, 0].min()), max(max_x, verts_cart[:, 0].max())
-                min_y, max_y = min(min_y, verts_cart[:, 1].min()), max(max_y, verts_cart[:, 1].max())
-
-        center_x, center_y = (min_x + max_x) / 2, (min_y + max_y) / 2
-        half_size = max(max_x-center_x, center_x-min_x, max_y-center_y, center_y-min_y) * 1.15
-        if math.isinf(half_size):
+                if verts_cart.size > 0:
+                    min_x, max_x = min(min_x, verts_cart[:, 0].min()), max(max_x, verts_cart[:, 0].max())
+                    min_y, max_y = min(min_y, verts_cart[:, 1].min()), max(max_y, verts_cart[:, 1].max())
+        
+        if math.isinf(min_x) or math.isinf(max_x) or math.isinf(min_y) or math.isinf(max_y):
             self.palette_xlim, self.palette_ylim = (-5, 5), (-5, 5)
         else:
+            center_x, center_y = (min_x + max_x) / 2, (min_y + max_y) / 2
+            half_size = max(max_x-center_x, center_x-min_x, max_y-center_y, center_y-min_y) * 1.15
             self.palette_xlim, self.palette_ylim = (center_x-half_size, center_x+half_size), (center_y-half_size, center_y+half_size)
 
 
     def _get_tile_geometry(self, p, prototile=None):
         name, t, i = p['tile_name'], p['translation'], p['iso_idx']
+        global GEOMETRY 
+
         if prototile is None:
             if self.tiler and name in self.tiler.prototiles:
                 prototile = self.tiler.prototiles[name]
@@ -687,16 +827,17 @@ class StaticVisualizer:
                 stripes_data.append({'p1c': GEOMETRY.a2_to_cartesian(p1_emb), 'p2c': GEOMETRY.a2_to_cartesian(p2_emb),'color': actual_color})
         return {'cartesian_verts': GEOMETRY.a2_to_cartesian(verts).T, 'face_color': '#FFA07A' if is_reflected else '#87CEEB', 'stripes': stripes_data}
 
+    def draw(self, tiler, tiling_state_to_draw, title, analysis=None, forced_move_history=None, failed_candidate=None, highlight_point=None, highlight_stripe=None): # Add tiling_state_to_draw
+        self.tiler = tiler 
+        # Clear temporary artists only if not quitting (allows last state to persist)
+        if not self.quit_flag:
+            for artist in self.temporary_artists:
+                if artist.get_figure():
+                    artist.remove()
+            self.temporary_artists = []
 
-    def draw(self, tiler, title, analysis=None, forced_move_history=None):
-        self.tiler = tiler
-        for artist in self.temporary_artists:
-            if artist.get_figure():
-                artist.remove()
-        self.temporary_artists = []
-
-        all_placements = tiler.placed_tiles + tiler.initial_placements
-        num_tiles = len(all_placements)
+        all_placements_for_dynamic_drawing = tiling_state_to_draw['placed_tiles'] + tiler.initial_placements 
+        num_tiles = len(all_placements_for_dynamic_drawing)
         if num_tiles > self.max_tiles_reached:
             self.max_tiles_reached = num_tiles
 
@@ -707,19 +848,21 @@ class StaticVisualizer:
         else:
             self.ax_main.set_title(f"Tiles: {num_tiles} | Max Tiles: {self.max_tiles_reached} | Time: {elapsed:.2f}s | {title}")
 
-        def sync_dynamic_tiles(placements, drawn_artists_dict, zorder_base_face, opacity=1.0):
+        def sync_tiles_for_display(current_placements, drawn_artists_dict, zorder_base_face, opacity=1.0):
             current_placement_keys = set()
-            new_stripe_artists_to_add = []
-            for p in placements:
-                key = (p['tile_name'], p['iso_idx'], tuple(p['translation']))
+            newly_drawn_stripe_artists = []
+
+            for p in current_placements:
+                key = (p['tile_name'], p['iso_idx'], tuple(p['translation']), p.get('_level', 0))
                 current_placement_keys.add(key)
 
-                if key not in drawn_artists_dict:
+                if key not in drawn_artists_dict: # Only draw if not already present
                     tile_geometry = self._get_tile_geometry(p)
                     if tile_geometry is None: 
                         continue
                     face_patch = self.ax_main.fill(*tile_geometry['cartesian_verts'], facecolor=tile_geometry['face_color'],
                                                    edgecolor='black', lw=1.0, alpha=opacity, zorder=zorder_base_face)
+                    
                     stripe_artists_for_this_tile = []
                     for stripe in tile_geometry['stripes']:
                         line = self.ax_main.plot([stripe['p1c'][0], stripe['p2c'][0]],
@@ -728,17 +871,18 @@ class StaticVisualizer:
                         for l in line:
                             l.set_visible(self._should_draw_stripe(stripe['color']))
                             stripe_artists_for_this_tile.append({'artist': l, 'color': stripe['color']})
-                            new_stripe_artists_to_add.append({'artist': l, 'color': stripe['color']})
+                    
                     drawn_artists_dict[key] = {
                         'face_patches': face_patch,
                         'stripe_artists_info': stripe_artists_for_this_tile,
                         'tile_geometry': tile_geometry
                     }
+                    newly_drawn_stripe_artists.extend(stripe_artists_for_this_tile)
                 else:
-                    # EXISTING TILE: Ensure properties are correct (e.g., alpha, zorder)
-                    # For simplicity, we assume these don't change for already drawn tiles
-                    # If they do, update like: drawn_artists_dict[key]['face_patches'][0].set_alpha(opacity)
-                    pass
+                    # If already drawn, just include its stripe info for redrawing stripes if visibility changes
+                    newly_drawn_stripe_artists.extend(drawn_artists_dict[key]['stripe_artists_info'])
+            
+            # Remove artists for tiles that are no longer in current_placements
             keys_to_remove = set(drawn_artists_dict.keys()) - current_placement_keys
             for key in keys_to_remove:
                 tile_info = drawn_artists_dict.pop(key)
@@ -746,24 +890,65 @@ class StaticVisualizer:
                     if patch.get_figure(): patch.remove()
                 for stripe_info in tile_info['stripe_artists_info']:
                     if stripe_info['artist'].get_figure(): stripe_info['artist'].remove()
-                    if stripe_info in self.all_active_stripe_artists_info:
-                        self.all_active_stripe_artists_info.remove(stripe_info)
-            self.all_active_stripe_artists_info.extend(new_stripe_artists_to_add)
-        sync_dynamic_tiles(tiler.initial_placements, self.drawn_boundary_artists, zorder_base_face=1, opacity=0.7)
-        sync_dynamic_tiles(tiler.placed_tiles, self.drawn_placed_artists, zorder_base_face=1, opacity=0.7)
-        self._redraw_main_stripes()
-        if all_placements and self.ax_main.get_xlim() == (0.0, 1.0) and self.ax_main.get_ylim() == (0.0, 1.0):
-            self._calculate_palette_limits()
-            if self.palette_xlim and self.palette_ylim:
-                self.ax_main.set_xlim(self.palette_xlim)
-                self.ax_main.set_ylim(self.palette_ylim)
-        elif self.background_placements and not all_placements and \
-             self.ax_main.get_xlim() == (0.0, 1.0) and self.ax_main.get_ylim() == (0.0, 1.0):
-            self._calculate_palette_limits()
-            if self.palette_xlim and self.palette_ylim:
-                self.ax_main.set_xlim(self.palette_xlim)
-                self.ax_main.set_ylim(self.palette_ylim)
+            
+            return newly_drawn_stripe_artists 
 
+        # Sync the dynamically placed tiles
+        # The background (loaded from file OR largest_tiling_state) is handled separately now.
+        self.all_active_stripe_artists_info = sync_tiles_for_display(all_placements_for_dynamic_drawing, self.drawn_dynamic_tiles, zorder_base_face=1, opacity=0.7)
+        
+        self._redraw_main_stripes() # Ensure stripe visibility is correct for all active stripes
+
+        # Handle temporary visualizations (failed candidates, highlights)
+        if failed_candidate:
+            failed_tile_geometry = self._get_tile_geometry(failed_candidate)
+            if failed_tile_geometry:
+                face_patch = self.ax_main.fill(*failed_tile_geometry['cartesian_verts'], facecolor='red',
+                                               edgecolor='red', lw=2.0, alpha=0.5, zorder=2)
+                self.temporary_artists.extend(face_patch)
+
+                for stripe in failed_tile_geometry['stripes']:
+                    line = self.ax_main.plot([stripe['p1c'][0], stripe['p2c'][0]],
+                                              [stripe['p1c'][1], stripe['p2c'][1]],
+                                              c='red', lw=3.0, alpha=0.7, zorder=2.1)
+                    self.temporary_artists.extend(line)
+        
+        if highlight_point is not None:
+            cart_point = GEOMETRY.a2_to_cartesian(np.array(highlight_point))
+            highlight_marker = self.ax_main.plot(cart_point[0], cart_point[1], 'o', color='yellow', markersize=15, markeredgecolor='black', zorder=3)
+            self.temporary_artists.extend(highlight_marker)
+
+        if highlight_stripe is not None:
+            n, d, color = highlight_stripe
+            if failed_candidate: # Only highlight stripe if it's related to a failed candidate
+                failed_tile_geometry = self._get_tile_geometry(failed_candidate)
+                if failed_tile_geometry:
+                    for s in failed_tile_geometry['stripes']:
+                        # Need to re-derive params for comparison as highlight_stripe uses (n, d)
+                        temp_n, temp_d = GEOMETRY.get_line_parameters(GEOMETRY.cartesian_to_a2(s['p1c']), GEOMETRY.cartesian_to_a2(s['p2c']))
+                        
+                        if temp_n == n and temp_d == d and s['color'] == color: 
+                            line = self.ax_main.plot([s['p1c'][0], s['p2c'][0]],
+                                                      [s['p1c'][1], s['p2c'][1]],
+                                                      c='yellow', lw=5.0, alpha=1.0, zorder=3)
+                            self.temporary_artists.extend(line)
+                            # Draw thicker dash for visibility
+                            line = self.ax_main.plot([s['p1c'][0], s['p2c'][0]],
+                                                      [s['p1c'][1], s['p2c'][1]],
+                                                      c='yellow', lw=5.0, alpha=1.0, zorder=3, linestyle='--')
+                            self.temporary_artists.extend(line)
+                            break
+
+        # Adjust axis limits if any tiles are present
+        has_any_tiles = bool(all_placements_for_dynamic_drawing) or bool(self.permanent_background_face_artists)
+        if has_any_tiles:
+            # Recalculate limits only if they are not yet set or if content has changed significantly
+            # For simplicity, we recalculate here, but in a very high-performance scenario,
+            # you might only do this on a significant change in tile count or bounds.
+            self._calculate_palette_limits() 
+            if self.palette_xlim and self.palette_ylim:
+                self.ax_main.set_xlim(self.palette_xlim)
+                self.ax_main.set_ylim(self.palette_ylim)
 
         self.fig.tight_layout(pad=1.0, h_pad=0.5, w_pad=0.5)
         plt.draw(); plt.pause(0.001)
@@ -773,89 +958,87 @@ if __name__ == "__main__":
 
     config_single = {
         'initial_placements': [
-            {'tile_name':'Propeller', 'iso_idx':7, 'translation':np.array([0,0,0])},
-            # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([2,2,-4])},
-            # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([-2,-2,4])},
-            # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([4,4,-8])},
-            # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([6,6,-12])},
-            # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([-2,-2,4])},
-            # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([-2,-2,4])},
+            {'tile_name':'Propeller', 'iso_idx':9, 'translation':np.array([0,0,0])},
         ],
         'tiling_prototiles': ['Turtle'],
         'tiling_mode': 'plane_filling', 'max_tiles': 10000,
-        'description': 'single',
+        'description': 'single_propeller',
     }
 
-    config_propeller = {
+    config_double = {
         'initial_placements': [
-            {'tile_name':'Propeller', 'iso_idx':7, 'translation':np.array([0,0,0])},
+            {'tile_name':'Propeller', 'iso_idx':9, 'translation':np.array([0,0,0])},
             {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([6,8,-14])},
-            # {'tile_name':'Turtle', 'iso_idx':7, 'translation':np.array([6,7,-13])},
-            # {'tile_name':'Turtle', 'iso_idx':11, 'translation':np.array([-13,6,7])},
-            # {'tile_name':'Turtle', 'iso_idx':9, 'translation':np.array([7,-13,6])},
         ],
         'tiling_prototiles': ['Turtle'],
         'tiling_mode': 'plane_filling', 'max_tiles': 10000,
-        'description': 'two_propellers',
+        'description': 'double',
     }
 
     config_dipole = {
         'initial_placements': [
-            {'tile_name': 'Turtle', 'iso_idx': 9, 'translation': np.array([4,7,-11])},
-            {'tile_name': 'Turtle', 'iso_idx': 6, 'translation': np.array([-4,-7,11])},
-                # {'tile_name':'Turtle', 'iso_idx':0, 'translation': np.array([0,3,-3])},
-                # {'tile_name':'Turtle', 'iso_idx':3, 'translation': np.array([0,-3,3])},
+            {'tile_name': 'Turtle', 'iso_idx': 9, 'translation': np.array([2,5,-7])},
+            {'tile_name': 'Turtle', 'iso_idx': 6, 'translation': np.array([-2,-5,7])},
         ],
         'tiling_prototiles': ['Turtle'],
         'tiling_mode': 'plane_filling', 'max_tiles': 5000,
         'description': 'dipole',
     }
     
-    n = 15
-    config_tripod = {
-        'initial_placements': [
-            {'tile_name':'Turtle', 'iso_idx':8, 'translation':np.array([n, 0, -n])},
-            {'tile_name':'Turtle', 'iso_idx':6, 'translation':np.array([-n, n, 0])},
-            {'tile_name':'Turtle', 'iso_idx':10, 'translation':np.array([0, -n, n])},
-        ],
-        'tiling_prototiles': ['Turtle'],
-        'tiling_mode': 'plane_filling', 'max_tiles': 5000,
-        'description': 'tripod',
-    }
+    # for n in [8, 16, 24, 36, 40]: 
+    # for n in [2,4,6,8,10,12,14,16]:
+    for n in [16]:
+        print('Preparing config_cycle with n =', n)
 
-    # for n in [8]: # [8, 16, 24, 32, 40]:
-    #     print('n =', n)
+        config_cycle = {
+            'initial_placements': [
+                {'tile_name':'Turtle', 'iso_idx':9, 'translation':np.array([n-1, 1, -n])},
+                {'tile_name':'Turtle', 'iso_idx':7, 'translation':np.array([-n, n-1, 1])},
+                {'tile_name':'Turtle', 'iso_idx':11, 'translation':np.array([1, -n, n-1])},
+            ],
+            'tiling_prototiles': ['Turtle'],
+            'tiling_mode': 'plane_filling', 'max_tiles': 10000,
+            'description': f'cycle_n={n}',
+        }
 
-    n = 8
-    config_cycle = {
-        'initial_placements': [
-            {'tile_name':'Turtle', 'iso_idx':8, 'translation':np.array([n-1, 1, -n])},
-            {'tile_name':'Turtle', 'iso_idx':6, 'translation':np.array([-n, n-1, 1])},
-            {'tile_name':'Turtle', 'iso_idx':10, 'translation':np.array([1, -n, n-1])},
-                # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([n+1, 3, -n-4])}, 
-                # {'tile_name':'Turtle', 'iso_idx':2, 'translation':np.array([-n-4, n+1, 3])},
-                # {'tile_name':'Turtle', 'iso_idx':4, 'translation':np.array([3, -n-4, n+1])},
-                # {'tile_name':'Turtle', 'iso_idx':0, 'translation':np.array([n-3, -1, -n+4])},
-                # {'tile_name':'Turtle', 'iso_idx':2, 'translation':np.array([-n+4, n-3, -1])},
-                # {'tile_name':'Turtle', 'iso_idx':4, 'translation':np.array([-1, -n+4, n-3])},
-        ],
-        'tiling_prototiles': ['Turtle'],
-        'tiling_mode': 'plane_filling', 'max_tiles': 10000,
-        'description': f'cycle_n={n}',
-    }
-    
-    SELECTED_CONFIG = config_tripod
-    
-    background_file = "tiling_2025-10-10_09-21-53_cycle_n=16.json" 
-    # background_file = "tiling_2025-10-13_18-10-28_cycle_n=8.json"
-    
-    vis = StaticVisualizer(show_coronas=False, background_tiling_file=None)
-    tiler = HeeschTiler(config=SELECTED_CONFIG, visualizer=vis, 
-                        heuristics_to_apply=[
-                            mod_6_heuristic,  # Pass function objects directly
-                            stripe_heuristic, # Pass function objects directly
-                        ])
+        config_triple = {
+            'initial_placements': [
+                {'tile_name':'Propeller', 'iso_idx':9, 'translation':np.array([0,0,0])},
+                {'tile_name':'Propeller', 'iso_idx':9, 'translation':np.array([8,8,-16])},
+                {'tile_name':'Propeller', 'iso_idx':9, 'translation':np.array([-8,-8,16])},
+            ],
+            'tiling_prototiles': ['Turtle'],
+            'tiling_mode': 'plane_filling', 'max_tiles': 10000,
+            'description': 'triple',
+        }
         
-    tiler.tile()
-        # plt.ioff()
-        # plt.close('all')
+        config_tripod = {
+            'initial_placements': [
+                {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([n, 0, -n])},
+                {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([-n, n, 0])},
+                {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([0, -n, n])},
+                # {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([-2*n, 0, 2*n])},
+                # {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([2*n, -2*n, 0])},
+                # {'tile_name':'Propeller', 'iso_idx':6, 'translation':np.array([0, 2*n, -2*n])},
+            ],
+            'tiling_prototiles': ['Turtle'],
+            'tiling_mode': 'plane_filling', 'max_tiles': 10000,
+            'description': f'tripod_{n}',
+        }
+        
+        SELECTED_CONFIG = config_tripod # Change this to test other configs
+        
+        background_file = "tiling_2025-10-22_18-04-21_tripod_8.json" # Keep None for no initial background from file
+        background_file = None 
+        
+        vis = StaticVisualizer(background_tiling_file=background_file)
+        tiler = HeeschTiler(config=SELECTED_CONFIG, visualizer=vis, 
+                            heuristics_to_apply=[
+                                stripe_separation_heuristic,
+                                stripe_alignment_heuristic,
+                            ])
+            
+        tiler.tile()
+        plt.ioff()
+        plt.close('all')
+
