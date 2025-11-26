@@ -176,7 +176,7 @@ class HeeschTiler:
             if not tile_factory: continue
             self.prototiles[name] = tile_factory(allowed_iso_indices=final_prototile_rules.get(name))
         self.tiling_prototiles = {name: self.prototiles[name] for name in priority_list}
-        self.initial_placements = []; self.start_time = None; self.largest_tiling_state = None; self.max_tiles_found_so_far = 0
+        self.initial_placements = []; self.start_time = None; self.largest_tiling_placements = None; self.max_tiles_found_so_far = 0
         self.initial_frontier_edges = set()
 
     def _get_line_canonical_form(self, p1, p2):
@@ -210,9 +210,11 @@ class HeeschTiler:
         for p in move:
             template = self.prototiles[p['tile_name']].visual_templates[p['iso_idx']]
             for pt_local, val in template['occupancies'].items():
-                move_occupancies[tuple(np.array(pt_local) + p['translation'])] += val
+                pt_global = tuple(np.array(pt_local) + p['translation'])
+                if state['occupancies'].get(pt_global, 0) + val > 12: return False
+                move_occupancies[pt_global] += val
         for pt, val in move_occupancies.items():
-            if val > 12 or state['occupancies'].get(pt, 0) + val > 12: return False
+            if val > 12: return False
         return True
 
     def _passes_heuristic(self, move, state):
@@ -224,10 +226,11 @@ class HeeschTiler:
                 template, labels = prototile.visual_templates[p['iso_idx']], prototile.vertex_labels
                 if p['iso_idx'] >= 6: labels = [labels[0]] + labels[1:][::-1]
                 for v_idx, vert_local in enumerate(template['verts']):
-                    move_labels[tuple(np.array(vert_local) + p['translation'])].append(labels[v_idx])
+                    pt_global = tuple(np.array(vert_local) + p['translation'])
+                    if pt_global in state['vertex_labels'] and state['vertex_labels'][pt_global] != labels[v_idx]: return False
+                    move_labels[pt_global].append(labels[v_idx])
             for pt, labels in move_labels.items():
                 if len(set(labels)) > 1: return False
-                if pt in state['vertex_labels'] and state['vertex_labels'][pt] != labels[0]: return False
         
         if self.use_stripe_matching:
             move_global_lines = {}
@@ -247,22 +250,21 @@ class HeeschTiler:
         return True
 
     def _apply_move(self, move, state, is_initial=False):
-        new_state = copy.deepcopy(state)
         for p in move:
             prototile, t = self.prototiles[p['tile_name']], p['translation']
             template = prototile.visual_templates[p['iso_idx']]
             for pt_local, val in template['occupancies'].items():
-                new_state['occupancies'][tuple(np.array(pt_local) + t)] += val
+                state['occupancies'][tuple(np.array(pt_local) + t)] += val
             for p1, p2 in self._get_edges_of_placement(p):
-                new_state['edge_registry'][(p1, p2)] += 1; new_state['edge_registry'][(p2, p1)] -= 1
-                if new_state['edge_registry'].get((p1,p2)) == 0: del new_state['edge_registry'][(p1,p2)]
-                if new_state['edge_registry'].get((p2,p1)) == 0: del new_state['edge_registry'][(p2,p1)]
+                state['edge_registry'][(p1, p2)] += 1; state['edge_registry'][(p2, p1)] -= 1
+                if state['edge_registry'].get((p1,p2)) == 0: del state['edge_registry'][(p1,p2)]
+                if state['edge_registry'].get((p2,p1)) == 0: del state['edge_registry'][(p2,p1)]
             if self.use_vertex_matching and prototile.vertex_labels:
                 labels = prototile.vertex_labels
                 if p['iso_idx'] >= 6: labels = [labels[0]] + labels[1:][::-1]
                 for v_idx, vert_local in enumerate(template['verts']):
                     pt_global = tuple(np.array(vert_local) + t)
-                    if pt_global not in new_state['vertex_labels']: new_state['vertex_labels'][pt_global] = labels[v_idx]
+                    if pt_global not in state['vertex_labels']: state['vertex_labels'][pt_global] = labels[v_idx]
             if self.use_stripe_matching and p['tile_name'] in self.stripe_matching_tiles:
                 is_reflected, M = p['iso_idx'] >= 6, GEOMETRY.isometry_matrices[p['iso_idx']]
                 for stripe in prototile.stripes:
@@ -271,10 +273,9 @@ class HeeschTiler:
                     p2 = tuple((M @ np.array(stripe['p2']).T).T + t)
                     value = -stripe['value'] if is_reflected else stripe['value']
                     line_key = self._get_line_canonical_form(p1, p2)
-                    if line_key not in new_state['global_lines']: new_state['global_lines'][line_key] = value
-        if is_initial: new_state['initial_placements'].append(move[0])
-        else: new_state['placed_tiles'].append(move[0])
-        return new_state
+                    if line_key not in state['global_lines']: state['global_lines'][line_key] = value
+        if is_initial: state['initial_placements'].append(move[0])
+        else: state['placed_tiles'].append(move[0])
 
     def _get_candidate_moves(self, edge, state):
         geometrically_valid_moves = []
@@ -297,68 +298,94 @@ class HeeschTiler:
         count = len(state['initial_placements']) + (len(state['placed_tiles']) * self.rotation_order)
         if count > self.max_tiles_found_so_far:
             self.max_tiles_found_so_far = count
-            self.largest_tiling_state = copy.deepcopy(state)
+            placements = state['initial_placements'][:]
+            for seed in state['placed_tiles']:
+                placements.extend(self._generate_cluster(seed))
+            self.largest_tiling_placements = placements
             if self.live_visualizer:
-                self.live_visualizer.request_draw(self, self.largest_tiling_state, title=f"New Max: {count} tiles")
+                self.live_visualizer.request_draw(self, self.largest_tiling_placements, title=f"New Max: {count} tiles")
 
     def _search(self, state, level=0, history=()):
         indent = "".join(['  ' if h else '│ ' for h in history])
         if self.live_visualizer and self.live_visualizer.quit_flag: return False
+        
         while True:
             frontier = [{'p1': p1, 'p2': p2} for (p1, p2), c in state['edge_registry'].items() if c == 1]
-            if not frontier: self._update_max_tiling(state); return True
-            choice_points, forced_moves_found = [], False
+            if not frontier:
+                self._update_max_tiling(state)
+                return True
+
+            choice_points = []
+            forced_moves_found = False
             for edge in frontier:
                 if state['edge_registry'].get((edge['p1'], edge['p2']), 0) != 1: continue
                 candidate_moves, total_geo = self._get_candidate_moves(edge, state)
-                if not candidate_moves: self._update_max_tiling(state); return False
+                if not candidate_moves:
+                    self._update_max_tiling(state)
+                    return False
                 if len(candidate_moves) == 1:
-                    state = self._apply_move(candidate_moves[0], state)
-                    if not state: return False
-                    forced_moves_found = True; break 
+                    self._apply_move(candidate_moves[0], state)
+                    forced_moves_found = True
                 else:
                     choice_points.append({'edge': edge, 'moves': candidate_moves, 'total_geo': total_geo})
-            if self.live_visualizer and forced_moves_found: self.live_visualizer.request_draw(self, state, "Applied forced moves")
-            if not forced_moves_found: break 
-        if not choice_points: self._update_max_tiling(state); return True
+            
+            if self.live_visualizer and forced_moves_found:
+                placements = state['initial_placements'][:]
+                for seed in state['placed_tiles']: placements.extend(self._generate_cluster(seed))
+                self.live_visualizer.request_draw(self, placements, "Applied forced moves")
+            
+            if not forced_moves_found: break
+        
+        if not choice_points:
+            self._update_max_tiling(state)
+            return True
+
         count = len(state['initial_placements']) + (len(state['placed_tiles']) * self.rotation_order)
         if self.tiling_mode == 'plane_filling' and count >= self.max_tiles:
-            self._update_max_tiling(state); return True
-        if level == 0:
-            priority_tile_order = list(self.tiling_prototiles.keys())
-            first_choice = None
-            for tile_name in priority_tile_order:
-                priority_candidates = [cp for cp in choice_points if any(m[0]['tile_name'] == tile_name for m in cp['moves'])]
-                if priority_candidates:
-                    priority_candidates.sort(key=lambda cp: cp['edge']['p1'][0]**2 + cp['edge']['p1'][1]**2)
-                    first_choice = priority_candidates[0]
-                    first_choice['moves'] = [m for m in first_choice['moves'] if m[0]['tile_name'] == tile_name]; break 
-            if first_choice is None:
-                choice_points.sort(key=lambda cp: cp['edge']['p1'][0]**2 + cp['edge']['p1'][1]**2)
-                first_choice = choice_points[0]
-        else: first_choice = choice_points[0]
+            self._update_max_tiling(state)
+            return True
+            
+        # choice_points.sort(key=lambda cp: cp['edge']['p1'][0]**2 + cp['edge']['p1'][1]**2)
+        first_choice = choice_points[0]
+        
         for i, move in enumerate(first_choice['moves']):
             is_last = i == len(first_choice['moves']) - 1
             log_msg = f"branch {i+1}/{len(first_choice['moves'])}"
             if self.use_vertex_matching or self.use_stripe_matching: log_msg += f"/{first_choice['total_geo']}"
             print(f"{indent}{'└─' if is_last else '├─'}[{count}] {log_msg}")
-            next_state = self._apply_move(move, state)
-            if next_state:
-                if self.live_visualizer: self.live_visualizer.request_draw(self, next_state, f"Choice {i+1}/{len(first_choice['moves'])}")
-                if self._search(next_state, level + 1, history + (is_last,)): return True
+            
+            next_state = {
+                'edge_registry': state['edge_registry'].copy(),
+                'occupancies': state['occupancies'].copy(),
+                'placed_tiles': state['placed_tiles'][:],
+                'initial_placements': state['initial_placements'],
+                'vertex_labels': state['vertex_labels'].copy(),
+                'global_lines': state['global_lines'].copy()
+            }
+            
+            self._apply_move(move, next_state)
+
+            if self.live_visualizer:
+                placements = next_state['initial_placements'][:]
+                for seed in next_state['placed_tiles']: placements.extend(self._generate_cluster(seed))
+                self.live_visualizer.request_draw(self, placements, f"Choice {i+1}/{len(first_choice['moves'])}")
+            
+            if self._search(next_state, level + 1, history + (is_last,)):
+                return True
+        
         return False
 
     def tile(self):
         print(f"\n--- Tiling with '{','.join(self.tiling_prototiles.keys())}' in '{self.tiling_mode}' mode (Rotation order: {self.rotation_order}) ---")
         state = {'edge_registry': defaultdict(int), 'occupancies': defaultdict(int), 'placed_tiles': [], 
                  'initial_placements': [], 'vertex_labels': {}, 'global_lines': {}}
-        self.largest_tiling_state = None; self.max_tiles_found_so_far = 0;
+        self.largest_tiling_placements = None; self.max_tiles_found_so_far = 0;
         initial_placements = [p.copy() for p in self.config['initial_placements']]
         for p in initial_placements: p['translation'] = np.array(p['translation'], dtype=int)
         for placement in initial_placements:
             if not self._is_geometrically_valid([placement], state) or not self._passes_heuristic([placement], state):
                 print(f"Initial configuration is invalid (collision or rule violation)."); return False
-            state = self._apply_move([placement], state, is_initial=True)
+            self._apply_move([placement], state, is_initial=True)
         self.initial_placements = state['initial_placements']
         if self.live_visualizer: 
             self.live_visualizer.clear_all()
@@ -367,35 +394,43 @@ class HeeschTiler:
             self.initial_frontier_edges = {edge for edge, count in state['edge_registry'].items() if count == 1}
             print(f"Goal: Cover {len(self.initial_frontier_edges)} initial frontier edges.")
         self._update_max_tiling(state)
-        if self.live_visualizer: self.live_visualizer.request_draw(self, state, "Initial State")
+        if self.live_visualizer: self.live_visualizer.request_draw(self, self.largest_tiling_placements, "Initial State")
         if self.live_visualizer and self.live_visualizer.quit_flag: return False
         print("\n--- Starting Search ---"); self.start_time = time.time()
         success = self._search(state)
         print(f"\n--- Search Complete in {time.time() - self.start_time:.2f}s ---")
         print(f"Result: {'SUCCESS' if success else 'FAILURE'} | Largest tiling: {self.max_tiles_found_so_far} tiles")
-        if self.live_visualizer and self.largest_tiling_state:
-            self.live_visualizer.request_draw(self, self.largest_tiling_state, title="Final State")
+        if self.live_visualizer and self.largest_tiling_placements:
+            self.live_visualizer.request_draw(self, self.largest_tiling_placements, title="Final State")
         return success
 
 class StaticVisualizer:
     def __init__(self):
         self.fig = plt.figure(figsize=(12, 9))
         self.fig.canvas.manager.set_window_title("Heesch Tiler")
-        gs = GridSpec(1, 2, width_ratios=[4, 1.2])
+        
+        ## FIX: Use a simple GridSpec with a more aggressive ratio and a bottom margin for buttons.
+        # This gives the main plot the majority of the space.
+        gs = GridSpec(1, 2, width_ratios=[5, 1], bottom=0.1, top=0.95, left=0.05, right=0.98)
+
         self.ax_main = self.fig.add_subplot(gs[0])
         self.ax_templates_container = self.fig.add_subplot(gs[1])
+        
         self.tiler = None
         self.fig.canvas.mpl_connect('scroll_event', self.on_scroll)
+        self.fig.canvas.mpl_connect('resize_event', self.on_resize)
         self.quit_flag = False
         self.template_axes = []
         self.show_stripes = True
         self.show_shading = True
-        self.latest_tiling_state = None
-        self.last_drawn_state_id = -1
+        self.latest_placements = None
         self.latest_title = ""
         self.shrink_factor = 0.80
         self.corner_rounding_fraction = 0.3
+        self.drawn_placements_keys = set()
+        self.drawn_artists = {} 
 
+        # The buttons are placed relative to the figure, in the space we reserved at the bottom.
         ax_stripes = plt.axes([0.01, 0.01, 0.1, 0.04]); self.button_stripes = Button(ax_stripes, 'Toggle Stripes'); self.button_stripes.on_clicked(self.toggle_stripes)
         ax_shading = plt.axes([0.12, 0.01, 0.1, 0.04]); self.button_shading = Button(ax_shading, 'Toggle Shading'); self.button_shading.on_clicked(self.toggle_shading)
         ax_quit = plt.axes([0.23, 0.01, 0.1, 0.04]); self.button_quit = Button(ax_quit, 'Quit'); self.button_quit.on_clicked(self.quit_app)
@@ -403,17 +438,25 @@ class StaticVisualizer:
         self.timer = self.fig.canvas.new_timer(interval=100); self.timer.add_callback(self._throttled_draw); self.timer.start()
         self.geometry_cache = {}; self.translation_cache = {}; plt.ion()
 
+    def on_resize(self, event):
+        self._redraw_main_canvas(force=True)
+
     def clear_all(self):
         self.ax_main.clear(); self.ax_main.set_xticks([]); self.ax_main.set_yticks([])
         for ax in self.template_axes: ax.remove()
         self.template_axes = []; self.ax_templates_container.set_axis_off()
-        self.translation_cache = {}; self.latest_tiling_state = None; self.last_drawn_state_id = -1
+        self.translation_cache = {}; self.latest_placements = None
+        self.drawn_placements_keys = set()
+        self.drawn_artists = {}
+
+    def _get_placement_key(self, p):
+        return (p['tile_name'], p['iso_idx'], tuple(p['translation']))
 
     def _create_stripe_artists(self, p1, p2, value):
-        stripe_color = '#FFD700'; linewidth_map = {1: 2.5, -1: 1.5}
+        stripe_color = 'green'; linewidth_map = {1: 1.5, -1: 0.5}
         artists = []
         if isinstance(value, (list, tuple)):
-            lw1, lw2 = linewidth_map.get(value[0], 2.5), linewidth_map.get(value[1], 2.5)
+            lw1, lw2 = linewidth_map.get(value[0], 1.5), linewidth_map.get(value[1], 1.5)
             midpoint = (p1 + p2) / 2.0
             artists.append(plt.Line2D([p1[0], midpoint[0]], [p1[1], midpoint[1]], color=stripe_color, linewidth=lw1, zorder=1.2))
             artists.append(plt.Line2D([midpoint[0], p2[0]], [midpoint[1], p2[1]], color=stripe_color, linewidth=lw2, zorder=1.2))
@@ -464,7 +507,10 @@ class StaticVisualizer:
         n = len(sorted_prototiles)
         if n == 0: return
         template_face_color, template_tri_color = '#87CEEB', '#FFFFFF'
+        
+        # This nested GridSpec correctly places the templates within their container subplot.
         gs_nested = self.ax_templates_container.get_subplotspec().subgridspec(n + 2, 1, hspace=0, height_ratios=[1] + [10] * n + [1])
+        
         for i, prototile in enumerate(sorted_prototiles):
             ax = self.fig.add_subplot(gs_nested[i + 1]); self.template_axes.append(ax)
             ax.set_aspect('equal', adjustable='box'); ax.set_xticks([]); ax.set_yticks([])
@@ -490,51 +536,84 @@ class StaticVisualizer:
     def toggle_stripes(self, event): self.show_stripes = not self.show_stripes; print(f"Stripes toggled {'ON' if self.show_stripes else 'OFF'}"); self._redraw_main_canvas(force=True)
     def toggle_shading(self, event): self.show_shading = not self.show_shading; print(f"Shading toggled {'ON' if self.show_shading else 'OFF'}"); self._redraw_main_canvas(force=True)
     def quit_app(self, event): print("Quit button pressed. Stopping search and closing."); self.quit_flag = True; plt.close(self.fig)
-    def request_draw(self, tiler, tiling_state, title="Tiling"): self.tiler = tiler; self.latest_tiling_state = tiling_state; self.latest_title = title
+    def request_draw(self, tiler, placements, title="Tiling"): self.tiler = tiler; self.latest_placements = placements; self.latest_title = title
     def _throttled_draw(self): self._redraw_main_canvas()
 
     def _redraw_main_canvas(self, force=False):
-        if self.quit_flag or self.latest_tiling_state is None: return
-        current_state_id = len(self.latest_tiling_state.get('placed_tiles', []))
-        if current_state_id == self.last_drawn_state_id and not force: return
+        if self.quit_flag or self.latest_placements is None: return
         
-        self.ax_main.clear(); self.ax_main.set_aspect('equal', adjustable='box'); self.ax_main.set_xticks([]); self.ax_main.set_yticks([])
+        if force:
+            self.ax_main.clear()
+            self.ax_main.set_aspect('equal', adjustable='box'); self.ax_main.set_xticks([]); self.ax_main.set_yticks([])
+            self.drawn_artists = {}
+            self.drawn_placements_keys = set()
         
-        placements = self.latest_tiling_state.get('initial_placements', [])[:]
-        for seed in self.latest_tiling_state.get('placed_tiles', []): placements.extend(self.tiler._generate_cluster(seed))
-        
+        placements = self.latest_placements
         if not placements:
-            self.ax_main.set_title(self.latest_title); self.ax_main.set_xlim(-5, 5); self.ax_main.set_ylim(-5, 5)
-            self.fig.tight_layout(rect=[0, 0.05, 1, 1]); self.fig.canvas.draw_idle(); return
+            self.fig.canvas.draw_idle(); return
         
-        tri_colors = {(False, 0): '#FFFFFF', (False, 1): '#4682B4', (True, 0):  '#FFF5EE', (True, 1):  '#E9967A'}
-        min_x, max_x, min_y, max_y = float('inf'), float('-inf'), float('inf'), float('-inf')
+        new_placements_keys = {self._get_placement_key(p) for p in placements}
+        
+        keys_to_remove = self.drawn_placements_keys - new_placements_keys
+        if keys_to_remove:
+            for key in keys_to_remove:
+                if key in self.drawn_artists:
+                    for artist in self.drawn_artists[key]:
+                        artist.remove()
+                    del self.drawn_artists[key]
+        
+        keys_to_add = new_placements_keys - self.drawn_placements_keys
+        if keys_to_add:
+            placements_to_add = [p for p in placements if self._get_placement_key(p) in keys_to_add]
+            tri_colors = {(False, 0): '#FFFFFF', (False, 1): '#4682B4', (True, 0):  '#FFF5EE', (True, 1):  '#E9967A'}
+            for p in placements_to_add:
+                geom = self._get_tile_geometry(p)
+                if not geom: continue
+                
+                placement_key = self._get_placement_key(p)
+                t_cart = self._get_cartesian_translation(p['translation'])
+                verts_world = geom['verts_cart'] + t_cart
+                
+                artists = []
+                poly = plt.Polygon(verts_world, fc=geom['face_color'], ec='black', lw=1.0, alpha=0.8, zorder=1)
+                self.ax_main.add_patch(poly); artists.append(poly)
+                
+                if self.show_shading and geom['illustrative_shape_path'] is not None:
+                    patch = PathPatch(geom['illustrative_shape_path'], fc=tri_colors.get(geom['illustrative_shape_parity_key'], 'gray'), alpha=0.7, zorder=1.1, ec='none')
+                    patch.set_transform(transforms.Affine2D().translate(t_cart[0], t_cart[1]) + self.ax_main.transData)
+                    self.ax_main.add_patch(patch); artists.append(patch)
+                
+                if self.show_stripes and geom['stripe_artists']:
+                    for artist in geom['stripe_artists']:
+                        new_artist = copy.copy(artist)
+                        local_x, local_y = artist.get_xdata(), artist.get_ydata()
+                        new_artist.set_data(local_x + t_cart[0], local_y + t_cart[1])
+                        self.ax_main.add_line(new_artist); artists.append(new_artist)
 
-        for p in placements:
-            geom = self._get_tile_geometry(p)
-            if not geom: continue
-            t_cart = self._get_cartesian_translation(p['translation'])
-            verts_world = geom['verts_cart'] + t_cart
-            min_v, max_v = verts_world.min(axis=0), verts_world.max(axis=0)
-            min_x, max_x, min_y, max_y = min(min_x, min_v[0]), max(max_x, max_v[0]), min(min_y, min_v[1]), max(max_y, max_v[1])
-            self.ax_main.fill(verts_world[:, 0], verts_world[:, 1], fc=geom['face_color'], ec='black', lw=1.0, alpha=0.8, zorder=1)
-            if self.show_shading and geom['illustrative_shape_path'] is not None:
-                patch = PathPatch(geom['illustrative_shape_path'], fc=tri_colors.get(geom['illustrative_shape_parity_key'], 'gray'), alpha=0.7, zorder=1.1, ec='none')
-                patch.set_transform(transforms.Affine2D().translate(t_cart[0], t_cart[1]) + self.ax_main.transData)
-                self.ax_main.add_patch(patch)
-            if self.show_stripes and geom['stripe_artists']:
-                for artist in geom['stripe_artists']:
-                    new_artist = copy.copy(artist)
-                    local_x, local_y = artist.get_xdata(), artist.get_ydata()
-                    new_artist.set_data(local_x + t_cart[0], local_y + t_cart[1])
-                    self.ax_main.add_line(new_artist)
+                self.drawn_artists[placement_key] = artists
 
+        self.drawn_placements_keys = new_placements_keys
         self.ax_main.set_title(self.latest_title)
+        
+        all_verts = np.vstack([self.geometry_cache[(p['tile_name'], p['iso_idx'])]['verts_cart'] + self._get_cartesian_translation(p['translation']) for p in placements])
+        min_x, max_x = all_verts[:, 0].min(), all_verts[:, 0].max()
+        min_y, max_y = all_verts[:, 1].min(), all_verts[:, 1].max()
+
         cx, cy = (min_x + max_x) / 2, (min_y + max_y) / 2
         half_size = max(max_x - min_x, max_y - min_y) * 0.6 + 2
-        self.ax_main.set_xlim(cx - half_size, cx + half_size); self.ax_main.set_ylim(cy - half_size, cy + half_size)
-        self.fig.tight_layout(rect=[0, 0.05, 1, 1]); self.fig.canvas.draw_idle()
-        self.last_drawn_state_id = current_state_id
+        
+        if force:
+             self.ax_main.set_xlim(cx - half_size, cx + half_size)
+             self.ax_main.set_ylim(cy - half_size, cy + half_size)
+        else:
+            current_xlim = self.ax_main.get_xlim()
+            current_ylim = self.ax_main.get_ylim()
+            if min_x < current_xlim[0] or max_x > current_xlim[1] or min_y < current_ylim[0] or max_y > current_ylim[1]:
+                 self.ax_main.set_xlim(cx - half_size, cx + half_size)
+                 self.ax_main.set_ylim(cy - half_size, cy + half_size)
+        
+        ## FIX: Remove the now-unnecessary tight_layout call.
+        self.fig.canvas.draw_idle()
 
     def on_scroll(self, event):
         if event.inaxes != self.ax_main: return
@@ -551,7 +630,7 @@ class StaticVisualizer:
 if __name__ == "__main__":
     GEOMETRY = A2Geometry()
     
-    n = 8
+    n = 16
     config = {
         'initial_placements': [
             # {'tile_name': 'Turtle', 'iso_idx': 6, 'translation': np.array([0,0,0])},
