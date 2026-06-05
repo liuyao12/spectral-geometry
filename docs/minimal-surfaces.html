@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Platonic Soap-Film Gallery</title>
+    <link rel="stylesheet" href="minimal-surfaces.css?v=20260514-file-url-warning">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="plateau-app">
+      <aside class="control-rail">
+        <div class="brand-block">
+          <a class="back-link" href="index.html">Arithmetic Surface Inspector</a>
+          <h1>Platonic Soap-Film Gallery</h1>
+          <p id="loadStatus">Loading examples...</p>
+        </div>
+
+        <label class="field">
+          <span>Wireframe state</span>
+          <select id="exampleSelect">
+            <option>Open through http://127.0.0.1:8787/minimal-surfaces.html</option>
+          </select>
+        </label>
+        <p id="fileModeWarning" class="file-mode-warning">
+          This viewer uses JavaScript modules and local data fetches. If the dropdown stays empty,
+          open <a href="http://127.0.0.1:8787/minimal-surfaces.html">the local server URL</a>
+          instead of this file directly.
+        </p>
+
+        <div class="switch-stack" aria-label="layers">
+          <label><input id="filmToggle" type="checkbox" checked> Film sheets</label>
+          <label><input id="wireToggle" type="checkbox" checked> Boundary wire</label>
+          <label><input id="junctionToggle" type="checkbox" checked> Interior junctions</label>
+        </div>
+
+        <div class="action-row">
+          <button id="resetView" type="button">Reset View</button>
+          <a id="sourceLink" class="source-button" href="#" target="_blank" rel="noreferrer">Source Data</a>
+        </div>
+
+        <section id="livePanel" class="live-panel is-hidden" aria-label="live annulus controls">
+          <div class="section-label">Live Boundary</div>
+          <label class="range-field">
+            <span>Separation <output id="separationValue">0.80</output></span>
+            <input id="separationSlider" type="range" min="0.30" max="2.40" step="0.01" value="0.80">
+          </label>
+          <label class="range-field">
+            <span>Twist <output id="twistValue">0 deg</output></span>
+            <input id="twistSlider" type="range" min="-180" max="180" step="1" value="0">
+          </label>
+          <label class="range-field">
+            <span>Relax steps/frame <output id="relaxValue">8</output></span>
+            <input id="relaxSlider" type="range" min="0" max="24" step="1" value="8">
+          </label>
+          <button id="resetLiveMesh" type="button">Reset Mesh</button>
+        </section>
+
+        <dl id="exampleDetails" class="details"></dl>
+
+        <div class="legend">
+          <span><i class="swatch film"></i>sheet</span>
+          <span><i class="swatch boundary"></i>wire</span>
+          <span><i class="swatch junction"></i>junction</span>
+        </div>
+      </aside>
+
+      <section class="scene-panel">
+        <canvas id="sceneCanvas" aria-label="Interactive soap-film model"></canvas>
+        <div class="scene-title">
+          <h2 id="surfaceTitle">Plateau state</h2>
+          <p id="surfaceSubtitle"></p>
+        </div>
+        <div id="errorBox" class="error-box is-hidden"></div>
+      </section>
+    </main>
+
+    <script type="module" src="minimal-surfaces.js?v=20260514-file-url-warning"></script>
+  </body>
+</html>

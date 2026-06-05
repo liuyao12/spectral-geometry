@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arithmetic Surface Inspector</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <h1>Arithmetic Surface Inspector</h1>
+          <p id="sourceStatus">Loading manifest...</p>
+          <nav class="project-links" aria-label="project pages">
+            <a href="tetra-billiards.html">Tetrahedron billiards</a>
+            <a href="minimal-surfaces.html">Minimal surfaces</a>
+          </nav>
+        </div>
+
+        <label class="field">
+          <span>Surface</span>
+          <select id="surfaceSelect"></select>
+        </label>
+
+        <div class="tabs" role="tablist" aria-label="data mode">
+          <button id="tabForm" class="tab is-active" type="button">Eigenfunction</button>
+          <button id="tabGeo" class="tab" type="button">Geodesics</button>
+          <button id="tabTrace" class="tab" type="button">Trace test</button>
+        </div>
+
+        <section id="formPanel" class="panel-section">
+          <label class="field">
+            <span>LMFDB form</span>
+            <select id="formSelect"></select>
+          </label>
+          <label class="field">
+            <span>View</span>
+            <select id="formViewSelect">
+              <option value="halfplane">H domain</option>
+              <option value="disk-domain">Disk domain</option>
+              <option value="disk">Full disk</option>
+            </select>
+          </label>
+          <dl id="formDetails" class="details"></dl>
+        </section>
+
+        <section id="geoPanel" class="panel-section is-hidden">
+          <label class="field">
+            <span>View</span>
+            <select id="geoViewSelect">
+              <option value="halfplane">H domain</option>
+              <option value="disk">Disk domain</option>
+              <option value="lifted">Lifted axes</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Shown geodesics</span>
+            <input id="geoLimit" type="range" min="1" max="60" value="20">
+          </label>
+          <dl id="geoSummary" class="details"></dl>
+        </section>
+
+        <section id="tracePanel" class="panel-section is-hidden">
+          <dl id="traceDetails" class="details"></dl>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="viewer-toolbar">
+          <div>
+            <h2 id="viewerTitle">Viewer</h2>
+            <p id="viewerSubtitle"></p>
+          </div>
+          <button id="resetSelection" type="button">Reset</button>
+        </div>
+
+        <div id="imageStage" class="image-stage">
+          <img id="mainImage" alt="">
+          <svg id="geoOverlay" class="geo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet"></svg>
+          <div id="emptyState" class="empty-state is-hidden"></div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="table-panel">
+            <div class="section-title">
+              <h3 id="tableTitle">Records</h3>
+              <span id="recordCount"></span>
+            </div>
+            <div id="recordList" class="record-list"></div>
+          </section>
+
+          <section class="table-panel">
+            <div class="section-title">
+              <h3>Selected object</h3>
+            </div>
+            <pre id="selectedJson" class="json-view">{}</pre>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

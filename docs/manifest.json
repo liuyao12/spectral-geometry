@@ -1,0 +1,98 @@
+{
+  "schema": "arithsurf.viewer_manifest.v1",
+  "surfaces": [
+    {
+      "id": "psl2z",
+      "name": "PSL(2,Z) modular orbifold",
+      "type": "orbifold",
+      "compact": false,
+      "geodesics": {
+        "json": "../data/arithmetic/psl2z_geodesics_len8.json",
+        "images": {
+          "halfplane": "../data/arithmetic/psl2z_geodesics_len8.png",
+          "disk": "../data/arithmetic/psl2z_geodesics_len8_disk.png",
+          "lifted": "../data/arithmetic/psl2z_geodesics_len8_lifted.png"
+        }
+      },
+      "forms": [
+        {
+          "label": "computed.psl2z.first.odd",
+          "json": "../data/computed/psl2z_first_eigenpair.json",
+          "images": {
+            "halfplane": "../data/computed/psl2z_first_eigenpair.png"
+          }
+        },
+        {
+          "label": "1.0.1.1.1",
+          "json": "../data/lmfdb/maass_sample/forms/1/1.0.1.1.1.json",
+          "images": {
+            "halfplane": "../data/lmfdb/maass_sample/1.0.1.1.1.png",
+            "disk-domain": "../data/lmfdb/maass_sample/1.0.1.1.1_disk_domain.png",
+            "disk": "../data/lmfdb/maass_sample/1.0.1.1.1_disk_full.png"
+          }
+        },
+        {
+          "label": "1.0.1.10.1",
+          "json": "../data/lmfdb/maass_sample/forms/1/1.0.1.10.1.json",
+          "images": {}
+        }
+      ]
+    },
+    {
+      "id": "gamma0_2",
+      "name": "Gamma_0(2) modular orbifold",
+      "type": "orbifold",
+      "compact": false,
+      "geodesics": {
+        "json": "../data/arithmetic/gamma0_2_geodesics_len10.json",
+        "images": {
+          "halfplane": "../data/arithmetic/gamma0_2_geodesics_len10.png"
+        }
+      },
+      "forms": [
+        {
+          "label": "2.0.1.1.1",
+          "json": "../data/lmfdb/maass_sample/forms/2/2.0.1.1.1.json",
+          "images": {
+            "halfplane": "../data/lmfdb/maass_levels_1_2_sample/2.0.1.1.1_gamma0_domain.png"
+          }
+        },
+        {
+          "label": "2.0.1.10.1",
+          "json": "../data/lmfdb/maass_sample/forms/2/2.0.1.10.1.json",
+          "images": {}
+        }
+      ]
+    },
+    {
+      "id": "gamma0_3",
+      "name": "Gamma_0(3) modular orbifold",
+      "type": "orbifold",
+      "compact": false,
+      "geodesics": {
+        "json": "../data/spectral_lab/congruence_len12_levels20/gamma0_3_geodesics_len12.json",
+        "images": {
+          "halfplane": "../data/spectral_lab/congruence_len12_levels20/gamma0_3_geodesics_len12.png",
+          "disk": "../data/spectral_lab/congruence_len12_levels20/gamma0_3_geodesics_len12_disk.png"
+        }
+      },
+      "forms": []
+    },
+    {
+      "id": "gamma0_5",
+      "name": "Gamma_0(5) modular orbifold",
+      "type": "orbifold",
+      "compact": false,
+      "geodesics": {
+        "json": "../data/spectral_lab/congruence_len12_levels20/gamma0_5_geodesics_len12.json",
+        "images": {
+          "halfplane": "../data/spectral_lab/congruence_len12_levels20/gamma0_5_geodesics_len12.png"
+        }
+      },
+      "forms": []
+    }
+  ],
+  "traceFormula": {
+    "sample": "../data/trace_formula/psl2z_sample.json"
+  }
+}

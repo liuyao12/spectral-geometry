@@ -1,0 +1,403 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f6f4;
+  --rail: #fbfcfa;
+  --panel: #ffffff;
+  --ink: #20242a;
+  --muted: #68717d;
+  --line: #d8ddd5;
+  --accent: #0b6f77;
+  --accent-soft: #dcefed;
+  --path: #d0342c;
+  --amber: #a56500;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.tetra-app {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.control-rail {
+  border-right: 1px solid var(--line);
+  background: var(--rail);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.brand-block {
+  display: grid;
+  gap: 8px;
+}
+
+.back-link {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+p,
+dl {
+  margin: 0;
+}
+
+.brand-block h1 {
+  font-size: 23px;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.brand-block p,
+#orbitSubtitle,
+.panel-heading span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+select,
+input[type="search"] {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 10px;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.segmented button,
+#resetCamera {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.segmented button.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: #064c50;
+}
+
+.summary-block {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.summary-block dl,
+.orbit-details {
+  display: grid;
+  grid-template-columns: minmax(92px, auto) minmax(0, 1fr);
+  gap: 8px 12px;
+  font-size: 13px;
+}
+
+dt {
+  color: var(--muted);
+}
+
+dd {
+  margin: 0;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.viewer-area {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 14px;
+  padding: 22px;
+}
+
+.top-strip {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.top-strip h2 {
+  margin-bottom: 4px;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+#resetCamera {
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
+.stage {
+  position: relative;
+  height: 360px;
+  min-height: 360px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+#tetraCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.stage-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.lower-layout {
+  display: grid;
+  grid-template-columns: minmax(580px, 1.55fr) minmax(260px, 0.7fr);
+  gap: 16px;
+}
+
+.inventory-panel,
+.details-panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 14px;
+}
+
+.panel-heading h3 {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.orbit-table-wrap {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.orbit-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  font-size: 12px;
+  table-layout: fixed;
+}
+
+.orbit-table th,
+.orbit-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 9px 12px;
+  vertical-align: top;
+}
+
+.orbit-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f7f9f6;
+  color: var(--muted);
+  font-weight: 750;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sort-header {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+  padding: 0;
+  text-align: left;
+}
+
+.sort-header:hover,
+.sort-header.is-active {
+  color: var(--accent);
+}
+
+.orbit-row {
+  cursor: pointer;
+}
+
+.orbit-row:hover,
+.orbit-row.is-selected {
+  background: var(--accent-soft);
+}
+
+.orbit-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.period-cell,
+.numeric-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.numeric-cell {
+  text-align: right;
+}
+
+.word-cell,
+.exact-cell {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exact-cell {
+  max-width: 170px;
+  color: var(--muted);
+}
+
+.orbit-table th:nth-child(1),
+.orbit-table td:nth-child(1) {
+  width: 70px;
+}
+
+.orbit-table th:nth-child(2),
+.orbit-table td:nth-child(2) {
+  width: 190px;
+}
+
+.orbit-table th:nth-child(3),
+.orbit-table td:nth-child(3) {
+  width: 112px;
+}
+
+.orbit-table th:nth-child(4),
+.orbit-table td:nth-child(4) {
+  width: 145px;
+}
+
+.orbit-table th:nth-child(5),
+.orbit-table td:nth-child(5) {
+  width: 92px;
+}
+
+.orbit-table th:nth-child(6),
+.orbit-table td:nth-child(6) {
+  width: 90px;
+}
+
+.details-panel {
+  padding-bottom: 14px;
+}
+
+.orbit-details {
+  padding: 14px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.mono {
+  font-family: "Cascadia Mono", "SFMono-Regular", Consolas, Menlo, monospace;
+}
+
+@media (max-width: 1020px) {
+  .tetra-app,
+  .lower-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .control-rail {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .viewer-area {
+    grid-template-rows: auto auto auto;
+  }
+
+  .stage {
+    height: 320px;
+    min-height: 320px;
+  }
+
+  #tetraCanvas {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .orbit-table {
+    min-width: 700px;
+  }
+
+  .orbit-table-wrap,
+  .orbit-details {
+    max-height: 360px;
+  }
+}

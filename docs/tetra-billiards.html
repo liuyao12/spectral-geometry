@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tetrahedron Billiards Inventory</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="tetra-billiards.css">
+  </head>
+  <body>
+    <main class="tetra-app">
+      <aside class="control-rail">
+        <header class="brand-block">
+          <a class="back-link" href="index.html">Spectral geometry</a>
+          <h1>Tetrahedron billiards</h1>
+          <p id="inventoryStatus">Loading inventory...</p>
+        </header>
+
+        <label class="field">
+          <span>Period</span>
+          <select id="periodSelect">
+            <option value="all">All periods</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Search</span>
+          <input id="wordSearch" type="search" autocomplete="off" placeholder="word or id">
+        </label>
+
+        <label class="field">
+          <span>Sort</span>
+          <select id="sortSelect">
+            <option value="period">Period, length</option>
+            <option value="word">Word</option>
+            <option value="length">Euclidean length</option>
+            <option value="height">Height</option>
+            <option value="margin">Face margin</option>
+          </select>
+        </label>
+
+        <div class="segmented" role="tablist" aria-label="view mode">
+          <button id="foldedBtn" class="is-active" type="button">Folded</button>
+          <button id="unfoldedBtn" type="button">Unfolded</button>
+        </div>
+
+        <section class="summary-block">
+          <dl id="summaryDetails"></dl>
+        </section>
+      </aside>
+
+      <section class="viewer-area">
+        <div class="top-strip">
+          <div>
+            <h2 id="orbitTitle">Inventory</h2>
+            <p id="orbitSubtitle"></p>
+          </div>
+          <button id="resetCamera" type="button">Reset View</button>
+        </div>
+
+        <div id="stage" class="stage">
+          <canvas id="tetraCanvas"></canvas>
+          <div id="stageEmpty" class="stage-empty is-hidden"></div>
+        </div>
+
+        <div class="lower-layout">
+          <section class="inventory-panel">
+            <div class="panel-heading">
+              <h3>Paths</h3>
+              <span id="recordCount"></span>
+            </div>
+            <div class="orbit-table-wrap">
+              <table class="orbit-table">
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      <button class="sort-header" type="button" data-sort-key="period">Period</button>
+                    </th>
+                    <th scope="col">
+                      <button class="sort-header" type="button" data-sort-key="word">Word</button>
+                    </th>
+                    <th scope="col">
+                      <button class="sort-header" type="button" data-sort-key="length">Euclidean</button>
+                    </th>
+                    <th scope="col">Exact length</th>
+                    <th scope="col">
+                      <button class="sort-header" type="button" data-sort-key="height">Height</button>
+                    </th>
+                    <th scope="col">Margin</th>
+                  </tr>
+                </thead>
+                <tbody id="orbitRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="details-panel">
+            <div class="panel-heading">
+              <h3>Selected path</h3>
+            </div>
+            <dl id="orbitDetails" class="orbit-details"></dl>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three/three.module.js",
+          "three/addons/": "./vendor/three/addons/"
+        }
+      }
+    </script>
+    <script type="module" src="tetra-billiards.js"></script>
+  </body>
+</html>
