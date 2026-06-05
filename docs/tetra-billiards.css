@@ -166,11 +166,20 @@ dd {
   align-items: start;
 }
 
+.top-strip > div {
+  min-width: 0;
+}
+
 .top-strip h2 {
   margin-bottom: 4px;
   font-size: 22px;
   line-height: 1.2;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+#orbitSubtitle {
+  overflow-wrap: anywhere;
 }
 
 #resetCamera {
@@ -243,7 +252,7 @@ dd {
 
 .orbit-table {
   width: 100%;
-  min-width: 700px;
+  min-width: 760px;
   border-collapse: collapse;
   font-size: 12px;
   table-layout: fixed;
@@ -322,6 +331,11 @@ dd {
   color: var(--muted);
 }
 
+.source-cell {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .orbit-table th:nth-child(1),
 .orbit-table td:nth-child(1) {
   width: 70px;
@@ -350,6 +364,11 @@ dd {
 .orbit-table th:nth-child(6),
 .orbit-table td:nth-child(6) {
   width: 90px;
+}
+
+.orbit-table th:nth-child(7),
+.orbit-table td:nth-child(7) {
+  width: 82px;
 }
 
 .details-panel {
@@ -393,7 +412,7 @@ dd {
 
 @media (max-width: 640px) {
   .orbit-table {
-    min-width: 700px;
+    min-width: 760px;
   }
 
   .orbit-table-wrap,

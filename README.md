@@ -21,5 +21,28 @@ To refresh the published ordinary billiard inventory after a search update, run:
 ```bash
 python3 scripts/update_tetra_billiards_inventory.py \
   --source /path/to/tetra_frontier_checkpoint_period60.json \
+  --source data/tetra_exploratory_paths.json \
   --out docs/data/tetra/billiards_inventory.json
 ```
+
+The tetrahedron billiards table currently records ordinary paths checked
+exhaustively through level 40, plus exactified paths found by the exploratory
+shooting search.
+
+To run another non-exhaustive shooting pass:
+
+```bash
+python3 scripts/explore_tetra_billiards.py \
+  --trials 1500 \
+  --max-bounces 90 \
+  --max-period 80 \
+  --out data/tetra_exploratory_paths.json
+
+python3 scripts/update_tetra_billiards_inventory.py \
+  --source docs/data/tetra/billiards_inventory.json \
+  --source data/tetra_exploratory_paths.json \
+  --out docs/data/tetra/billiards_inventory.json
+```
+
+The exploratory script uses `numpy`; `scipy` enables the optional local
+least-squares relaxation, and `sympy` is used by the exact verifier.

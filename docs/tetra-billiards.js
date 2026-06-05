@@ -371,6 +371,12 @@ function orbitLengthLabel(orbit) {
   return orbit.length_exact || String(orbit.length_numeric.toFixed(8));
 }
 
+function provenanceLabel(orbit) {
+  if (orbit.provenance === "exploratory_exactified") return "explore";
+  if (orbit.period > (inventory?.summary?.exhaustive_checked_through ?? 40)) return "extra";
+  return "exhaustive";
+}
+
 function compareBySortKey(a, b) {
   if (sortKey === "length") return a.length_numeric - b.length_numeric || a.period - b.period;
   if (sortKey === "height") return compareIntegerStrings(a.height, b.height) || a.period - b.period;
@@ -426,6 +432,7 @@ function renderRows() {
       <td class="exact-cell"></td>
       <td class="numeric-cell"></td>
       <td class="numeric-cell"></td>
+      <td class="source-cell"></td>
     `;
     row.children[0].textContent = `p${String(orbit.period).padStart(2, "0")}`;
     row.children[1].textContent = orbit.word;
@@ -433,6 +440,7 @@ function renderRows() {
     row.children[3].textContent = orbitLengthLabel(orbit);
     row.children[4].textContent = orbit.height;
     row.children[5].textContent = orbit.boundary_margin;
+    row.children[6].textContent = provenanceLabel(orbit);
     const selectRow = () => {
       selectedId = orbit.id;
       drawSelectedOrbit();
@@ -464,6 +472,8 @@ function renderDetails(orbit) {
   detailRow("Length", `${orbit.length_exact} (${orbit.length_numeric.toFixed(10)})`);
   detailRow("Height", orbit.height);
   detailRow("Margin", orbit.boundary_margin);
+  detailRow("Source", provenanceLabel(orbit));
+  if (orbit.discovery_method) detailRow("Found by", orbit.discovery_method);
   detailRow("Axis", orbit.axis_direction.join(", "), "mono");
   detailRow("Initial dir", orbit.initial_direction.join(", "), "mono");
   detailRow("Faces", orbit.faces.join(" "), "mono");
@@ -479,8 +489,10 @@ function renderSummary() {
     .join("  ");
   els.status.textContent = `${summary.total_orbits} ordinary orbit classes loaded`;
   els.summary.innerHTML = "";
+  const coverage = `Exhaustive through level ${summary.exhaustive_checked_through ?? 40}; ${summary.extra_verified_orbits ?? 0} exactified extra paths`;
   const rows = [
     ["Generated", inventory.generated_at],
+    ["Coverage", coverage],
     ["Max period", String(summary.max_period)],
     ["Counts", counts],
     ["Notebook", "Observable source linked in data"],

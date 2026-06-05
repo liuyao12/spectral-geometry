@@ -92,7 +92,7 @@ def normalize_current_record(record: Dict[str, object]) -> Optional[Dict[str, ob
     den_int = int(denominator_text)
     boundary_margin_num = min(int(value) for row in bary_rows_text for value in row if int(value) > 0)
 
-    return {
+    out = {
         "id": str(record.get("id") or f"p{period:02d}_{word}"),
         "kind": "ordinary",
         "equivalence": str(record.get("equivalence") or "full"),
@@ -111,6 +111,10 @@ def normalize_current_record(record: Dict[str, object]) -> Optional[Dict[str, ob
         "height": str(max(height, den_int)),
         "boundary_margin": frac_text(Fraction(boundary_margin_num, den_int)),
     }
+    for key in ("provenance", "discovery_method", "exploratory_score", "exploratory_refined_score"):
+        if key in record:
+            out[key] = record[key]
+    return out
 
 
 def load_json_without_frontier_words(path: Path) -> Dict[str, object]:
@@ -138,6 +142,13 @@ def load_source(path: Path) -> Dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def display_source(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        return path.name
+
+
 def orbit_records_from_source(path: Path) -> List[Dict[str, object]]:
     data = load_source(path)
     records = data.get("orbits", [])
@@ -149,7 +160,9 @@ def orbit_records_from_source(path: Path) -> List[Dict[str, object]]:
             continue
         normalized = normalize_current_record(record)
         if normalized is not None:
-            normalized["source"] = str(path)
+            normalized["source"] = display_source(path)
+            if "provenance" not in normalized:
+                normalized["provenance"] = "exploratory_exactified" if "explor" in path.name else "exhaustive_exact"
             out.append(normalized)
     return out
 
@@ -159,21 +172,40 @@ def default_sources() -> List[Path]:
         REPO_ROOT / "data" / "tetra_frontier_checkpoint_period60.json",
         REPO_ROOT / "data" / "tetra_z3_period60.json",
         REPO_ROOT / "data" / "level42_shards" / "merged_level42.json",
+        REPO_ROOT / "data" / "tetra_exploratory_paths.json",
     ]
     return [path for path in candidates if path.exists() and path.stat().st_size > 0]
 
 
-def build_inventory(sources: Sequence[Path]) -> Dict[str, object]:
+def provenance_priority(record: Dict[str, object]) -> int:
+    provenance = str(record.get("provenance", ""))
+    if provenance == "exhaustive_exact":
+        return 3
+    if provenance == "sharded_exact":
+        return 2
+    if provenance == "exploratory_exactified":
+        return 1
+    return 0
+
+
+def build_inventory(sources: Sequence[Path], exhaustive_through: int) -> Dict[str, object]:
     by_id: Dict[str, Dict[str, object]] = {}
     source_summaries = []
     for path in sources:
         records = orbit_records_from_source(path)
-        source_summaries.append({"path": str(path), "ordinary_orbits": len(records)})
+        source_summaries.append({"path": display_source(path), "ordinary_orbits": len(records)})
         for record in records:
-            by_id[str(record["id"])] = record
+            key = str(record["id"])
+            existing = by_id.get(key)
+            if existing is None or provenance_priority(record) >= provenance_priority(existing):
+                by_id[key] = record
 
     orbits = sorted(by_id.values(), key=lambda item: (int(item["period"]), float(item["length_numeric"]), str(item["word"])))
     by_period = Counter(int(record["period"]) for record in orbits)
+    extra_orbits = [
+        record for record in orbits
+        if str(record.get("provenance")) == "exploratory_exactified" or int(record["period"]) > exhaustive_through
+    ]
     generated_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     return {
         "schema": "spectral.tetra_billiards_inventory.v1",
@@ -194,6 +226,8 @@ def build_inventory(sources: Sequence[Path]) -> Dict[str, object]:
         "summary": {
             "total_orbits": len(orbits),
             "max_period": max((int(record["period"]) for record in orbits), default=0),
+            "exhaustive_checked_through": exhaustive_through,
+            "extra_verified_orbits": len(extra_orbits),
             "period_counts": {str(period): by_period[period] for period in sorted(by_period)},
             "sources": source_summaries,
         },
@@ -216,13 +250,19 @@ def main() -> None:
         default=REPO_ROOT / "site" / "data" / "tetra" / "billiards_inventory.json",
         help="Output JSON path for the GitHub Pages viewer.",
     )
+    parser.add_argument(
+        "--exhaustive-through",
+        type=int,
+        default=40,
+        help="Largest level/period that has been checked exhaustively for the published inventory.",
+    )
     args = parser.parse_args()
 
     sources = [path.resolve() for path in args.source] if args.source else default_sources()
     if not sources:
         raise SystemExit("No inventory sources found. Pass --source explicitly.")
 
-    inventory = build_inventory(sources)
+    inventory = build_inventory(sources, exhaustive_through=args.exhaustive_through)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(inventory, indent=2), encoding="utf-8")
     print(
