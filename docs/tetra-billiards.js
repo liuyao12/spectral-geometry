@@ -377,8 +377,19 @@ function provenanceLabel(orbit) {
   return "exhaustive";
 }
 
+function centroidDistanceValue(orbit) {
+  if (Number.isFinite(orbit.centroid_distance_numeric)) return orbit.centroid_distance_numeric;
+  if (orbit.centroid_distance_squared_exact) return Math.sqrt(parseFractionApprox(orbit.centroid_distance_squared_exact));
+  return Number.POSITIVE_INFINITY;
+}
+
+function centroidDistanceSquaredLabel(orbit) {
+  return orbit.centroid_distance_squared_exact ?? "";
+}
+
 function compareBySortKey(a, b) {
   if (sortKey === "length") return a.length_numeric - b.length_numeric || a.period - b.period;
+  if (sortKey === "center") return centroidDistanceValue(a) - centroidDistanceValue(b) || a.period - b.period;
   if (sortKey === "height") return compareIntegerStrings(a.height, b.height) || a.period - b.period;
   if (sortKey === "margin") return parseFractionApprox(a.boundary_margin) - parseFractionApprox(b.boundary_margin);
   if (sortKey === "word") return a.word.localeCompare(b.word) || a.period - b.period;
@@ -430,6 +441,7 @@ function renderRows() {
       <td class="word-cell mono"></td>
       <td class="numeric-cell"></td>
       <td class="exact-cell"></td>
+      <td class="exact-cell"></td>
       <td class="numeric-cell"></td>
       <td class="numeric-cell"></td>
       <td class="source-cell"></td>
@@ -437,10 +449,11 @@ function renderRows() {
     row.children[0].textContent = `p${String(orbit.period).padStart(2, "0")}`;
     row.children[1].textContent = orbit.word;
     row.children[2].textContent = orbit.length_numeric.toFixed(10);
-    row.children[3].textContent = orbitLengthLabel(orbit);
-    row.children[4].textContent = orbit.height;
-    row.children[5].textContent = orbit.boundary_margin;
-    row.children[6].textContent = provenanceLabel(orbit);
+    row.children[3].textContent = centroidDistanceSquaredLabel(orbit);
+    row.children[4].textContent = orbitLengthLabel(orbit);
+    row.children[5].textContent = orbit.height;
+    row.children[6].textContent = orbit.boundary_margin;
+    row.children[7].textContent = provenanceLabel(orbit);
     const selectRow = () => {
       selectedId = orbit.id;
       drawSelectedOrbit();
@@ -470,12 +483,14 @@ function renderDetails(orbit) {
   els.subtitle.textContent = `period ${orbit.period} | ${viewMode} view | ${orbit.id}`;
   els.details.innerHTML = "";
   detailRow("Length", `${orbit.length_exact} (${orbit.length_numeric.toFixed(10)})`);
+  if (orbit.path_center_xyz_exact) detailRow("Center", orbit.path_center_xyz_exact.join(", "), "mono");
+  if (orbit.centroid_distance_squared_exact) detailRow("Center d^2", orbit.centroid_distance_squared_exact, "mono");
+  if (Number.isFinite(orbit.centroid_distance_numeric)) detailRow("Center dist", orbit.centroid_distance_numeric.toFixed(10));
   detailRow("Height", orbit.height);
   detailRow("Margin", orbit.boundary_margin);
   detailRow("Source", provenanceLabel(orbit));
   if (orbit.discovery_method) detailRow("Found by", orbit.discovery_method);
   detailRow("Axis", orbit.axis_direction.join(", "), "mono");
-  detailRow("Initial dir", orbit.initial_direction.join(", "), "mono");
   detailRow("Faces", orbit.faces.join(" "), "mono");
   detailRow("Denominator", orbit.barycentric_denominator, "mono");
   const points = orbit.points_xyz_exact.map((point, i) => `${i}: ${orbit.faces[i]} (${point.join(", ")})`).join("\n");

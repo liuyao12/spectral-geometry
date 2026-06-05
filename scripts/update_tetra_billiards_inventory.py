@@ -21,6 +21,7 @@ VERTICES = {
     "D": (Fraction(1), Fraction(1), Fraction(1)),
 }
 FACE_LABELS = ("A", "B", "C", "D")
+TETRA_CENTROID = tuple(sum(vertex[axis] for vertex in VERTICES.values()) / 4 for axis in range(3))
 
 
 def frac_text(value: Fraction) -> str:
@@ -58,6 +59,21 @@ def face_from_barycentric(row: Sequence[object]) -> str:
 
 def float_point(values: Sequence[object]) -> List[float]:
     return [float(parse_frac(value)) for value in values]
+
+
+def center_metrics(points_exact: Sequence[Sequence[object]]) -> Dict[str, object]:
+    count = len(points_exact)
+    center = [
+        sum(parse_frac(point[axis]) for point in points_exact) / count
+        for axis in range(3)
+    ]
+    distance_squared = sum((center[axis] - TETRA_CENTROID[axis]) ** 2 for axis in range(3))
+    return {
+        "path_center_xyz_exact": [frac_text(value) for value in center],
+        "path_center_xyz": [float(value) for value in center],
+        "centroid_distance_squared_exact": frac_text(distance_squared),
+        "centroid_distance_numeric": math.sqrt(float(distance_squared)),
+    }
 
 
 def normalize_current_record(record: Dict[str, object]) -> Optional[Dict[str, object]]:
@@ -111,6 +127,7 @@ def normalize_current_record(record: Dict[str, object]) -> Optional[Dict[str, ob
         "height": str(max(height, den_int)),
         "boundary_margin": frac_text(Fraction(boundary_margin_num, den_int)),
     }
+    out.update(center_metrics(points_exact))
     for key in ("provenance", "discovery_method", "exploratory_score", "exploratory_refined_score"):
         if key in record:
             out[key] = record[key]

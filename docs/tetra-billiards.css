@@ -252,7 +252,7 @@ dd {
 
 .orbit-table {
   width: 100%;
-  min-width: 760px;
+  min-width: 910px;
   border-collapse: collapse;
   font-size: 12px;
   table-layout: fixed;
@@ -353,21 +353,26 @@ dd {
 
 .orbit-table th:nth-child(4),
 .orbit-table td:nth-child(4) {
-  width: 145px;
+  width: 105px;
 }
 
 .orbit-table th:nth-child(5),
 .orbit-table td:nth-child(5) {
-  width: 92px;
+  width: 145px;
 }
 
 .orbit-table th:nth-child(6),
 .orbit-table td:nth-child(6) {
-  width: 90px;
+  width: 92px;
 }
 
 .orbit-table th:nth-child(7),
 .orbit-table td:nth-child(7) {
+  width: 90px;
+}
+
+.orbit-table th:nth-child(8),
+.orbit-table td:nth-child(8) {
   width: 82px;
 }
 
@@ -412,7 +417,7 @@ dd {
 
 @media (max-width: 640px) {
   .orbit-table {
-    min-width: 760px;
+    min-width: 910px;
   }
 
   .orbit-table-wrap,
