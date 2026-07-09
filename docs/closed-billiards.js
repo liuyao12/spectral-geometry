@@ -579,7 +579,7 @@ function setupFixedLimitScene() {
     fitCamera(controller, 2.15, new THREE.Vector3(3.15, 2.45, 2.9));
     slider.value = String(Math.round(approach * 100));
     title.textContent = mode === "vertex" ? "Approaching a vertex" : "Approaching opposite edges";
-    stratum.textContent = mode === "vertex" ? "[D]" : "(AD)(BC)";
+    stratum.textContent = mode === "vertex" ? "[D]" : "(AD) (BC)";
     marginText.textContent = margin.toFixed(3);
     body.textContent = approach > 0.88 ? "fixed, singular closure" : "fixed, ordinary face hits";
   };

@@ -227,7 +227,7 @@
               <h3 id="fixedLimitTitle">Approaching opposite edges</h3>
               <dl>
                 <dt>Limit stratum</dt>
-                <dd id="fixedLimitStratum">(AD)(BC)</dd>
+                <dd id="fixedLimitStratum">(AD) (BC)</dd>
                 <dt>Margin</dt>
                 <dd id="fixedLimitMargin">decreasing</dd>
                 <dt>Tetrahedron</dt>
@@ -310,6 +310,54 @@
           </p>
         </section>
 
+        <section id="stratum-words">
+          <h2>Stratum words</h2>
+          <p>
+            The notation should record the smallest boundary stratum containing each
+            bounce. For the tetrahedron, this gives a word whose tokens are faces,
+            edges, or vertices. Ordinary face words are the special case where every
+            token is a face.
+          </p>
+          <p class="formula-line">
+            <code>stratum word = token_0 token_1 ... token_{k-1}</code>, read cyclically.
+          </p>
+          <div class="example-table-wrap">
+            <table class="example-table">
+              <thead>
+                <tr>
+                  <th scope="col">Token</th>
+                  <th scope="col">Stratum</th>
+                  <th scope="col">Barycentric test</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>D</code></td>
+                  <td>Face <code>F_D</code>, opposite vertex <code>D</code></td>
+                  <td><code>d = 0</code>, while <code>a,b,c &gt; 0</code></td>
+                </tr>
+                <tr>
+                  <td><code>(AD)</code></td>
+                  <td>Edge joining vertices <code>A</code> and <code>D</code></td>
+                  <td><code>b = c = 0</code>, while <code>a,d &gt; 0</code></td>
+                </tr>
+                <tr>
+                  <td><code>[D]</code></td>
+                  <td>Vertex <code>D</code></td>
+                  <td><code>a = b = c = 0</code>, while <code>d &gt; 0</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Parentheses mark one-dimensional strata and brackets mark zero-dimensional
+            strata, so no token is confused with a face. Thus <code>DABC</code> remains
+            the ordinary period-4 face word, while <code>(AD) (BC)</code> records an
+            edge-to-opposite-edge singular path and <code>D [D]</code> records a face
+            hit followed by the vertex <code>D</code>.
+          </p>
+        </section>
+
         <section id="why">
           <h2>Why this is the sensible closure</h2>
           <div class="reason-grid">
@@ -358,9 +406,9 @@
             In the tetrahedron visualization, ordinary rows use face words such as
             <code>DABC</code>. Singular rows use stratum words: <code>(AD)</code>
             means the edge joining vertices <code>A</code> and <code>D</code>, and
-            <code>[D]</code> means the vertex <code>D</code>. Barycentric coordinates
-            reveal the same distinction: one zero coordinate is a face hit, two zeros
-            are an edge hit, and three zeros are a vertex hit.
+            <code>[D]</code> means the vertex <code>D</code>. The canonical display
+            separates mixed tokens with spaces; the compact stored word is just a
+            shorthand.
           </p>
           <div class="example-table-wrap">
             <table class="example-table">
@@ -382,13 +430,13 @@
                 <tr>
                   <td><code>s02_AD_BC</code></td>
                   <td>singular</td>
-                  <td><code>(AD)(BC)</code></td>
+                  <td><code>(AD) (BC)</code></td>
                   <td>A symmetric edge-to-opposite-edge path with total length <code>2</code>.</td>
                 </tr>
                 <tr>
                   <td><code>s04_AD_D_AD_A</code></td>
                   <td>singular family</td>
-                  <td><code>(AD)D(AD)A</code></td>
+                  <td><code>(AD) D (AD) A</code></td>
                   <td>A one-parameter normal-cone family whose length is constant.</td>
                 </tr>
               </tbody>
