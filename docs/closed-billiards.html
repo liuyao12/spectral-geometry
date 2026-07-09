@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Closed Billiard Paths in a Polyhedron</title>
+    <title>Closed Billiard Paths in the Regular Tetrahedron</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="tetra-billiards.css">
   </head>
@@ -12,39 +12,39 @@
       <header class="essay-hero">
         <nav class="essay-nav" aria-label="project pages">
           <a href="index.html">Spectral geometry</a>
-          <a href="tetra-billiards.html">Visualization inventory</a>
+          <a href="tetra-billiards.html">Full inventory</a>
         </nav>
         <p class="essay-kicker">Polyhedral billiards</p>
-        <h1>Closed billiard paths in a polyhedron</h1>
+        <h1>Closed billiard paths in the regular tetrahedron</h1>
         <p class="essay-lede">
-          A closed billiard path is a periodic broken geodesic: straight inside each
-          face-to-face segment, reflective at smooth boundary points, and cyclic after
-          finitely many bounces. For ordinary paths the unfolding trick turns the
-          billiard into a straight line in reflected copies of the polyhedron. Singular
-          paths are what remain when that ordinary picture has a stable limit at an
-          edge or vertex.
+          We start with one exact path. A point moves in straight segments inside the
+          tetrahedron, reflects from face to face, and returns to where it started after
+          four bounces. From that one example, the unfolding trick gives a practical
+          calculation, and then the same language points toward what should happen at
+          edges and vertices.
         </p>
         <div class="essay-actions">
-          <a class="essay-button essay-button-primary" href="tetra-billiards.html">Open the inventory</a>
-          <a class="essay-button" href="data/tetra/singular_normal_cones.json">Singular data</a>
+          <a class="essay-button essay-button-primary" href="#ordinary">Start with the path</a>
+          <a class="essay-button" href="#normal-cone">Jump to singular paths</a>
         </div>
       </header>
 
       <section class="diagram-band" aria-labelledby="unfold-heading">
         <div class="diagram-copy">
-          <h2 id="unfold-heading">Ordinary paths unfold to straight lines</h2>
+          <h2 id="unfold-heading">A period-four closed path</h2>
           <p>
-            When every bounce lands in the interior of a face, the reflection law is
-            smooth and unambiguous. Reflect the polyhedron across the hit faces instead
-            of reflecting the velocity. The broken closed path folds out into one
-            straight segment through a chain of mirror copies.
+            The red orbit has face word <code>DABC</code>. It hits the face opposite
+            <code>D</code>, then the face opposite <code>A</code>, then
+            <code>B</code>, then <code>C</code>, and closes up. The slider below shows
+            the unfolding trick, but the object to keep in mind is the folded billiard
+            path at the left end of the slider.
           </p>
         </div>
-        <section class="three-scene unfold-scene" aria-label="Animated unfolding of an ordinary billiard path">
+        <section class="three-scene unfold-scene" aria-label="Closed tetrahedron billiard path and unfolding animation">
           <div class="scene-frame">
-            <canvas id="unfoldCanvas" aria-label="3D animation of a folded billiard path unfolding to a straight path"></canvas>
+            <canvas id="unfoldCanvas" aria-label="3D closed billiard path in a tetrahedron"></canvas>
             <div class="scene-readout" aria-live="polite">
-              <h3 id="unfoldTitle">Folded billiard path</h3>
+              <h3 id="unfoldTitle">Closed path DABC</h3>
               <dl>
                 <dt>Word</dt>
                 <dd>DABC</dd>
@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="scene-controls">
-            <button id="unfoldPlay" class="scene-control-button" type="button">Pause</button>
+            <button id="unfoldPlay" class="scene-control-button" type="button">Animate unfolding</button>
             <label class="scene-slider">
               <span>Unfolding</span>
               <input id="unfoldSlider" type="range" min="0" max="100" value="0">
@@ -72,51 +72,262 @@
 
       <article class="essay-article">
         <section id="ordinary">
-          <h2>Ordinary closed paths</h2>
+          <h2>The path</h2>
           <p>
-            Let <code>P</code> be a polyhedron in Euclidean space. An ordinary billiard
-            path is a cyclic list of boundary points
-            <code>x_0, x_1, ..., x_{k-1}</code>, each lying in the relative interior of
-            a face of <code>P</code>. Between consecutive points the path is a straight
-            segment. At each bounce, the incoming and outgoing directions make equal
-            angles with the face normal, or equivalently the tangential component of
-            velocity is preserved while the normal component reverses.
+            Label the vertices of the regular tetrahedron by <code>A,B,C,D</code>, and
+            write a point in barycentric coordinates relative to those vertices. The
+            period-four path above has these four hit points:
+          </p>
+          <div class="math-block">
+            \[
+            \begin{aligned}
+            x_0 &= \frac{1}{10}(3A+4B+3C) &&\in F_D,\\
+            x_1 &= \frac{1}{10}(3B+4C+3D) &&\in F_A,\\
+            x_2 &= \frac{1}{10}(3A+3C+4D) &&\in F_B,\\
+            x_3 &= \frac{1}{10}(4A+3B+3D) &&\in F_C.
+            \end{aligned}
+            \]
+          </div>
+          <p>
+            The notation <code>F_D</code> means the face opposite the vertex
+            <code>D</code>. Thus <code>x_0</code> lies on that face because the
+            coefficient of <code>D</code> is zero, while the other three coefficients
+            are positive. Joining <code>x_0,x_1,x_2,x_3</code> cyclically gives a
+            broken line with four equal segments, so its total length is
+            \(4\sqrt{5}/5\).
           </p>
           <p>
-            This is the clean case. The local wall has a single tangent plane and a
-            single normal direction, so the reflection law is deterministic. A closed
-            path is then a periodic point of the billiard map, or, more concretely for
-            the inventory, a finite face word together with exact hit points on those
-            faces.
+            At each hit, the incoming and outgoing unit directions differ by a multiple
+            of the face normal:
+          </p>
+          <div class="math-block">
+            \[
+            \frac{x_{i+1}-x_i}{\lVert x_{i+1}-x_i\rVert}
+            -
+            \frac{x_i-x_{i-1}}{\lVert x_i-x_{i-1}\rVert}
+            \in \mathbb{R}\, n_{F_i},
+            \qquad i \in \mathbb{Z}/4\mathbb{Z}.
+            \]
+          </div>
+          <p>
+            This is just the equal-angle reflection law written as a vector equation.
+            The path is ordinary because every bounce is in the relative interior of a
+            face.
           </p>
         </section>
 
         <section id="unfolding">
           <h2>The unfolding trick</h2>
           <p>
-            Suppose the face word is <code>F_0 F_1 ... F_{k-1}</code>. Instead of
-            reflecting the moving direction at <code>F_i</code>, reflect the whole
-            polyhedron across <code>F_i</code>. After doing this successively, the
-            billiard path in the original polyhedron becomes a single straight segment
-            through reflected copies. Folding those copies back recovers the original
-            broken line.
+            Reflection at a face can be moved from the velocity to the room. When the
+            path hits a face, reflect the next copy of the tetrahedron across that face
+            and let the point continue straight. If the folded path has face word
+            \(F_0F_1\cdots F_{k-1}\), the unfolded picture is a straight segment through
+            copies
+          </p>
+          <div class="math-block">
+            \[
+            T_0=T,\qquad
+            T_{i+1}=R_{F_i}(T_i),
+            \]
+          </div>
+          <p>
+            where \(R_{F_i}\) is reflection in the hit face of the current copy. Folding
+            all the reflected copies back to \(T\) recovers the original billiard path.
+            In the unfolded picture there are no angle conditions left: a candidate
+            orbit is found by asking for one line to pass through the prescribed faces
+            in order.
+          </p>
+        </section>
+
+        <section id="calculation">
+          <h2>Finding the example</h2>
+          <p>
+            For the word <code>DABC</code>, unfold four copies. In the \(i\)-th copy,
+            the straight line must meet the reflected face labeled by the \(i\)-th
+            letter. If \(q(s)=u+s(v-u)\) is the line in unfolded space and
+            \(0=s_0&lt;s_1&lt;s_2&lt;s_3&lt;s_4=1\), the unknowns are constrained by
+          </p>
+          <div class="math-block">
+            \[
+            q(s_i)\in R_{F_{i-1}}\cdots R_{F_0}(F_i),
+            \qquad
+            q(s_4)=R_{F_3}R_{F_2}R_{F_1}R_{F_0}(q(s_0)).
+            \]
+          </div>
+          <p>
+            These are linear incidence equations once the face word is fixed. Solving
+            them for <code>DABC</code>, then folding the hit points back to the original
+            tetrahedron, gives the barycentric matrix
+          </p>
+          <div class="math-block">
+            \[
+            \frac{1}{10}
+            \begin{pmatrix}
+            3 &amp; 4 &amp; 3 &amp; 0\\
+            0 &amp; 3 &amp; 4 &amp; 3\\
+            3 &amp; 0 &amp; 3 &amp; 4\\
+            4 &amp; 3 &amp; 0 &amp; 3
+            \end{pmatrix}.
+            \]
+          </div>
+          <p>
+            Each row has exactly one zero, and the zeroes occur in the order
+            <code>D,A,B,C</code>. That is the face word. The same computation, repeated
+            over many canonical face words, produces the inventory.
+          </p>
+          <p class="essay-inline-actions">
+            <a class="essay-button essay-button-primary" href="tetra-billiards.html">Open the full inventory</a>
+            <a class="essay-button" href="data/tetra/billiards_inventory.json">Ordinary data</a>
+          </p>
+        </section>
+      </article>
+
+      <article class="essay-article">
+        <section id="singular-break">
+          <h2>Why ordinary paths avoid singular points</h2>
+          <p>
+            The calculation above only used face-interior hits. That is deliberate.
+            At a face there is one tangent plane and one normal direction, so reflection
+            is unambiguous. At an edge there are two incident faces. At a vertex there
+            are three. A literal billiard ball striking such a point has no single
+            face normal to reflect across.
           </p>
           <p>
-            This is why ordinary closed billiards are so computable. A proposed face
-            word is turned into a straight-line incidence problem in unfolded space.
-            The equal-angle law has disappeared into the geometry of the copies.
+            One option would be to throw these paths away. Another would be to choose an
+            incident face by hand. Neither feels intrinsic to the tetrahedron. The
+            normal-cone rule keeps the variational reflection law, but replaces the
+            single face normal by the cone generated by all active face normals.
           </p>
+        </section>
+      </article>
+
+      <section class="diagram-band" aria-labelledby="rule-heading">
+        <div class="diagram-copy">
+          <h2 id="rule-heading">A rule for singular paths</h2>
+          <p>
+            The normal cone is one ray in a face interior, a wedge along an edge, and a
+            trihedral cone at a vertex. The rule below agrees with ordinary reflection
+            on faces, and still has a precise meaning on the nonsmooth boundary.
+          </p>
+        </div>
+        <section class="three-scene normal-scene" aria-label="Interactive normal-cone billiard scenes">
+          <div class="scene-toolbar" role="tablist" aria-label="normal cone scene">
+            <button class="scene-tab is-active" type="button" data-scene="face" role="tab" aria-selected="true">Face</button>
+            <button class="scene-tab" type="button" data-scene="edge" role="tab" aria-selected="false">Edge</button>
+            <button class="scene-tab" type="button" data-scene="vertex" role="tab" aria-selected="false">Vertex</button>
+          </div>
+          <div class="scene-frame">
+            <canvas id="normalConeCanvas" aria-label="3D normal cone billiard scene"></canvas>
+            <div class="scene-readout" aria-live="polite">
+              <h3 id="sceneTitle">Smooth face reflection</h3>
+              <dl>
+                <dt>Active faces</dt>
+                <dd id="sceneActive">1</dd>
+                <dt>Normal cone</dt>
+                <dd id="sceneCone">one ray</dd>
+                <dt>Stationary jump</dt>
+                <dd id="sceneJump">supported by the face normal</dd>
+              </dl>
+            </div>
+          </div>
+          <p class="scene-caption">
+            Red segments are incoming and outgoing directions. Amber geometry is the
+            admissible normal cone.
+          </p>
+        </section>
+      </section>
+
+      <article class="essay-article">
+        <section id="normal-cone">
+          <h2>The normal-cone condition</h2>
+          <p>
+            At a boundary point \(x\), let \(N_P(x)\) be the cone generated by the
+            outward normals of all faces containing \(x\). In a face interior this cone
+            is a single ray. On an edge it is generated by the adjacent face normals.
+            At a vertex it is generated by the normals of all incident faces.
+          </p>
+          <div class="math-block">
+            \[
+            v_{\mathrm{out}} - v_{\mathrm{in}} \in N_P(x).
+            \]
+          </div>
+          <p>
+            Equivalently, the broken path is stationary for length under variations
+            that keep each bounce on its assigned face, edge, or vertex stratum. The
+            momentum jump has no allowed tangential component; it is carried by the
+            active boundary constraints.
+          </p>
+        </section>
+
+        <section id="stratum-words">
+          <h2>Stratum words</h2>
+          <p>
+            The notation records the smallest boundary stratum containing each bounce.
+            Ordinary face words are the special case where every token is a face.
+            Parentheses mark edges and brackets mark vertices.
+          </p>
+          <div class="example-table-wrap">
+            <table class="example-table">
+              <thead>
+                <tr>
+                  <th scope="col">Token</th>
+                  <th scope="col">Stratum</th>
+                  <th scope="col">Barycentric test</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>D</code></td>
+                  <td>Face <code>F_D</code>, opposite vertex <code>D</code></td>
+                  <td><code>d = 0</code>, while <code>a,b,c &gt; 0</code></td>
+                </tr>
+                <tr>
+                  <td><code>(AD)</code></td>
+                  <td>Edge joining vertices <code>A</code> and <code>D</code></td>
+                  <td><code>b = c = 0</code>, while <code>a,d &gt; 0</code></td>
+                </tr>
+                <tr>
+                  <td><code>[D]</code></td>
+                  <td>Vertex <code>D</code></td>
+                  <td><code>a = b = c = 0</code>, while <code>d &gt; 0</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="why">
+          <h2>Two ways to arrive at the same rule</h2>
+          <div class="reason-grid reason-grid-two">
+            <section>
+              <h3>Round the tetrahedron</h3>
+              <p>
+                Replace an edge by a smooth strip, or a vertex by a smooth cap. Ordinary
+                reflection applies on every rounded surface. As the rounding shrinks,
+                the normal direction converges into the normal cone of the sharp
+                tetrahedron.
+              </p>
+            </section>
+            <section>
+              <h3>Stay inside the tetrahedron</h3>
+              <p>
+                Keep the tetrahedron fixed and follow ordinary closed paths whose face
+                hits approach the boundary of their faces. In barycentric coordinates,
+                this is exactly the process of additional coordinates tending to zero.
+              </p>
+            </section>
+          </div>
         </section>
       </article>
 
       <section class="diagram-band" aria-labelledby="smooth-heading">
         <div class="diagram-copy">
-          <h2 id="smooth-heading">Smooth approximations give the main evidence</h2>
+          <h2 id="smooth-heading">Rounding the sharp point</h2>
           <p>
-            The most convincing reason to keep singular paths is not a formal
-            convention. Round the edge or vertex by a smooth family of surfaces, run the
-            ordinary reflection law there, and let the rounding radius go to zero. The
-            bounce point and momentum jump have a stable limit.
+            On a rounded edge or vertex there is again a unique tangent plane at the
+            bounce. As the rounding radius goes to zero, the smooth normal approaches a
+            direction inside the normal cone.
           </p>
         </div>
         <section class="three-scene smooth-scene" aria-label="Animated smoothing limit for edge and vertex billiard paths">
@@ -152,68 +363,14 @@
         </section>
       </section>
 
-      <article class="essay-article">
-        <section id="singular-break">
-          <h2>When the path hits an edge or vertex</h2>
-          <p>
-            At an edge there are two incident faces, hence two face normals. At a vertex
-            there are usually three or more. The phrase "the angle with the wall" no
-            longer specifies a unique wall, so the ordinary billiard map is not defined
-            literally at that point.
-          </p>
-          <p>
-            Deleting every such path loses legitimate limits of ordinary paths. Choosing
-            one incident face adds an arbitrary tie-breaker that the polyhedron did not
-            provide. Two limiting pictures point to a better rule: keep the limiting
-            stationarity condition, but let all active face normals participate.
-          </p>
-        </section>
-
-        <section id="smoothing-evidence">
-          <h2>Stability under smoothing</h2>
-          <p>
-            Imagine replacing a sharp edge by a small rounded strip, or a vertex by a
-            small rounded cap. For every positive rounding radius the boundary is smooth
-            near the bounce, so the ordinary reflection law applies. As the radius tends
-            to zero, the point of reflection approaches the edge or vertex, and the
-            smooth normal approaches a direction inside the cone generated by the active
-            face normals.
-          </p>
-          <p>
-            This limiting process is the primary evidence for the singular convention in
-            the inventory. The singular trajectory is not an extra object pasted onto the
-            theory; it is the stable endpoint of ordinary billiards on nearby smooth
-            surfaces.
-          </p>
-        </section>
-
-        <section id="fixed-tetrahedron-evidence">
-          <h2>The fixed tetrahedron gives a second limit</h2>
-          <p>
-            There is another way to take the limit without changing the tetrahedron at
-            all. Keep the sharp tetrahedron fixed and follow ordinary closed paths whose
-            bounce points stay in face interiors while their boundary margin tends to
-            zero. In barycentric coordinates, an ordinary face hit has exactly one zero
-            coordinate; approaching an edge means a second coordinate tends to zero, and
-            approaching a vertex means three coordinates do.
-          </p>
-          <p>
-            From this viewpoint, a singular stratum word records the closure of ordinary
-            face words. Adjacent ordinary hits may merge onto an edge or a vertex, and
-            the geometric broken line, length, and stationarity condition converge to the
-            singular representative.
-          </p>
-        </section>
-      </article>
-
       <section class="diagram-band" aria-labelledby="fixed-limit-heading">
         <div class="diagram-copy">
-          <h2 id="fixed-limit-heading">Ordinary hits can collapse onto strata</h2>
+          <h2 id="fixed-limit-heading">Let ordinary hits approach a stratum</h2>
           <p>
             This scene keeps the tetrahedron fixed. The red face-interior hits move
             toward the boundary of their faces. In the limit, the same geometric path is
-            better recorded by an edge or vertex stratum rather than by an arbitrary
-            choice of incident face.
+            recorded by an edge or vertex stratum rather than by an arbitrary incident
+            face.
           </p>
         </div>
         <section class="three-scene fixed-limit-scene" aria-label="Animated fixed tetrahedron convergence to singular billiard paths">
@@ -250,156 +407,7 @@
         </section>
       </section>
 
-      <section class="diagram-band" aria-labelledby="rule-heading">
-        <div class="diagram-copy">
-          <h2 id="rule-heading">The normal-cone rule records both limits</h2>
-          <p>
-            On a smooth face the normal cone is one ray, so the rule is exactly ordinary
-            reflection. On an edge it is a wedge. At a vertex it is a higher-dimensional
-            cone. This is the same stationarity condition, just evaluated on the
-            nonsmooth boundary of a polyhedron.
-          </p>
-        </div>
-        <section class="three-scene normal-scene" aria-label="Interactive normal-cone billiard scenes">
-          <div class="scene-toolbar" role="tablist" aria-label="normal cone scene">
-            <button class="scene-tab is-active" type="button" data-scene="face" role="tab" aria-selected="true">Face</button>
-            <button class="scene-tab" type="button" data-scene="edge" role="tab" aria-selected="false">Edge</button>
-            <button class="scene-tab" type="button" data-scene="vertex" role="tab" aria-selected="false">Vertex</button>
-          </div>
-          <div class="scene-frame">
-            <canvas id="normalConeCanvas" aria-label="3D normal cone billiard scene"></canvas>
-            <div class="scene-readout" aria-live="polite">
-              <h3 id="sceneTitle">Smooth face reflection</h3>
-              <dl>
-                <dt>Active faces</dt>
-                <dd id="sceneActive">1</dd>
-                <dt>Normal cone</dt>
-                <dd id="sceneCone">one ray</dd>
-                <dt>Stationary jump</dt>
-                <dd id="sceneJump">supported by the face normal</dd>
-              </dl>
-            </div>
-          </div>
-          <p class="scene-caption">
-            Red segments are incoming and outgoing directions. Amber geometry is the
-            admissible normal cone: one ray on a face, a wedge on an edge, and a
-            trihedral cone at a vertex.
-          </p>
-        </section>
-      </section>
-
       <article class="essay-article">
-        <section id="normal-cone">
-          <h2>The normal-cone condition</h2>
-          <p>
-            At a boundary point <code>x</code>, let <code>N_P(x)</code> be the cone
-            generated by the outward normals of all faces containing <code>x</code>.
-            In a face interior this cone is a single ray. On an edge it is generated by
-            the adjacent face normals. At a vertex it is generated by the normals of all
-            incident faces.
-          </p>
-          <p class="formula-line">
-            <code>incoming direction - outgoing direction</code>
-            lies in <code>N_P(x)</code>.
-          </p>
-          <p>
-            Equivalently, the closed broken path is stationary for length under all
-            variations that keep each bounce on its assigned face, edge, or vertex
-            stratum. The momentum jump has no allowed tangential component; it is carried
-            by the active boundary constraints.
-          </p>
-        </section>
-
-        <section id="stratum-words">
-          <h2>Stratum words</h2>
-          <p>
-            The notation should record the smallest boundary stratum containing each
-            bounce. For the tetrahedron, this gives a word whose tokens are faces,
-            edges, or vertices. Ordinary face words are the special case where every
-            token is a face.
-          </p>
-          <p class="formula-line">
-            <code>stratum word = token_0 token_1 ... token_{k-1}</code>, read cyclically.
-          </p>
-          <div class="example-table-wrap">
-            <table class="example-table">
-              <thead>
-                <tr>
-                  <th scope="col">Token</th>
-                  <th scope="col">Stratum</th>
-                  <th scope="col">Barycentric test</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>D</code></td>
-                  <td>Face <code>F_D</code>, opposite vertex <code>D</code></td>
-                  <td><code>d = 0</code>, while <code>a,b,c &gt; 0</code></td>
-                </tr>
-                <tr>
-                  <td><code>(AD)</code></td>
-                  <td>Edge joining vertices <code>A</code> and <code>D</code></td>
-                  <td><code>b = c = 0</code>, while <code>a,d &gt; 0</code></td>
-                </tr>
-                <tr>
-                  <td><code>[D]</code></td>
-                  <td>Vertex <code>D</code></td>
-                  <td><code>a = b = c = 0</code>, while <code>d &gt; 0</code></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p>
-            Parentheses mark one-dimensional strata and brackets mark zero-dimensional
-            strata, so no token is confused with a face. Thus <code>DABC</code> remains
-            the ordinary period-4 face word, while <code>(AD) (BC)</code> records an
-            edge-to-opposite-edge singular path and <code>D [D]</code> records a face
-            hit followed by the vertex <code>D</code>.
-          </p>
-        </section>
-
-        <section id="why">
-          <h2>Why this is the sensible closure</h2>
-          <div class="reason-grid">
-            <section>
-              <h3>It is the smooth limit</h3>
-              <p>
-                Rounded approximations obey the ordinary reflection law. As the rounding
-                shrinks, the limiting normal lies in the normal cone of the sharp
-                polyhedron.
-              </p>
-            </section>
-            <section>
-              <h3>It is the fixed-polyhedron limit</h3>
-              <p>
-                Ordinary paths in the same tetrahedron can approach edges or vertices as
-                their face-interior boundary margin tends to zero.
-              </p>
-            </section>
-            <section>
-              <h3>It agrees with ordinary billiards</h3>
-              <p>
-                On a single smooth face, the normal cone has one generator, so the
-                condition collapses to equal-angle reflection.
-              </p>
-            </section>
-            <section>
-              <h3>It respects symmetry</h3>
-              <p>
-                Edge and vertex hits are recorded by strata such as <code>(AD)</code>
-                or <code>[D]</code>, not by an artificial choice of one incident face.
-              </p>
-            </section>
-            <section>
-              <h3>It remains computable</h3>
-              <p>
-                The same exact data model still works: period, length, barycentric
-                points, and a cyclic stratum word.
-              </p>
-            </section>
-          </div>
-        </section>
-
         <section id="examples">
           <h2>How it appears in the inventory</h2>
           <p>
@@ -460,6 +468,16 @@
         </footer>
       </article>
     </main>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        svg: { fontCache: "global" }
+      };
+    </script>
+    <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
     <script type="importmap">
       {
         "imports": {

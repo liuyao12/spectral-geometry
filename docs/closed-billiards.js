@@ -94,6 +94,9 @@ function makeScene(canvas, options = {}) {
   controls.autoRotate = options.autoRotate ?? false;
   controls.autoRotateSpeed = options.autoRotateSpeed ?? 0.35;
   controls.screenSpacePanning = true;
+  controls.addEventListener("start", () => {
+    controls.autoRotate = false;
+  });
 
   const root = new THREE.Group();
   scene.add(root);
@@ -205,8 +208,7 @@ function addConeFan(group, points) {
   addLine(group, edgePoints, materials.coneLine);
 }
 
-function fitCamera(controller, padding = 2.15, direction = new THREE.Vector3(3.2, 2.6, 3.1)) {
-  const box = new THREE.Box3().setFromObject(controller.root);
+function fitCameraToBox(controller, box, padding = 2.15, direction = new THREE.Vector3(3.2, 2.6, 3.1)) {
   if (box.isEmpty()) return;
   const center = new THREE.Vector3();
   const size = new THREE.Vector3();
@@ -219,6 +221,10 @@ function fitCamera(controller, padding = 2.15, direction = new THREE.Vector3(3.2
   controller.camera.far = 120;
   controller.camera.updateProjectionMatrix();
   controller.controls.update();
+}
+
+function fitCamera(controller, padding = 2.15, direction = new THREE.Vector3(3.2, 2.6, 3.1)) {
+  fitCameraToBox(controller, new THREE.Box3().setFromObject(controller.root), padding, direction);
 }
 
 function reflectPoint(point, faceVertices) {
@@ -291,7 +297,23 @@ function setupUnfoldingScene() {
   unfoldedPoints.push(baryPoint(rows[0], vertices));
 
   let t = 0;
-  let playing = true;
+  let playing = false;
+
+  const unfoldingBounds = () => {
+    const box = new THREE.Box3();
+    copies.forEach(copy => {
+      for (const vertices of [copy.folded, copy.unfolded]) {
+        VERTEX_NAMES.forEach(name => box.expandByPoint(vertices[name]));
+      }
+    });
+    foldedPoints.forEach(point => box.expandByPoint(point));
+    unfoldedPoints.forEach(point => box.expandByPoint(point));
+    return box;
+  };
+
+  const fitUnfoldingCamera = () => {
+    fitCameraToBox(controller, unfoldingBounds(), 2.0, new THREE.Vector3(3.2, 2.8, 2.45));
+  };
 
   const draw = () => {
     clearRoot(controller.root);
@@ -310,26 +332,26 @@ function setupUnfoldingScene() {
       marker.position.copy(point);
       controller.root.add(marker);
     });
-    fitCamera(controller, 2.0, new THREE.Vector3(3.2, 2.8, 2.45));
     const percent = Math.round(t * 100);
     slider.value = String(percent);
-    title.textContent = t < 0.18 ? "Folded billiard path" : t > 0.82 ? "Straight-line lift" : "Unfolding mirror copies";
+    title.textContent = t < 0.18 ? "Closed path DABC" : t > 0.82 ? "Straight-line lift" : "Unfolding mirror copies";
     view.textContent = t < 0.18 ? "folded tetrahedron" : t > 0.82 ? "reflected copies" : "interpolating copies";
     path.textContent = t < 0.18 ? "closed broken line" : t > 0.82 ? "one straight segment" : "straightening";
   };
 
   play.addEventListener("click", () => {
     playing = !playing;
-    play.textContent = playing ? "Pause" : "Play";
+    play.textContent = playing ? "Pause unfolding" : "Animate unfolding";
   });
   slider.addEventListener("input", () => {
     playing = false;
-    play.textContent = "Play";
+    play.textContent = "Animate unfolding";
     t = Number(slider.value) / 100;
     draw();
   });
 
   draw();
+  fitUnfoldingCamera();
   return {
     controller,
     update(now) {
@@ -402,6 +424,10 @@ function setupSmoothingScene() {
   let sharpness = 0;
   let playing = true;
 
+  const fitSmoothingCamera = () => {
+    fitCamera(controller, 2.25, new THREE.Vector3(3.0, 2.6, 2.7));
+  };
+
   const setMode = next => {
     mode = next;
     tabs.forEach(button => {
@@ -410,6 +436,7 @@ function setupSmoothingScene() {
       button.setAttribute("aria-selected", selected ? "true" : "false");
     });
     draw();
+    fitSmoothingCamera();
   };
 
   const drawEdge = radius => {
@@ -444,7 +471,6 @@ function setupSmoothingScene() {
     const radius = 0.56 - sharpness * 0.48;
     if (mode === "vertex") drawVertex(radius);
     else drawEdge(radius);
-    fitCamera(controller, 2.25, new THREE.Vector3(3.0, 2.6, 2.7));
     slider.value = String(Math.round(sharpness * 100));
     title.textContent = mode === "vertex" ? "Rounding a vertex" : "Rounding an edge";
     stratum.textContent = mode;
@@ -465,6 +491,7 @@ function setupSmoothingScene() {
   });
 
   draw();
+  fitSmoothingCamera();
   return {
     controller,
     update(now) {
@@ -529,6 +556,10 @@ function setupFixedLimitScene() {
   let approach = 0;
   let playing = true;
 
+  const fitFixedLimitCamera = () => {
+    fitCamera(controller, 2.15, new THREE.Vector3(3.15, 2.45, 2.9));
+  };
+
   const setMode = next => {
     mode = next;
     tabs.forEach(button => {
@@ -537,6 +568,7 @@ function setupFixedLimitScene() {
       button.setAttribute("aria-selected", selected ? "true" : "false");
     });
     draw();
+    fitFixedLimitCamera();
   };
 
   const drawEdgeLimit = margin => {
@@ -576,7 +608,6 @@ function setupFixedLimitScene() {
     const margin = 0.28 - approach * 0.268;
     if (mode === "vertex") drawVertexLimit(margin);
     else drawEdgeLimit(margin);
-    fitCamera(controller, 2.15, new THREE.Vector3(3.15, 2.45, 2.9));
     slider.value = String(Math.round(approach * 100));
     title.textContent = mode === "vertex" ? "Approaching a vertex" : "Approaching opposite edges";
     stratum.textContent = mode === "vertex" ? "[D]" : "(AD) (BC)";
@@ -597,6 +628,7 @@ function setupFixedLimitScene() {
   });
 
   draw();
+  fitFixedLimitCamera();
   return {
     controller,
     update(now) {
