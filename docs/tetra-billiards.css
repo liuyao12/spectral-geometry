@@ -401,6 +401,23 @@ dd {
   color: var(--muted);
 }
 
+.word-letter {
+  color: var(--letter-color);
+  display: inline-block;
+  font-weight: 850;
+  min-width: 0.68em;
+  text-align: center;
+}
+
+.word-separator {
+  color: var(--muted);
+}
+
+.word-space {
+  display: inline-block;
+  width: 0.5em;
+}
+
 .source-cell {
   color: var(--muted);
   white-space: nowrap;

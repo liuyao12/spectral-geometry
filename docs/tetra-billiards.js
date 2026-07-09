@@ -960,6 +960,21 @@ function renderSortHeaders() {
   }
 }
 
+function renderColoredWord(cell, orbit) {
+  cell.replaceChildren();
+  for (const char of displayWord(orbit)) {
+    const token = document.createElement("span");
+    if (FACE_CSS[char]) {
+      token.className = "word-letter";
+      token.style.setProperty("--letter-color", FACE_CSS[char]);
+    } else {
+      token.className = /\s/.test(char) ? "word-space" : "word-separator";
+    }
+    token.textContent = char;
+    cell.appendChild(token);
+  }
+}
+
 function renderRows() {
   const rows = visibleOrbits();
   els.count.textContent = `${rows.length} shown`;
@@ -983,7 +998,7 @@ function renderRows() {
       <td class="source-cell"></td>
     `;
     row.children[0].textContent = `p${String(orbit.period).padStart(2, "0")}`;
-    row.children[1].textContent = displayWord(orbit);
+    renderColoredWord(row.children[1], orbit);
     row.children[2].textContent = orbit.length_numeric.toFixed(10);
     row.children[3].textContent = centroidDistanceSquaredLabel(orbit);
     row.children[4].textContent = orbitLengthLabel(orbit);
