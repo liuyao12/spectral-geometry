@@ -8,6 +8,9 @@ const state = {
   vertices: [],
   sideSamples: [],
   sideCircles: [],
+  generatorMatrices: {},
+  sideReentryMatrices: [],
+  trace: null,
   projection: null
 };
 
@@ -117,6 +120,13 @@ function applyMatrix(matrix, z) {
   return div(numerator, denominator);
 }
 
+function composeMatrices(left, right) {
+  return {
+    a: add(mul(left.a, right.a), mul(left.b, conj(right.b))),
+    b: add(mul(left.a, right.b), mul(left.b, conj(right.a)))
+  };
+}
+
 function normalizeDelta(delta) {
   let value = delta;
   while (value <= -Math.PI) value += Math.PI * 2;
@@ -137,19 +147,10 @@ function geodesicCircle(p, q) {
   return { center, radius };
 }
 
-function geodesicSamples(p, q, count = 80, trim = 0) {
+function geodesicArcData(p, q) {
   const circle = geodesicCircle(p, q);
-  const start = Math.max(0, trim);
-  const end = Math.min(1, 1 - trim);
   if (!circle || circle.radius < 1e-10) {
-    const points = [];
-    const p0 = norm2(p) > 0.999 ? scale(p, 1 - trim) : p;
-    const q0 = norm2(q) > 0.999 ? scale(q, 1 - trim) : q;
-    for (let i = 0; i <= count; i += 1) {
-      const t = i / count;
-      points.push(add(scale(p0, 1 - t), scale(q0, t)));
-    }
-    return points;
+    return null;
   }
 
   const a0 = Math.atan2(p.y - circle.center.y, p.x - circle.center.x);
@@ -164,14 +165,30 @@ function geodesicSamples(p, q, count = 80, trim = 0) {
     return { delta, score: norm2(mid) < 1.00001 ? Math.abs(delta) : 100 + Math.abs(delta) };
   });
   const delta = candidates.sort((a, b) => a.score - b.score)[0].delta;
+  return { circle, startAngle: a0, delta };
+}
+
+function geodesicPointBetween(p, q, t) {
+  const data = geodesicArcData(p, q);
+  if (!data) {
+    return add(scale(p, 1 - t), scale(q, t));
+  }
+  const angle = data.startAngle + data.delta * t;
+  return c(
+    data.circle.center.x + data.circle.radius * Math.cos(angle),
+    data.circle.center.y + data.circle.radius * Math.sin(angle)
+  );
+}
+
+function geodesicSamples(p, q, count = 80, trim = 0) {
+  const start = Math.max(0, trim);
+  const end = Math.min(1, 1 - trim);
+  const p0 = norm2(p) > 0.999 ? scale(p, 1 - trim) : p;
+  const q0 = norm2(q) > 0.999 ? scale(q, 1 - trim) : q;
   const points = [];
   for (let i = 0; i <= count; i += 1) {
     const t = start + ((end - start) * i) / count;
-    const angle = a0 + delta * t;
-    points.push(c(
-      circle.center.x + circle.radius * Math.cos(angle),
-      circle.center.y + circle.radius * Math.sin(angle)
-    ));
+    points.push(geodesicPointBetween(p0, q0, t));
   }
   return points;
 }
@@ -212,6 +229,12 @@ function axisSamples() {
   return geodesicSamples(fromPair(geo.fixed_points[0]), fromPair(geo.fixed_points[1]), 420, 0.008);
 }
 
+function allTracePoints() {
+  const trace = state.trace;
+  if (!trace) return [];
+  return trace.segments.flatMap((segment) => segment);
+}
+
 function transformedBoundary(matrix = identity) {
   const points = [];
   state.sideSamples.forEach((samples, index) => {
@@ -245,7 +268,7 @@ function prepareProjection(size) {
 
   const fitPoints = [
     ...transformedBoundary(identity),
-    ...axisSamples()
+    ...allTracePoints()
   ].map(toHalfPlane).filter((point) => (
     Number.isFinite(point.x) &&
     Number.isFinite(point.y) &&
@@ -348,9 +371,26 @@ function drawLabel(text, point, color) {
 function insidePolygon(point) {
   if (norm2(point) > 1.0001) return false;
   for (const side of state.sideCircles) {
-    if (norm(sub(point, side.center)) < side.radius - 1e-5) return false;
+    if (sideValue(point, side) < -1e-5) return false;
   }
   return true;
+}
+
+function sideValue(point, side) {
+  return norm(sub(point, side.center)) - side.radius;
+}
+
+function mostViolatedSide(point, epsilon = 1e-7) {
+  let index = -1;
+  let value = Infinity;
+  state.sideCircles.forEach((side, sideIndex) => {
+    const current = sideValue(point, side);
+    if (current < value) {
+      value = current;
+      index = sideIndex;
+    }
+  });
+  return value < -epsilon ? index : -1;
 }
 
 function clippedAxisSegments(samples) {
@@ -368,6 +408,159 @@ function clippedAxisSegments(samples) {
   }
   if (current.length > 1) segments.push(current);
   return segments;
+}
+
+function sideLabel(index) {
+  return state.data.polygon.sides[index]?.label || "";
+}
+
+function pairedSideIndex(index) {
+  return (index + 4) % 8;
+}
+
+function reduceToDomain(rawPoint) {
+  let point = rawPoint;
+  let map = identity;
+  const path = [];
+  for (let step = 0; step < 24; step += 1) {
+    const sideIndex = mostViolatedSide(point);
+    if (sideIndex < 0) break;
+    const reentry = state.sideReentryMatrices[sideIndex];
+    point = applyMatrix(reentry, point);
+    map = composeMatrices(reentry, map);
+    path.push(sideIndex);
+  }
+  return {
+    point,
+    map,
+    key: path.join("/")
+  };
+}
+
+function longestSegment(segments) {
+  let best = null;
+  let bestLength = -Infinity;
+  for (const segment of segments) {
+    let length = 0;
+    for (let i = 1; i < segment.length; i += 1) {
+      length += norm(sub(segment[i], segment[i - 1]));
+    }
+    if (length > bestLength) {
+      best = segment;
+      bestLength = length;
+    }
+  }
+  return best;
+}
+
+function startDataForQuotientTrace() {
+  const segment = longestSegment(clippedAxisSegments(axisSamples()));
+  if (!segment?.length) return null;
+  return {
+    point: segment[Math.floor(segment.length / 2)],
+    conjugator: identity
+  };
+}
+
+function reducedAxisStartData() {
+  const samples = axisSamples();
+  if (!samples.length) return null;
+  const rawPoint = samples[Math.floor(samples.length / 2)];
+  const reduction = reduceToDomain(rawPoint);
+  if (!insidePolygon(reduction.point)) return null;
+  return {
+    point: reduction.point,
+    conjugator: reduction.map
+  };
+}
+
+function exitTransitionBetween(previousRaw, nextRaw, reductionMap) {
+  const nextInPreviousChart = applyMatrix(reductionMap, nextRaw);
+  let sideIndex = mostViolatedSide(nextInPreviousChart, 1e-10);
+  if (sideIndex < 0) {
+    let minValue = Infinity;
+    state.sideCircles.forEach((side, index) => {
+      const value = sideValue(nextInPreviousChart, side);
+      if (value < minValue) {
+        minValue = value;
+        sideIndex = index;
+      }
+    });
+  }
+
+  let lo = 0;
+  let hi = 1;
+  for (let step = 0; step < 36; step += 1) {
+    const mid = (lo + hi) / 2;
+    const raw = geodesicPointBetween(previousRaw, nextRaw, mid);
+    const point = applyMatrix(reductionMap, raw);
+    if (sideValue(point, state.sideCircles[sideIndex]) >= 0) lo = mid;
+    else hi = mid;
+  }
+
+  const rawBoundary = geodesicPointBetween(previousRaw, nextRaw, hi);
+  const exitPoint = applyMatrix(reductionMap, rawBoundary);
+  return { sideIndex, exitPoint };
+}
+
+function buildQuotientTrace() {
+  const geo = selectedGeodesic();
+  const startData = startDataForQuotientTrace() || reducedAxisStartData();
+  if (!geo || !startData) {
+    return {
+      segments: clippedAxisSegments(axisSamples()),
+      transitions: [],
+      fallback: true
+    };
+  }
+
+  const start = startData.point;
+  const matrix = composeMatrices(
+    startData.conjugator,
+    composeMatrices(matrixFromRecord(geo), inverseMatrix(startData.conjugator))
+  );
+  const end = applyMatrix(matrix, start);
+  const rawSamples = geodesicSamples(start, end, 960, 0);
+  if (!rawSamples.length) return { segments: [], transitions: [], fallback: true };
+
+  const first = reduceToDomain(rawSamples[0]);
+  const segments = [[first.point]];
+  const transitions = [];
+  let currentSegment = segments[0];
+  let previousRaw = rawSamples[0];
+  let previousReduction = first;
+
+  for (let index = 1; index < rawSamples.length; index += 1) {
+    const raw = rawSamples[index];
+    const reduction = reduceToDomain(raw);
+    const lastPoint = currentSegment[currentSegment.length - 1];
+    if (reduction.key !== previousReduction.key) {
+      const transition = exitTransitionBetween(previousRaw, raw, previousReduction.map);
+      const reentryMatrix = state.sideReentryMatrices[transition.sideIndex];
+      const reentryPoint = applyMatrix(reentryMatrix, transition.exitPoint);
+      currentSegment.push(transition.exitPoint);
+      transitions.push({
+        index: transitions.length + 1,
+        exitSide: transition.sideIndex,
+        exitLabel: sideLabel(transition.sideIndex),
+        reentrySide: pairedSideIndex(transition.sideIndex),
+        reentryLabel: sideLabel(pairedSideIndex(transition.sideIndex)),
+        exitPoint: transition.exitPoint,
+        reentryPoint
+      });
+      currentSegment = [reentryPoint, reduction.point];
+      segments.push(currentSegment);
+    } else if (lastPoint && norm(sub(reduction.point, lastPoint)) > 0.42) {
+      currentSegment = [reduction.point];
+      segments.push(currentSegment);
+    } else {
+      currentSegment.push(reduction.point);
+    }
+    previousRaw = raw;
+    previousReduction = reduction;
+  }
+
+  return { segments, transitions, fallback: false };
 }
 
 function drawDiskBoundary(size) {
@@ -441,38 +634,42 @@ function drawCentralPolygon() {
   });
 }
 
-function drawAxis() {
-  const samples = axisSamples();
-  if (!samples.length) return;
-  drawPolyline(samples, {
-    stroke: "rgba(214,63,47,0.42)",
-    width: 2.2
-  });
+function drawCrossingMarker(point, label, color, filled) {
+  const screen = project(point);
+  if (!Number.isFinite(screen.x) || !Number.isFinite(screen.y)) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(screen.x, screen.y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = filled ? color : "#ffffff";
+  ctx.fill();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = filled ? "#ffffff" : "#1c2026";
+  ctx.font = "700 10px Inter, system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, screen.x, screen.y + 0.5);
+  ctx.restore();
+}
 
-  if (state.showDomainSegment) {
-    for (const segment of clippedAxisSegments(samples)) {
-      drawPolyline(segment, {
-        stroke: "#d63f2f",
-        width: 6
-      });
-      drawPolyline(segment, {
-        stroke: "#fff8f6",
-        width: 2
-      });
-    }
+function drawQuotientTrace() {
+  if (!state.showDomainSegment || !state.trace) return;
+  for (const segment of state.trace.segments) {
+    drawPolyline(segment, {
+      stroke: "#d63f2f",
+      width: 6
+    });
+    drawPolyline(segment, {
+      stroke: "#fff8f6",
+      width: 2
+    });
   }
 
-  if (state.model === "disk") {
-    const geo = selectedGeodesic();
-    for (const endpoint of geo.fixed_points) {
-      const screen = project(scale(fromPair(endpoint), 0.995));
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(screen.x, screen.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#d63f2f";
-      ctx.fill();
-      ctx.restore();
-    }
+  for (const transition of state.trace.transitions) {
+    const color = pairColors[transition.exitSide % 4];
+    drawCrossingMarker(transition.exitPoint, String(transition.index), color, true);
+    drawCrossingMarker(transition.reentryPoint, String(transition.index), color, false);
   }
 }
 
@@ -499,8 +696,8 @@ function drawScene() {
 
   drawTiles();
   drawCentralPolygon();
-  drawAxis();
   drawLabels();
+  drawQuotientTrace();
 }
 
 function setDetails(node, rows) {
@@ -552,13 +749,16 @@ function renderGeodesicRows() {
 function renderDetails() {
   const polygon = state.data.polygon;
   const geo = selectedGeodesic();
+  const transitions = state.trace?.transitions || [];
+  const itinerary = transitions.map((transition) => `${transition.exitLabel}->${transition.reentryLabel}`).join(", ");
   setDetails(el.surfaceDetails, [
     ["quotient", `genus ${state.data.surface.genus}, compact`],
     ["area", `${fmt(polygon.area, 5)} = 4*pi`],
     ["polygon", "regular hyperbolic octagon"],
     ["edge rule", "opposite sides"],
     ["records", String(state.data.geodesics.length)],
-    ["search", `words up to ${state.data.enumeration.max_word_length} letters`]
+    ["search", `words up to ${state.data.enumeration.max_word_length} letters`],
+    ["visible path", state.trace?.fallback ? "axis clip" : "folded quotient trace"]
   ]);
 
   el.surfaceTitle.textContent = state.data.surface.name;
@@ -571,10 +771,21 @@ function renderDetails() {
     ["letters", String(geo.word_length)],
     ["length", fmt(geo.length, 9)],
     ["|trace|", fmt(geo.trace_abs, 9)],
+    ["crossings", String(transitions.length)],
+    ["itinerary", itinerary || ""],
     ["fixed point 1", `(${fmt(geo.fixed_points[0][0], 5)}, ${fmt(geo.fixed_points[0][1], 5)})`],
     ["fixed point 2", `(${fmt(geo.fixed_points[1][0], 5)}, ${fmt(geo.fixed_points[1][1], 5)})`]
   ]);
-  el.selectedJson.textContent = JSON.stringify(geo, null, 2);
+  el.selectedJson.textContent = JSON.stringify({
+    ...geo,
+    quotient_trace: {
+      crossings: transitions.length,
+      itinerary: transitions.map((transition) => ({
+        exit_side: transition.exitLabel,
+        reentry_side: transition.reentryLabel
+      }))
+    }
+  }, null, 2);
 }
 
 function render() {
@@ -583,6 +794,7 @@ function render() {
   state.showTiles = el.tileToggle.checked;
   state.showLabels = el.labelToggle.checked;
   state.showDomainSegment = el.domainToggle.checked;
+  state.trace = buildQuotientTrace();
   renderDetails();
   renderGeodesicRows();
   drawScene();
@@ -591,19 +803,30 @@ function render() {
 function prepareGeometry() {
   const polygon = state.data.polygon;
   state.vertices = polygon.vertices.map((vertex) => fromPair(vertex.point));
+  state.generatorMatrices = {};
+  for (const generator of state.data.generators) {
+    const matrix = matrixFromRecord(generator);
+    state.generatorMatrices[generator.letter] = matrix;
+    state.generatorMatrices[generator.inverse] = inverseMatrix(matrix);
+  }
   state.sideSamples = polygon.sides.map((side) => {
     const start = state.vertices[side.vertices[0]];
     const end = state.vertices[side.vertices[1]];
     return geodesicSamples(start, end, 64, 0);
   });
   const foot = polygon.side_foot_radius_disk;
+  const centerDistance = (foot + 1 / foot) / 2;
+  const sideRadius = (1 / foot - foot) / 2;
   state.sideCircles = polygon.sides.map((side) => {
-    const centerDistance = 1 / foot;
     const angle = side.normal_angle;
     return {
       center: c(centerDistance * Math.cos(angle), centerDistance * Math.sin(angle)),
-      radius: Math.sqrt(centerDistance * centerDistance - 1)
+      radius: sideRadius
     };
+  });
+  state.sideReentryMatrices = polygon.sides.map((side) => {
+    const base = side.pairing_generator;
+    return side.index < 4 ? state.generatorMatrices[base.toUpperCase()] : state.generatorMatrices[base];
   });
 }
 
