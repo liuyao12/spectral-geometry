@@ -16,6 +16,11 @@ The tetrahedron billiards inventory page is:
 
 https://liuyao12.github.io/spectral-geometry/tetra-billiards.html
 
+The companion exposition on closed billiard trajectories and singular
+normal-cone representatives is:
+
+https://liuyao12.github.io/spectral-geometry/closed-billiards.html
+
 To refresh the published ordinary billiard inventory after a search update, run:
 
 ```bash

@@ -1,0 +1,168 @@
+{
+  "schema": "spectral.tetra_singular_normal_cones.v1",
+  "generated_at": "2026-07-08T00:00:00-0700",
+  "title": "Singular normal-cone billiard paths in the regular tetrahedron",
+  "source_notebook": "https://observablehq.com/@liuyao12/billiard-in-tetrahedra",
+  "tetrahedron": {
+    "vertex_order": ["A", "B", "C", "D"],
+    "vertices": [
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1],
+      [1, 1, 1]
+    ]
+  },
+  "notation": {
+    "A": "face hit on F_A",
+    "(AD)": "edge hit on E_AD",
+    "[D]": "vertex hit on V_D"
+  },
+  "orbits": [
+    {
+      "id": "s02_AD_BC",
+      "kind": "singular_normal_cone",
+      "period": 2,
+      "word": "(AD)(BC)",
+      "stratum_word": ["(AD)", "(BC)"],
+      "length_exact": "2",
+      "length_numeric": 2.0,
+      "barycentric_denominator": "2",
+      "barycentric_points": [
+        ["1", "0", "0", "1"],
+        ["0", "1", "1", "0"]
+      ]
+    },
+    {
+      "id": "s02_D_vD",
+      "kind": "singular_normal_cone",
+      "period": 2,
+      "word": "D[D]",
+      "stratum_word": ["D", "[D]"],
+      "length_exact": "4*sqrt(3)/3",
+      "length_numeric": 2.309401076758503,
+      "barycentric_denominator": "3",
+      "barycentric_points": [
+        ["1", "1", "1", "0"],
+        ["0", "0", "0", "3"]
+      ]
+    },
+    {
+      "id": "s03_AD_D_A",
+      "kind": "singular_normal_cone",
+      "period": 3,
+      "word": "(AD)DA",
+      "stratum_word": ["(AD)", "D", "A"],
+      "length_exact": "4*sqrt(2)/3",
+      "length_numeric": 1.8856180831641267,
+      "barycentric_denominator": "6",
+      "barycentric_points": [
+        ["3", "0", "0", "3"],
+        ["2", "2", "2", "0"],
+        ["0", "2", "2", "2"]
+      ]
+    },
+    {
+      "id": "s04_AD_D_B_A",
+      "kind": "singular_normal_cone",
+      "period": 4,
+      "word": "(AD)DBA",
+      "stratum_word": ["(AD)", "D", "B", "A"],
+      "length_exact": "4*sqrt(21)/9",
+      "length_numeric": 2.036700308869266,
+      "barycentric_denominator": "126",
+      "barycentric_points": [
+        ["63", "0", "0", "63"],
+        ["60", "15", "51", "0"],
+        ["35", "0", "56", "35"],
+        ["0", "15", "51", "60"]
+      ]
+    },
+    {
+      "id": "s04_AD_D_AD_A",
+      "kind": "singular_normal_cone",
+      "period": 4,
+      "word": "(AD)D(AD)A",
+      "stratum_word": ["(AD)", "D", "(AD)", "A"],
+      "length_exact": "4*sqrt(3)/3",
+      "length_numeric": 2.3094010767585034,
+      "barycentric_denominator": "6",
+      "barycentric_points": [
+        ["3", "0", "0", "3"],
+        ["4", "1", "1", "0"],
+        ["3", "0", "0", "3"],
+        ["0", "1", "1", "4"]
+      ],
+      "family_dimension": 1,
+      "family_copy_count": 6,
+      "representative_of_family": true,
+      "representative_parameter_value": "1/2",
+      "family_parameter": {
+        "name": "t",
+        "range": ["0", "1"],
+        "default": "1/2",
+        "open_interval": true,
+        "description": "edge point [t,0,0,1-t] on E_AD",
+        "length_constant": true,
+        "barycentric_points_formula": [
+          ["t", "0", "0", "1-t"],
+          ["(1+2*t)/3", "(1-t)/3", "(1-t)/3", "0"],
+          ["t", "0", "0", "1-t"],
+          ["0", "t/3", "t/3", "(3-2*t)/3"]
+        ]
+      }
+    },
+    {
+      "id": "s05_AD_D_B_C_A",
+      "kind": "singular_normal_cone",
+      "period": 5,
+      "word": "(AD)DBCA",
+      "stratum_word": ["(AD)", "D", "B", "C", "A"],
+      "length_exact": "4*sqrt(26)/9",
+      "length_numeric": 2.2662308949301417,
+      "barycentric_denominator": "234",
+      "barycentric_points": [
+        ["117", "0", "0", "117"],
+        ["150", "24", "60", "0"],
+        ["130", "0", "52", "52"],
+        ["52", "52", "0", "130"],
+        ["0", "60", "24", "150"]
+      ]
+    },
+    {
+      "id": "s06_AD_BC_AD_D_AD_A",
+      "kind": "singular_normal_cone",
+      "period": 6,
+      "word": "(AD)(BC)(AD)D(AD)A",
+      "stratum_word": ["(AD)", "(BC)", "(AD)", "D", "(AD)", "A"],
+      "length_exact": "2*sqrt(33)/3",
+      "length_numeric": 3.8297084310253537,
+      "barycentric_denominator": "90",
+      "barycentric_points": [
+        ["9", "0", "0", "81"],
+        ["0", "45", "45", "0"],
+        ["81", "0", "0", "9"],
+        ["80", "5", "5", "0"],
+        ["45", "0", "0", "45"],
+        ["0", "5", "5", "80"]
+      ]
+    },
+    {
+      "id": "s06_AD_D_BD_B_AB_A",
+      "kind": "singular_normal_cone",
+      "period": 6,
+      "word": "(AD)D(BD)B(AB)A",
+      "stratum_word": ["(AD)", "D", "(BD)", "B", "(AB)", "A"],
+      "length_exact": "sqrt(66)/2",
+      "length_numeric": 4.062019202317982,
+      "barycentric_denominator": "12",
+      "barycentric_points": [
+        ["6", "0", "0", "6"],
+        ["5", "5", "2", "0"],
+        ["0", "6", "0", "6"],
+        ["5", "0", "2", "5"],
+        ["6", "6", "0", "0"],
+        ["0", "5", "2", "5"]
+      ]
+    }
+  ]
+}
