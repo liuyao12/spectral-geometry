@@ -250,18 +250,18 @@ function faceFromBarycentric(row) {
 
 function inferStratum(row) {
   const zero = [];
-  const nonzero = [];
   row.forEach((value, index) => {
     if (bigIntFrom(value) === 0n) zero.push(VERTEX_NAMES[index]);
-    else nonzero.push(VERTEX_NAMES[index]);
   });
-  if (zero.length === 1) return { label: zero[0], type: "face", face: zero[0] };
-  if (zero.length === 2) return { label: `(${nonzero.join("")})`, type: "edge", face: "edge" };
-  if (zero.length === 3) return { label: `[${nonzero[0] ?? "?"}]`, type: "vertex", face: "vertex" };
+  const label = zero.join("");
+  if (zero.length === 1) return { label, type: "face", face: zero[0] };
+  if (zero.length === 2) return { label, type: "edge", face: "edge" };
+  if (zero.length === 3) return { label, type: "vertex", face: "vertex" };
   return { label: "?", type: "singular", face: "?" };
 }
 
 function stratumFromLabel(label, row) {
+  if (row) return inferStratum(row);
   const text = String(label ?? "");
   if (/^\([A-D]{2}\)$/.test(text)) return { label: text, type: "edge", face: "edge" };
   if (/^\[[A-D]\]$/.test(text)) return { label: text, type: "vertex", face: "vertex" };
@@ -304,7 +304,9 @@ function pointStyle(orbit, index) {
 }
 
 function displayWord(orbit) {
-  if (isSingular(orbit) && Array.isArray(orbit.stratum_word)) return orbit.stratum_word.join(" ");
+  if (isSingular(orbit) && Array.isArray(orbit.barycentric_points)) {
+    return orbit.barycentric_points.map(row => inferStratum(row).label).join(" ");
+  }
   return orbit.word;
 }
 
@@ -966,7 +968,7 @@ function renderDetails(orbit) {
   if (orbit.family_dimension) detailRow("Family", `${orbit.family_dimension}D representative`);
   if (orbit.axis_direction.length) detailRow("Axis", orbit.axis_direction.join(", "), "mono");
   if (orbit.faces.length && !isSingular(orbit)) detailRow("Faces", orbit.faces.join(" "), "mono");
-  if (isSingular(orbit) && orbit.stratum_word) detailRow("Strata", orbit.stratum_word.join(" "), "mono");
+  if (isSingular(orbit) && orbit.barycentric_points) detailRow("Strata", displayWord(orbit), "mono");
   detailRow("Denominator", orbit.barycentric_denominator, "mono");
   renderPointRows(orbit);
 }
