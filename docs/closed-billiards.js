@@ -263,29 +263,28 @@ function setupUnfoldingScene() {
   const title = document.getElementById("unfoldTitle");
   const view = document.getElementById("unfoldView");
   const path = document.getElementById("unfoldPath");
-  const play = document.getElementById("unfoldPlay");
-  const slider = document.getElementById("unfoldSlider");
+  const foldButton = document.getElementById("foldStep");
+  const unfoldButton = document.getElementById("unfoldStep");
   const word = ["D", "A", "B", "C"];
+  const unfoldFaces = ["A", "B", "C", "D"];
   const rows = [
     [3, 4, 3, 0],
     [0, 3, 4, 3],
     [3, 0, 3, 4],
     [4, 3, 0, 3]
   ];
+  const liftRows = [rows[0], rows[1], rows[2], rows[3], rows[0], rows[1]];
 
   const reflectedCopies = [];
   const stateVertices = [];
   let vertices = Object.fromEntries(VERTEX_NAMES.map(name => [name, baseVertices[name].clone()]));
-  for (let i = 0; i <= word.length; i++) {
+  for (let i = 0; i <= unfoldFaces.length; i++) {
     stateVertices.push(Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()])));
-    reflectedCopies.push({ face: word[i] ?? word[word.length - 1], vertices: stateVertices[i] });
-    if (i < word.length) vertices = reflectedVertices(vertices, word[i]);
+    reflectedCopies.push({ face: unfoldFaces[i] ?? unfoldFaces[unfoldFaces.length - 1], vertices: stateVertices[i] });
+    if (i < unfoldFaces.length) vertices = reflectedVertices(vertices, unfoldFaces[i]);
   }
 
   let step = 0;
-  let playing = false;
-  let lastStepTime = null;
-  const stepDurationMs = 1500;
 
   const unfoldingBounds = () => {
     const box = new THREE.Box3();
@@ -295,7 +294,10 @@ function setupUnfoldingScene() {
     for (let stateIndex = 0; stateIndex < stateVertices.length; stateIndex++) {
       rows.forEach(row => box.expandByPoint(baryPoint(row, stateVertices[stateIndex])));
     }
-    box.expandByPoint(baryPoint(rows[0], stateVertices[stateVertices.length - 1]));
+    liftRows.forEach((row, index) => {
+      const stateIndex = Math.min(Math.max(index - 1, 0), stateVertices.length - 1);
+      box.expandByPoint(baryPoint(row, stateVertices[stateIndex]));
+    });
     return box;
   };
 
@@ -305,17 +307,17 @@ function setupUnfoldingScene() {
 
   const draw = () => {
     clearRoot(controller.root);
-    const visibleCopies = step === word.length ? word.length + 1 : step + 1;
+    const visibleCopies = step + 1;
     for (let index = 0; index < visibleCopies; index++) {
       const copy = reflectedCopies[index];
       addFace(controller.root, copy.vertices, copy.face, 0.12);
       addEdges(controller.root, copy.vertices, index === 0 ? materials.edge : materials.faintEdge);
     }
-    const points = [];
-    for (let index = 0; index <= rows.length; index++) {
-      const stateIndex = Math.min(index, step);
-      points.push(baryPoint(rows[index % rows.length], stateVertices[stateIndex]));
-    }
+    const visibleRows = step === 0 ? liftRows.slice(0, -1) : liftRows;
+    const points = visibleRows.map((row, index) => {
+      const stateIndex = index <= 1 ? 0 : Math.min(index - 1, step);
+      return baryPoint(row, stateVertices[stateIndex]);
+    });
     addLine(controller.root, points, materials.path);
     points.slice(0, -1).forEach(point => {
       const marker = new THREE.Mesh(
@@ -325,32 +327,29 @@ function setupUnfoldingScene() {
       marker.position.copy(point);
       controller.root.add(marker);
     });
-    slider.value = String(step);
+    foldButton.disabled = step === 0;
+    unfoldButton.disabled = step === unfoldFaces.length;
     title.textContent = step === 0
       ? "Closed path DABC"
-      : step === word.length
+      : step === unfoldFaces.length
         ? "Straight-line lift"
-        : `Tail reflected across F_${word[step - 1]}`;
+        : `Unfolded at F_${unfoldFaces[step - 1]}`;
     view.textContent = step === 0
       ? "folded tetrahedron"
-      : `${step} of ${word.length} reflections`;
+      : `${step + 1} tetrahedra`;
     path.textContent = step === 0
       ? "closed broken line"
-      : step === word.length
-        ? "one straight segment"
-        : "remaining tail reflected";
+      : step === unfoldFaces.length
+        ? "identified end segments"
+        : "first segment fixed";
   };
 
-  play.addEventListener("click", () => {
-    playing = !playing;
-    lastStepTime = null;
-    play.textContent = playing ? "Pause unfolding" : "Animate unfolding";
+  foldButton.addEventListener("click", () => {
+    step = Math.max(0, step - 1);
+    draw();
   });
-  slider.addEventListener("input", () => {
-    playing = false;
-    lastStepTime = null;
-    play.textContent = "Animate unfolding";
-    step = Number(slider.value);
+  unfoldButton.addEventListener("click", () => {
+    step = Math.min(unfoldFaces.length, step + 1);
     draw();
   });
 
@@ -358,15 +357,7 @@ function setupUnfoldingScene() {
   fitUnfoldingCamera();
   return {
     controller,
-    update(now) {
-      if (playing) {
-        if (lastStepTime == null) lastStepTime = now;
-        if (now - lastStepTime >= stepDurationMs) {
-          step = (step + 1) % (word.length + 1);
-          lastStepTime = now;
-          draw();
-        }
-      }
+    update() {
       controller.controls.update();
       controller.renderer.render(controller.scene, controller.camera);
     }

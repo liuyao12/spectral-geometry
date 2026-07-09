@@ -736,6 +736,11 @@ dd {
   color: #064c50;
 }
 
+.scene-control-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .fixed-limit-scene .scene-toolbar {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -801,6 +806,16 @@ dd {
 
 .scene-control-button {
   padding: 0 14px;
+}
+
+.scene-step-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.scene-step-controls .scene-control-button {
+  min-width: 104px;
 }
 
 .scene-slider {

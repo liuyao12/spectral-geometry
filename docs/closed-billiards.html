@@ -55,17 +55,14 @@
               </dl>
             </div>
           </div>
-          <div class="scene-controls">
-            <button id="unfoldPlay" class="scene-control-button" type="button">Animate unfolding</button>
-            <label class="scene-slider">
-              <span>Reflection step</span>
-              <input id="unfoldSlider" type="range" min="0" max="4" step="1" value="0">
-            </label>
+          <div class="scene-controls scene-step-controls">
+            <button id="foldStep" class="scene-control-button" type="button">Fold</button>
+            <button id="unfoldStep" class="scene-control-button" type="button">Unfold</button>
           </div>
           <p class="scene-caption">
-            Each step reflects the still-folded tail across the current hit face. After
-            four reflections, the same red billiard path appears as one straight segment
-            through reflected copies.
+            The first red segment stays in the original tetrahedron. Each click reflects
+            the remaining tail across the next hit face, and the last copy carries the
+            segment identified with the first.
           </p>
         </section>
       </section>
