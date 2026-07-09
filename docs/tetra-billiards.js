@@ -581,6 +581,15 @@ function foldedPoints(orbit) {
   return orbit.points_xyz.map(point => new THREE.Vector3(point[0], point[1], point[2]));
 }
 
+function repeatedInitialSegmentPath(points) {
+  if (points.length < 2) return points.map(point => point.clone());
+  return [
+    points[points.length - 1].clone(),
+    ...points.map(point => point.clone()),
+    points[0].clone()
+  ];
+}
+
 function copyPoint(orbit, vertices, index) {
   const n = orbit.barycentric_points.length;
   return baryPoint(orbit.barycentric_points[((index % n) + n) % n], orbit.barycentric_denominator, vertices);
@@ -598,30 +607,35 @@ function reflectionNormal(orbit, vertices, index) {
 }
 
 function unfoldedChain(orbit) {
+  const n = orbit.barycentric_points.length;
   let vertices = vertexMapFromInventory();
   const copies = [];
   const points = [];
-  for (let i = 0; i < orbit.barycentric_points.length; i++) {
+  const markerIndices = [];
+  const pushCopy = () => {
     copies.push({
       vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]))
     });
+  };
+
+  pushCopy();
+  if (n === 0) return { copies, points, markerIndices };
+
+  points.push(copyPoint(orbit, vertices, n - 1));
+  markerIndices.push(n - 1);
+  points.push(copyPoint(orbit, vertices, 0));
+  markerIndices.push(0);
+
+  for (let i = 0; i < n; i++) {
     const point = copyPoint(orbit, vertices, i);
     const normal = reflectionNormal(orbit, vertices, i);
-    points.push(point);
     vertices = reflectedVerticesAcrossPlane(vertices, point, normal);
+    pushCopy();
+    const nextIndex = (i + 1) % n;
+    points.push(copyPoint(orbit, vertices, nextIndex));
+    markerIndices.push(nextIndex);
   }
-  copies.push({
-    vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]))
-  });
-  const closingPoint = copyPoint(orbit, vertices, 0);
-  points.push(closingPoint);
-  const nextVertices = reflectedVerticesAcrossPlane(vertices, closingPoint, reflectionNormal(orbit, vertices, 0));
-  const nextIndex = orbit.barycentric_points.length > 1 ? 1 : 0;
-  const continuationPoints = [
-    closingPoint,
-    copyPoint(orbit, nextVertices, nextIndex)
-  ];
-  return { copies, points, continuationPoints };
+  return { copies, points, markerIndices };
 }
 
 function updateBoundsAndCamera(view) {
@@ -699,7 +713,8 @@ function resetCamera(view = null) {
 function orientedChain(orbit) {
   const chain = unfoldedChain(orbit);
   if (chain.points.length < 2) return chain;
-  const direction = chain.points[chain.points.length - 1].clone().sub(chain.points[0]).normalize();
+  const directionEnd = chain.points.length > 2 ? chain.points[chain.points.length - 2] : chain.points[chain.points.length - 1];
+  const direction = directionEnd.clone().sub(chain.points[0]).normalize();
   if (direction.lengthSq() < 0.0001) return chain;
   const q = new THREE.Quaternion().setFromUnitVectors(direction, new THREE.Vector3(1, 0, 0));
   return {
@@ -708,7 +723,7 @@ function orientedChain(orbit) {
       vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, copy.vertices[name].clone().applyQuaternion(q)]))
     })),
     points: chain.points.map(point => point.clone().applyQuaternion(q)),
-    continuationPoints: chain.continuationPoints.map(point => point.clone().applyQuaternion(q))
+    markerIndices: chain.markerIndices
   };
 }
 
@@ -720,17 +735,21 @@ function drawFolded(view, orbit) {
   const pathPoints = [...points, points[0]];
   addPath(view.root, pathPoints, isSingular(orbit) ? singularPathMaterial : pathMaterial);
   points.forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
-  return pathPoints;
+  return repeatedInitialSegmentPath(points);
 }
 
 function drawUnfolded(view, orbit) {
-  const { copies, points, continuationPoints } = orientedChain(orbit);
+  const { copies, points, markerIndices } = orientedChain(orbit);
   copies.forEach(copy => {
     addTetrahedron(view.root, copy.vertices, 0.07, unfoldedCopyEdgeMaterial);
   });
-  addPath(view.root, points, unfoldedPathMaterial);
-  addPath(view.root, continuationPoints, periodicPathMaterial);
-  points.slice(0, -1).forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
+  if (points.length > 1) {
+    addPath(view.root, points.slice(0, -1), unfoldedPathMaterial);
+    addPath(view.root, points.slice(-2), periodicPathMaterial);
+  }
+  points.slice(0, -1).forEach((point, i) => {
+    addPointMarker(view.root, point, pointStyle(orbit, markerIndices[i]), markerIndices[i] === selectedPointIndex);
+  });
   return points;
 }
 
@@ -770,11 +789,8 @@ function progressAtPoint(points, pointIndex) {
   return (lengths[Math.min(pointIndex - 1, lengths.length - 1)] ?? 0) / total;
 }
 
-function finalSegmentStart(points) {
-  if (points.length < 3) return 1;
-  const { lengths, total } = polylineLengths(points);
-  if (total <= 0 || lengths.length < 2) return 1;
-  return lengths[lengths.length - 2] / total;
+function progressAtHitIndex(points, hitIndex) {
+  return progressAtPoint(points, hitIndex + 1);
 }
 
 function setAnimationMarker(view, points) {
@@ -784,11 +800,6 @@ function setAnimationMarker(view, points) {
   if (!point) return;
   view.movingMarker.position.copy(point);
   view.movingMarker.scale.setScalar(view.markerRadius);
-  if (view.mode === "unfolded" && animationRunning && animationProgress >= finalSegmentStart(points)) {
-    view.wrapMarker.visible = true;
-    view.wrapMarker.position.copy(points[0]);
-    view.wrapMarker.scale.setScalar(view.markerRadius * 0.92);
-  }
 }
 
 function updateAnimation(time) {
@@ -820,7 +831,7 @@ function toggleAnimation() {
     stopAnimation();
     return;
   }
-  animationProgress = progressAtPoint(currentPathPoints.folded, selectedPointIndex);
+  animationProgress = progressAtHitIndex(currentPathPoints.folded, selectedPointIndex);
   animationRunning = true;
   lastAnimationTime = performance.now();
   els.play.textContent = "Pause point";
