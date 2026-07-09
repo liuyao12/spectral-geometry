@@ -3,7 +3,6 @@ const state = {
   selectedIndex: 0,
   model: "disk",
   showTiles: true,
-  showLabels: true,
   showDomainSegment: true,
   vertices: [],
   sideSamples: [],
@@ -20,8 +19,9 @@ const el = {
   modelSelect: document.querySelector("#modelSelect"),
   geodesicSelect: document.querySelector("#geodesicSelect"),
   tileToggle: document.querySelector("#tileToggle"),
-  labelToggle: document.querySelector("#labelToggle"),
   domainToggle: document.querySelector("#domainToggle"),
+  edgeLegend: document.querySelector("#edgeLegend"),
+  sourceLink: document.querySelector("#sourceLink"),
   surfaceDetails: document.querySelector("#surfaceDetails"),
   surfaceTitle: document.querySelector("#surfaceTitle"),
   surfaceSubtitle: document.querySelector("#surfaceSubtitle"),
@@ -34,7 +34,26 @@ const el = {
 };
 
 const ctx = el.canvas.getContext("2d");
-const pairColors = ["#0b7285", "#b05c00", "#6d5bd0", "#247a38"];
+const surfaceCatalog = [
+  { id: "regular-8gon-genus-2", name: "Regular octagon genus-2 surface", json: "data/hyperbolic/bolza_octagon_geodesics.json" },
+  { id: "regular-12gon-genus-3", name: "Regular dodecagon genus-3 surface", json: "data/hyperbolic/regular_genus3_dodecagon_geodesics.json" },
+  { id: "regular-16gon-genus-4", name: "Regular 16-gon genus-4 surface", json: "data/hyperbolic/regular_genus4_16gon_geodesics.json" },
+  { id: "regular-20gon-genus-5", name: "Regular 20-gon genus-5 surface", json: "data/hyperbolic/regular_genus5_20gon_geodesics.json" }
+];
+const pairColors = [
+  "#0b7285",
+  "#b05c00",
+  "#6d5bd0",
+  "#247a38",
+  "#c23b6a",
+  "#7b6f13",
+  "#3457b1",
+  "#7a3c9f",
+  "#9a5a2e",
+  "#2b7a78",
+  "#a13f3f",
+  "#506a2f"
+];
 const identity = {
   a: { x: 1, y: 0 },
   b: { x: 0, y: 0 }
@@ -94,6 +113,10 @@ function cross(a, b) {
 
 function fromPair(pair) {
   return c(pair[0], pair[1]);
+}
+
+function pairColor(index) {
+  return pairColors[index % pairColors.length];
 }
 
 function fromComplexObject(value) {
@@ -414,8 +437,14 @@ function sideLabel(index) {
   return state.data.polygon.sides[index]?.label || "";
 }
 
+function sideColor(index) {
+  const side = state.data.polygon.sides[index];
+  return pairColor(side?.pair_color_index || 0);
+}
+
 function pairedSideIndex(index) {
-  return (index + 4) % 8;
+  const halfSides = state.data.polygon.p / 2;
+  return (index + halfSides) % state.data.polygon.p;
 }
 
 function reduceToDomain(rawPoint) {
@@ -618,19 +647,9 @@ function drawCentralPolygon() {
 
   state.data.polygon.sides.forEach((side) => {
     drawPolyline(state.sideSamples[side.index], {
-      stroke: pairColors[side.pair_color_index],
+      stroke: pairColor(side.pair_color_index),
       width: 3
     });
-  });
-
-  state.vertices.forEach((vertex) => {
-    const screen = project(vertex);
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(screen.x, screen.y, 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = "#20242a";
-    ctx.fill();
-    ctx.restore();
   });
 }
 
@@ -658,28 +677,14 @@ function drawQuotientTrace() {
   for (const segment of state.trace.segments) {
     drawPolyline(segment, {
       stroke: "#d63f2f",
-      width: 6
-    });
-    drawPolyline(segment, {
-      stroke: "#fff8f6",
-      width: 2
+      width: 3.4
     });
   }
 
   for (const transition of state.trace.transitions) {
-    const color = pairColors[transition.exitSide % 4];
+    const color = sideColor(transition.exitSide);
     drawCrossingMarker(transition.exitPoint, String(transition.index), color, true);
     drawCrossingMarker(transition.reentryPoint, String(transition.index), color, false);
-  }
-}
-
-function drawLabels() {
-  if (!state.showLabels) return;
-  for (const side of state.data.polygon.sides) {
-    const samples = state.sideSamples[side.index];
-    const midpoint = samples[Math.floor(samples.length / 2)];
-    const inward = scale(midpoint, 0.92);
-    drawLabel(side.label, inward, pairColors[side.pair_color_index]);
   }
 }
 
@@ -696,7 +701,6 @@ function drawScene() {
 
   drawTiles();
   drawCentralPolygon();
-  drawLabels();
   drawQuotientTrace();
 }
 
@@ -714,11 +718,34 @@ function setDetails(node, rows) {
 function populateGeodesicSelect() {
   el.geodesicSelect.innerHTML = "";
   state.data.geodesics.forEach((geo, index) => {
+    const multiplicity = geo.symmetry_multiplicity || 1;
+    const orbitText = multiplicity > 1 ? `  |  mult=${multiplicity}` : "";
     const option = document.createElement("option");
     option.value = String(index);
-    option.textContent = `${geo.word}  |  L=${fmt(geo.length, 4)}`;
+    option.textContent = `${geo.word}${orbitText}  |  L=${fmt(geo.length, 4)}`;
     el.geodesicSelect.append(option);
   });
+}
+
+function populateSurfaces() {
+  el.surfaceSelect.innerHTML = "";
+  for (const surface of surfaceCatalog) {
+    const option = document.createElement("option");
+    option.value = surface.id;
+    option.textContent = surface.name;
+    el.surfaceSelect.append(option);
+  }
+}
+
+function renderLegend() {
+  el.edgeLegend.innerHTML = "";
+  for (const generator of state.data.generators) {
+    const swatch = document.createElement("i");
+    swatch.className = "swatch";
+    swatch.style.background = pairColor(generator.side_pair[0]);
+    swatch.title = `${generator.letter}/${generator.inverse}`;
+    el.edgeLegend.append(swatch);
+  }
 }
 
 function renderGeodesicRows() {
@@ -730,13 +757,15 @@ function renderGeodesicRows() {
     const strong = document.createElement("strong");
     strong.textContent = geo.word;
     word.append(strong);
+    const multiplicity = document.createElement("td");
+    multiplicity.textContent = String(geo.symmetry_multiplicity || 1);
     const letters = document.createElement("td");
     letters.textContent = String(geo.word_length);
     const length = document.createElement("td");
     length.textContent = fmt(geo.length, 5);
     const trace = document.createElement("td");
     trace.textContent = fmt(geo.trace_abs, 5);
-    row.append(word, letters, length, trace);
+    row.append(word, multiplicity, letters, length, trace);
     row.addEventListener("click", () => {
       state.selectedIndex = index;
       el.geodesicSelect.value = String(index);
@@ -749,25 +778,31 @@ function renderGeodesicRows() {
 function renderDetails() {
   const polygon = state.data.polygon;
   const geo = selectedGeodesic();
+  const multiplicity = geo.symmetry_multiplicity || 1;
+  const equivalentWords = geo.equivalent_words || [geo.word];
+  const visibleEquivalentWords = equivalentWords.slice(0, 12).join(", ");
+  const equivalentSummary = equivalentWords.length > 12 ? `${visibleEquivalentWords}, ...` : visibleEquivalentWords;
   const transitions = state.trace?.transitions || [];
   const itinerary = transitions.map((transition) => `${transition.exitLabel}->${transition.reentryLabel}`).join(", ");
   setDetails(el.surfaceDetails, [
     ["quotient", `genus ${state.data.surface.genus}, compact`],
-    ["area", `${fmt(polygon.area, 5)} = 4*pi`],
-    ["polygon", "regular hyperbolic octagon"],
+    ["area", `${fmt(polygon.area, 5)} = 4*pi*${state.data.surface.genus - 1}`],
+    ["polygon", `regular hyperbolic ${polygon.p}-gon`],
     ["edge rule", "opposite sides"],
-    ["records", String(state.data.geodesics.length)],
+    ["orbits", String(state.data.geodesics.length)],
     ["search", `words up to ${state.data.enumeration.max_word_length} letters`],
     ["visible path", state.trace?.fallback ? "axis clip" : "folded quotient trace"]
   ]);
 
   el.surfaceTitle.textContent = state.data.surface.name;
-  el.surfaceSubtitle.textContent = `${geo.word}: length ${fmt(geo.length, 6)}, |trace| ${fmt(geo.trace_abs, 6)}`;
-  el.recordCount.textContent = `${state.data.geodesics.length} records`;
+  el.surfaceSubtitle.textContent = `${geo.word}: length ${fmt(geo.length, 6)}, |trace| ${fmt(geo.trace_abs, 6)}, multiplicity ${multiplicity}`;
+  el.recordCount.textContent = `${state.data.geodesics.length} symmetry orbits`;
 
   setDetails(el.geodesicDetails, [
     ["word", geo.word],
     ["inverse", geo.inverse_word],
+    ["multiplicity", String(multiplicity)],
+    ["equivalent words", equivalentSummary],
     ["letters", String(geo.word_length)],
     ["length", fmt(geo.length, 9)],
     ["|trace|", fmt(geo.trace_abs, 9)],
@@ -792,7 +827,6 @@ function render() {
   if (!state.data) return;
   state.model = el.modelSelect.value;
   state.showTiles = el.tileToggle.checked;
-  state.showLabels = el.labelToggle.checked;
   state.showDomainSegment = el.domainToggle.checked;
   state.trace = buildQuotientTrace();
   renderDetails();
@@ -802,18 +836,12 @@ function render() {
 
 function prepareGeometry() {
   const polygon = state.data.polygon;
-  state.vertices = polygon.vertices.map((vertex) => fromPair(vertex.point));
   state.generatorMatrices = {};
   for (const generator of state.data.generators) {
     const matrix = matrixFromRecord(generator);
     state.generatorMatrices[generator.letter] = matrix;
     state.generatorMatrices[generator.inverse] = inverseMatrix(matrix);
   }
-  state.sideSamples = polygon.sides.map((side) => {
-    const start = state.vertices[side.vertices[0]];
-    const end = state.vertices[side.vertices[1]];
-    return geodesicSamples(start, end, 64, 0);
-  });
   const foot = polygon.side_foot_radius_disk;
   const centerDistance = (foot + 1 / foot) / 2;
   const sideRadius = (1 / foot - foot) / 2;
@@ -824,29 +852,55 @@ function prepareGeometry() {
       radius: sideRadius
     };
   });
+  const vertexRadius = polygon.vertex_radius_disk;
+  const halfAngle = Math.PI / polygon.p;
+  state.sideSamples = polygon.sides.map((side) => {
+    const angle = side.normal_angle;
+    const start = c(vertexRadius * Math.cos(angle - halfAngle), vertexRadius * Math.sin(angle - halfAngle));
+    const end = c(vertexRadius * Math.cos(angle + halfAngle), vertexRadius * Math.sin(angle + halfAngle));
+    return geodesicSamples(start, end, 96, 0);
+  });
   state.sideReentryMatrices = polygon.sides.map((side) => {
     const base = side.pairing_generator;
-    return side.index < 4 ? state.generatorMatrices[base.toUpperCase()] : state.generatorMatrices[base];
+    return side.index < polygon.p / 2 ? state.generatorMatrices[base.toUpperCase()] : state.generatorMatrices[base];
   });
 }
 
 async function init() {
-  const res = await fetch("data/hyperbolic/bolza_octagon_geodesics.json");
+  populateSurfaces();
+  await loadSurface(surfaceCatalog[0].id);
+}
+
+async function loadSurface(surfaceId) {
+  const surface = surfaceCatalog.find((item) => item.id === surfaceId) || surfaceCatalog[0];
+  el.surfaceSelect.value = surface.id;
+  el.sourceLink.href = surface.json;
+  el.loadStatus.textContent = `Loading ${surface.name}...`;
+  const res = await fetch(surface.json);
   if (!res.ok) throw new Error(`Could not load geodesic dataset (${res.status})`);
   state.data = await res.json();
+  state.selectedIndex = 0;
+  state.trace = null;
   prepareGeometry();
   populateGeodesicSelect();
-  el.loadStatus.textContent = `${state.data.geodesics.length} geodesic records generated locally`;
+  renderLegend();
+  el.loadStatus.textContent = `${state.data.geodesics.length} symmetry orbits generated locally`;
   render();
 }
 
+el.surfaceSelect.addEventListener("change", () => {
+  loadSurface(el.surfaceSelect.value).catch((error) => {
+    el.loadStatus.textContent = "Dataset load failed";
+    el.errorBox.textContent = error.message;
+    el.errorBox.classList.remove("is-hidden");
+  });
+});
 el.modelSelect.addEventListener("change", render);
 el.geodesicSelect.addEventListener("change", () => {
   state.selectedIndex = Number(el.geodesicSelect.value);
   render();
 });
 el.tileToggle.addEventListener("change", render);
-el.labelToggle.addEventListener("change", render);
 el.domainToggle.addEventListener("change", render);
 window.addEventListener("resize", drawScene);
 

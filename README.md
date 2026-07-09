@@ -25,17 +25,15 @@ normal-cone representatives is:
 
 https://liuyao12.github.io/spectral-geometry/closed-billiards.html
 
-To rebuild the local compact hyperbolic surface dataset:
+To rebuild the local compact hyperbolic surface datasets:
 
 ```bash
-python3 scripts/generate_hyperbolic_octagon_geodesics.py \
-  --max-word-length 6 \
-  --limit 80 \
-  --out docs/data/hyperbolic/bolza_octagon_geodesics.json
+python3 scripts/generate_hyperbolic_octagon_geodesics.py --all
 ```
 
 This enumerates primitive cyclically reduced words in the opposite-side pairing
-group for the regular hyperbolic octagon model of a compact genus-2 surface.
+group for compact regular `4g`-gon models in genera 2 through 5, then condenses
+geodesics related by regular-polygon symmetries and records their multiplicity.
 
 To refresh the published ordinary billiard inventory after a search update, run:
 

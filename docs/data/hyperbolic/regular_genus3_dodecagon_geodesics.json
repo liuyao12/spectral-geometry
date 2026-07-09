@@ -1,0 +1,4423 @@
+{
+  "schema": "spectral-geometry.compact-hyperbolic.v1",
+  "surface": {
+    "id": "regular-12gon-genus-3",
+    "name": "Regular dodecagon genus-3 surface",
+    "genus": 3,
+    "compact": true,
+    "description": "Opposite sides of a regular hyperbolic dodecagon are identified. The interior angle is pi/6, so all 12 vertices glue smoothly."
+  },
+  "polygon": {
+    "model": "poincare_disk",
+    "type": "regular_hyperbolic_12gon",
+    "p": 12,
+    "q": 12,
+    "interior_angle": 0.523598775598,
+    "area": 25.132741228718,
+    "inradius_h": 1.991652391049,
+    "circumradius_h": 3.325771782117,
+    "side_length_h": 3.983304782099,
+    "vertex_radius_disk": 0.930604859102,
+    "side_foot_radius_disk": 0.759835685652,
+    "vertices": [
+      {
+        "index": 0,
+        "angle": 0.261799387799,
+        "point": [
+          0.898895267477,
+          0.240858261001
+        ]
+      },
+      {
+        "index": 1,
+        "angle": 0.785398163397,
+        "point": [
+          0.658037006476,
+          0.658037006476
+        ]
+      },
+      {
+        "index": 2,
+        "angle": 1.308996938996,
+        "point": [
+          0.240858261001,
+          0.898895267477
+        ]
+      },
+      {
+        "index": 3,
+        "angle": 1.832595714594,
+        "point": [
+          -0.240858261001,
+          0.898895267477
+        ]
+      },
+      {
+        "index": 4,
+        "angle": 2.356194490192,
+        "point": [
+          -0.658037006476,
+          0.658037006476
+        ]
+      },
+      {
+        "index": 5,
+        "angle": 2.879793265791,
+        "point": [
+          -0.898895267477,
+          0.240858261001
+        ]
+      },
+      {
+        "index": 6,
+        "angle": 3.403392041389,
+        "point": [
+          -0.898895267477,
+          -0.240858261001
+        ]
+      },
+      {
+        "index": 7,
+        "angle": 3.926990816987,
+        "point": [
+          -0.658037006476,
+          -0.658037006476
+        ]
+      },
+      {
+        "index": 8,
+        "angle": 4.450589592586,
+        "point": [
+          -0.240858261001,
+          -0.898895267477
+        ]
+      },
+      {
+        "index": 9,
+        "angle": 4.974188368184,
+        "point": [
+          0.240858261001,
+          -0.898895267477
+        ]
+      },
+      {
+        "index": 10,
+        "angle": 5.497787143782,
+        "point": [
+          0.658037006476,
+          -0.658037006476
+        ]
+      },
+      {
+        "index": 11,
+        "angle": 6.02138591938,
+        "point": [
+          0.898895267477,
+          -0.240858261001
+        ]
+      }
+    ],
+    "sides": [
+      {
+        "index": 0,
+        "label": "a",
+        "paired_with": 6,
+        "pair_color_index": 0,
+        "normal_angle": 0.0,
+        "vertices": [
+          11,
+          0
+        ],
+        "pairing_generator": "a",
+        "pairing_direction": "a maps side 6 to side 0",
+        "paired_side": 6
+      },
+      {
+        "index": 1,
+        "label": "b",
+        "paired_with": 7,
+        "pair_color_index": 1,
+        "normal_angle": 0.523598775598,
+        "vertices": [
+          0,
+          1
+        ],
+        "pairing_generator": "b",
+        "pairing_direction": "b maps side 7 to side 1",
+        "paired_side": 7
+      },
+      {
+        "index": 2,
+        "label": "c",
+        "paired_with": 8,
+        "pair_color_index": 2,
+        "normal_angle": 1.047197551197,
+        "vertices": [
+          1,
+          2
+        ],
+        "pairing_generator": "c",
+        "pairing_direction": "c maps side 8 to side 2",
+        "paired_side": 8
+      },
+      {
+        "index": 3,
+        "label": "d",
+        "paired_with": 9,
+        "pair_color_index": 3,
+        "normal_angle": 1.570796326795,
+        "vertices": [
+          2,
+          3
+        ],
+        "pairing_generator": "d",
+        "pairing_direction": "d maps side 9 to side 3",
+        "paired_side": 9
+      },
+      {
+        "index": 4,
+        "label": "e",
+        "paired_with": 10,
+        "pair_color_index": 4,
+        "normal_angle": 2.094395102393,
+        "vertices": [
+          3,
+          4
+        ],
+        "pairing_generator": "e",
+        "pairing_direction": "e maps side 10 to side 4",
+        "paired_side": 10
+      },
+      {
+        "index": 5,
+        "label": "f",
+        "paired_with": 11,
+        "pair_color_index": 5,
+        "normal_angle": 2.617993877991,
+        "vertices": [
+          4,
+          5
+        ],
+        "pairing_generator": "f",
+        "pairing_direction": "f maps side 11 to side 5",
+        "paired_side": 11
+      },
+      {
+        "index": 6,
+        "label": "a^-1",
+        "paired_with": 0,
+        "pair_color_index": 0,
+        "normal_angle": 3.14159265359,
+        "vertices": [
+          5,
+          6
+        ],
+        "pairing_generator": "a",
+        "pairing_direction": "a maps side 6 to side 0",
+        "paired_side": 0
+      },
+      {
+        "index": 7,
+        "label": "b^-1",
+        "paired_with": 1,
+        "pair_color_index": 1,
+        "normal_angle": 3.665191429188,
+        "vertices": [
+          6,
+          7
+        ],
+        "pairing_generator": "b",
+        "pairing_direction": "b maps side 7 to side 1",
+        "paired_side": 1
+      },
+      {
+        "index": 8,
+        "label": "c^-1",
+        "paired_with": 2,
+        "pair_color_index": 2,
+        "normal_angle": 4.188790204786,
+        "vertices": [
+          7,
+          8
+        ],
+        "pairing_generator": "c",
+        "pairing_direction": "c maps side 8 to side 2",
+        "paired_side": 2
+      },
+      {
+        "index": 9,
+        "label": "d^-1",
+        "paired_with": 3,
+        "pair_color_index": 3,
+        "normal_angle": 4.712388980385,
+        "vertices": [
+          8,
+          9
+        ],
+        "pairing_generator": "d",
+        "pairing_direction": "d maps side 9 to side 3",
+        "paired_side": 3
+      },
+      {
+        "index": 10,
+        "label": "e^-1",
+        "paired_with": 4,
+        "pair_color_index": 4,
+        "normal_angle": 5.235987755983,
+        "vertices": [
+          9,
+          10
+        ],
+        "pairing_generator": "e",
+        "pairing_direction": "e maps side 10 to side 4",
+        "paired_side": 4
+      },
+      {
+        "index": 11,
+        "label": "f^-1",
+        "paired_with": 5,
+        "pair_color_index": 5,
+        "normal_angle": 5.759586531581,
+        "vertices": [
+          10,
+          11
+        ],
+        "pairing_generator": "f",
+        "pairing_direction": "f maps side 11 to side 5",
+        "paired_side": 5
+      }
+    ]
+  },
+  "generators": [
+    {
+      "letter": "a",
+      "inverse": "A",
+      "side_pair": [
+        0,
+        6
+      ],
+      "axis_angle": 0.0,
+      "translation_length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": 0.0
+        },
+        "b": {
+          "re": 3.595581069907,
+          "im": 0.0
+        }
+      }
+    },
+    {
+      "letter": "b",
+      "inverse": "B",
+      "side_pair": [
+        1,
+        7
+      ],
+      "axis_angle": 0.523598775598,
+      "translation_length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": 0.0
+        },
+        "b": {
+          "re": 3.113864547906,
+          "im": 1.797790534954
+        }
+      }
+    },
+    {
+      "letter": "c",
+      "inverse": "C",
+      "side_pair": [
+        2,
+        8
+      ],
+      "axis_angle": 1.047197551197,
+      "translation_length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": -0.0
+        },
+        "b": {
+          "re": 1.797790534954,
+          "im": 3.113864547906
+        }
+      }
+    },
+    {
+      "letter": "d",
+      "inverse": "D",
+      "side_pair": [
+        3,
+        9
+      ],
+      "axis_angle": 1.570796326795,
+      "translation_length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": -0.0
+        },
+        "b": {
+          "re": 0.0,
+          "im": 3.595581069907
+        }
+      }
+    },
+    {
+      "letter": "e",
+      "inverse": "E",
+      "side_pair": [
+        4,
+        10
+      ],
+      "axis_angle": 2.094395102393,
+      "translation_length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": 0.0
+        },
+        "b": {
+          "re": -1.797790534954,
+          "im": 3.113864547906
+        }
+      }
+    },
+    {
+      "letter": "f",
+      "inverse": "F",
+      "side_pair": [
+        5,
+        11
+      ],
+      "axis_angle": 2.617993877991,
+      "translation_length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": 0.0
+        },
+        "b": {
+          "re": -3.113864547906,
+          "im": 1.797790534954
+        }
+      }
+    }
+  ],
+  "geodesics": [
+    {
+      "id": "geo-001",
+      "word": "af",
+      "inverse_word": "FA",
+      "word_length": 2,
+      "trace": 5.464101615138,
+      "trace_abs": 5.464101615138,
+      "length": 3.325771782117,
+      "matrix": {
+        "a": {
+          "re": 2.732050807569,
+          "im": 6.464101615138
+        },
+        "b": {
+          "re": 1.797790534954,
+          "im": 6.709445617813
+        }
+      },
+      "fixed_points": [
+        [
+          -0.804160921986,
+          0.594411651594
+        ],
+        [
+          -0.993629612968,
+          -0.112695129593
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "af",
+        "aB",
+        "bC",
+        "cD",
+        "dE",
+        "eF"
+      ]
+    },
+    {
+      "id": "geo-002",
+      "word": "a",
+      "inverse_word": "A",
+      "word_length": 1,
+      "trace": 7.464101615138,
+      "trace_abs": 7.464101615138,
+      "length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": 0.0
+        },
+        "b": {
+          "re": 3.595581069907,
+          "im": 0.0
+        }
+      },
+      "fixed_points": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+      ]
+    },
+    {
+      "id": "geo-003",
+      "word": "aeDcB",
+      "inverse_word": "bCdEA",
+      "word_length": 5,
+      "trace": 7.464101615138,
+      "trace_abs": 7.464101615138,
+      "length": 3.983304782099,
+      "matrix": {
+        "a": {
+          "re": 3.732050807569,
+          "im": -35.320508075689
+        },
+        "b": {
+          "re": 6.709445617813,
+          "im": -34.863302102019
+        }
+      },
+      "fixed_points": [
+        [
+          -0.957792367807,
+          -0.28746091938
+        ],
+        [
+          -0.996070823869,
+          -0.088560227178
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aeDcB",
+        "afDcB",
+        "afEcB",
+        "afEdB",
+        "afEdC",
+        "aBcDe",
+        "aBcDf",
+        "aBcEf",
+        "aBdEf",
+        "aCdEf",
+        "bfEdC",
+        "bCdEf"
+      ]
+    },
+    {
+      "id": "geo-004",
+      "word": "ae",
+      "inverse_word": "EA",
+      "word_length": 2,
+      "trace": 14.928203230276,
+      "trace_abs": 14.928203230276,
+      "length": 5.397468902782,
+      "matrix": {
+        "a": {
+          "re": 7.464101615138,
+          "im": 11.196152422707
+        },
+        "b": {
+          "re": 6.709445617813,
+          "im": 11.621100700673
+        }
+      },
+      "fixed_points": [
+        [
+          -0.446962928534,
+          0.894552480583
+        ],
+        [
+          -0.99818663747,
+          -0.060194989631
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "ae",
+        "aC",
+        "bf",
+        "bD",
+        "cE",
+        "dF"
+      ]
+    },
+    {
+      "id": "geo-005",
+      "word": "acB",
+      "inverse_word": "bCA",
+      "word_length": 3,
+      "trace": -14.928203230275,
+      "trace_abs": 14.928203230275,
+      "length": 5.397468902782,
+      "matrix": {
+        "a": {
+          "re": -7.464101615138,
+          "im": 41.784609690827
+        },
+        "b": {
+          "re": -8.507236152767,
+          "im": 41.572747719833
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999645150954,
+          -0.026637795964
+        ],
+        [
+          -0.929752785295,
+          -0.368184407922
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "acB",
+        "afB",
+        "afE",
+        "aBc",
+        "aBf",
+        "aEf",
+        "bdC",
+        "bCd",
+        "ceD",
+        "cDe",
+        "dfE",
+        "dEf"
+      ]
+    },
+    {
+      "id": "geo-006",
+      "word": "afaB",
+      "inverse_word": "bAFA",
+      "word_length": 4,
+      "trace": 14.928203230276,
+      "trace_abs": 14.928203230276,
+      "length": 5.397468902782,
+      "matrix": {
+        "a": {
+          "re": 7.464101615138,
+          "im": -24.124355652982
+        },
+        "b": {
+          "re": 9.82331016572,
+          "im": -23.242201401346
+        }
+      },
+      "fixed_points": [
+        [
+          -0.766521118998,
+          -0.642219101343
+        ],
+        [
+          -0.994765099654,
+          -0.10218804485
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "afaB",
+        "afEf",
+        "aBcB",
+        "bCdC",
+        "cDeD",
+        "dEfE"
+      ]
+    },
+    {
+      "id": "geo-007",
+      "word": "adEf",
+      "inverse_word": "FeDA",
+      "word_length": 4,
+      "trace": -20.392304845413,
+      "trace_abs": 20.392304845413,
+      "length": 6.025488319279,
+      "matrix": {
+        "a": {
+          "re": -10.196152422707,
+          "im": -54.712812921102
+        },
+        "b": {
+          "re": -8.507236152767,
+          "im": -54.99163895546
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999553270249,
+          -0.029887454469
+        ],
+        [
+          -0.943797295305,
+          0.33052483322
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "adEf",
+        "afcB",
+        "afEd",
+        "afEB",
+        "aBcf",
+        "aBcD",
+        "aBEf",
+        "aDcB",
+        "bCdE",
+        "bEdC",
+        "cDeF",
+        "cFeD"
+      ]
+    },
+    {
+      "id": "geo-008",
+      "word": "ad",
+      "inverse_word": "DA",
+      "word_length": 2,
+      "trace": 27.856406460551,
+      "trace_abs": 27.856406460551,
+      "length": 6.651543564234,
+      "matrix": {
+        "a": {
+          "re": 13.928203230276,
+          "im": 12.928203230276
+        },
+        "b": {
+          "re": 13.418891235627,
+          "im": 13.418891235627
+        }
+      },
+      "fixed_points": [
+        [
+          0.035921568204,
+          0.999354612206
+        ],
+        [
+          -0.999354612206,
+          -0.035921568204
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "ad",
+        "aD",
+        "be",
+        "bE",
+        "cf",
+        "cF"
+      ]
+    },
+    {
+      "id": "geo-009",
+      "word": "adB",
+      "inverse_word": "bDA",
+      "word_length": 3,
+      "trace": -27.856406460551,
+      "trace_abs": 27.856406460551,
+      "length": 6.651543564234,
+      "matrix": {
+        "a": {
+          "re": -13.928203230276,
+          "im": 65.908965343809
+        },
+        "b": {
+          "re": -16.532755783533,
+          "im": 65.29666564318
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999190306504,
+          -0.040233461067
+        ],
+        [
+          -0.897943669102,
+          -0.440110403331
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adB",
+        "adC",
+        "aeB",
+        "aeD",
+        "afC",
+        "afD",
+        "aBd",
+        "aBe",
+        "aCd",
+        "aCf",
+        "aDe",
+        "aDf",
+        "beC",
+        "beD",
+        "bfC",
+        "bfE",
+        "bCe",
+        "bCf",
+        "bDe",
+        "bEf",
+        "cfD",
+        "cfE",
+        "cDf",
+        "cEf"
+      ]
+    },
+    {
+      "id": "geo-010",
+      "word": "aaf",
+      "inverse_word": "FAA",
+      "word_length": 3,
+      "trace": 33.320508075689,
+      "trace_abs": 33.320508075689,
+      "length": 7.010542306551,
+      "matrix": {
+        "a": {
+          "re": 16.660254037844,
+          "im": 48.248711305964
+        },
+        "b": {
+          "re": 16.532755783533,
+          "im": 48.282193337646
+        }
+      },
+      "fixed_points": [
+        [
+          -0.7888687181,
+          0.614561750846
+        ],
+        [
+          -0.999997961333,
+          -0.002019239914
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aaf",
+        "aaB",
+        "aff",
+        "aBB",
+        "bbC",
+        "bCC",
+        "ccD",
+        "cDD",
+        "ddE",
+        "dEE",
+        "eeF",
+        "eFF"
+      ]
+    },
+    {
+      "id": "geo-011",
+      "word": "ac",
+      "inverse_word": "CA",
+      "word_length": 2,
+      "trace": 40.784609690827,
+      "trace_abs": 40.784609690827,
+      "length": 7.415406139953,
+      "matrix": {
+        "a": {
+          "re": 20.392304845413,
+          "im": 11.196152422707
+        },
+        "b": {
+          "re": 20.12833685344,
+          "im": 11.621100700673
+        }
+      },
+      "fixed_points": [
+        [
+          0.518063272706,
+          0.855342297255
+        ],
+        [
+          -0.999779794707,
+          -0.020984806304
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "ac",
+        "aE",
+        "bd",
+        "bF",
+        "ce",
+        "df"
+      ]
+    },
+    {
+      "id": "geo-012",
+      "word": "aeC",
+      "inverse_word": "cEA",
+      "word_length": 3,
+      "trace": -40.784609690827,
+      "trace_abs": 40.784609690827,
+      "length": 7.415406139953,
+      "matrix": {
+        "a": {
+          "re": -20.392304845413,
+          "im": 41.784609690827
+        },
+        "b": {
+          "re": -23.242201401346,
+          "im": 40.25667370688
+        }
+      },
+      "fixed_points": [
+        [
+          -0.997547912866,
+          -0.069986866885
+        ],
+        [
+          -0.559384361087,
+          -0.828908400592
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 4,
+      "equivalent_words": [
+        "aeC",
+        "aCe",
+        "bfD",
+        "bDf"
+      ]
+    },
+    {
+      "id": "geo-013",
+      "word": "ab",
+      "inverse_word": "BA",
+      "word_length": 2,
+      "trace": 50.248711305964,
+      "trace_abs": 50.248711305964,
+      "length": 7.833177230704,
+      "matrix": {
+        "a": {
+          "re": 25.124355652982,
+          "im": 6.464101615138
+        },
+        "b": {
+          "re": 25.0399919363,
+          "im": 6.709445617813
+        }
+      },
+      "fixed_points": [
+        [
+          0.870876570168,
+          0.491501779786
+        ],
+        [
+          -0.999952123219,
+          -0.009785257784
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "ab",
+        "aF",
+        "bc",
+        "cd",
+        "de",
+        "ef"
+      ]
+    },
+    {
+      "id": "geo-014",
+      "word": "aeDf",
+      "inverse_word": "FdEA",
+      "word_length": 4,
+      "trace": 50.248711305964,
+      "trace_abs": 50.248711305964,
+      "length": 7.833177230704,
+      "matrix": {
+        "a": {
+          "re": 25.124355652982,
+          "im": 90.033320996791
+        },
+        "b": {
+          "re": 18.330546318487,
+          "im": 91.652731592433
+        }
+      },
+      "fixed_points": [
+        [
+          -0.891874375326,
+          0.452283206229
+        ],
+        [
+          -0.997223733466,
+          -0.07446358447
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aeDf",
+        "aeFB",
+        "afbC",
+        "afDe",
+        "aBdC",
+        "aBFe",
+        "aCbf",
+        "aCdB",
+        "bCeD",
+        "bDeC",
+        "cDfE",
+        "cEfD"
+      ]
+    },
+    {
+      "id": "geo-015",
+      "word": "aeaB",
+      "inverse_word": "bAEA",
+      "word_length": 4,
+      "trace": 53.712812921102,
+      "trace_abs": 53.712812921102,
+      "length": 7.966609564198,
+      "matrix": {
+        "a": {
+          "re": 26.856406460551,
+          "im": -83.569219381653
+        },
+        "b": {
+          "re": 31.749437554113,
+          "im": -81.829421426713
+        }
+      },
+      "fixed_points": [
+        [
+          -0.777034454272,
+          -0.629458066017
+        ],
+        [
+          -0.998237865581,
+          -0.059339394334
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aeaB",
+        "aeDe",
+        "afaC",
+        "afDf",
+        "aBdB",
+        "aCdC",
+        "bfbC",
+        "bfEf",
+        "bCeC",
+        "bDeD",
+        "cDfD",
+        "cEfE"
+      ]
+    },
+    {
+      "id": "geo-016",
+      "word": "acBaf",
+      "inverse_word": "FAbCA",
+      "word_length": 5,
+      "trace": -53.712812921102,
+      "trace_abs": 53.712812921102,
+      "length": 7.966609564198,
+      "matrix": {
+        "a": {
+          "re": -26.856406460551,
+          "im": -65.908965343809
+        },
+        "b": {
+          "re": -25.0399919363,
+          "im": -66.612739656133
+        }
+      },
+      "fixed_points": [
+        [
+          -0.99963199457,
+          -0.027127024009
+        ],
+        [
+          -0.734235634659,
+          0.678894714073
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acBaf",
+        "acDcB",
+        "afaBc",
+        "afdEf",
+        "afBcB",
+        "afEaB",
+        "afEdf",
+        "afEdE",
+        "afEfB",
+        "aBaEf",
+        "aBcBf",
+        "aBcDc",
+        "aBcDB",
+        "aBfEf",
+        "aBDcB",
+        "aEdEf",
+        "bdEdC",
+        "bCdEd",
+        "bCdEC",
+        "bCEdC",
+        "ceFeD",
+        "cDeFe",
+        "cDeFD",
+        "cDFeD"
+      ]
+    },
+    {
+      "id": "geo-017",
+      "word": "abf",
+      "inverse_word": "FBA",
+      "word_length": 3,
+      "trace": 55.712812921102,
+      "trace_abs": 55.712812921102,
+      "length": 8.039775651311,
+      "matrix": {
+        "a": {
+          "re": 27.856406460551,
+          "im": 90.033320996791
+        },
+        "b": {
+          "re": 26.837782471254,
+          "im": 90.33665757948
+        }
+      },
+      "fixed_points": [
+        [
+          -0.831686190346,
+          0.555245964224
+        ],
+        [
+          -0.999938444194,
+          -0.011095396471
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abf",
+        "abC",
+        "aef",
+        "aeF",
+        "afb",
+        "afe",
+        "aBC",
+        "aBF",
+        "aCb",
+        "aCB",
+        "aFe",
+        "aFB",
+        "bcD",
+        "bCD",
+        "bDc",
+        "bDC",
+        "cdE",
+        "cDE",
+        "cEd",
+        "cED",
+        "deF",
+        "dEF",
+        "dFe",
+        "dFE"
+      ]
+    },
+    {
+      "id": "geo-018",
+      "word": "acDe",
+      "inverse_word": "EdCA",
+      "word_length": 4,
+      "trace": -55.712812921102,
+      "trace_abs": 55.712812921102,
+      "length": 8.039775651311,
+      "matrix": {
+        "a": {
+          "re": -27.856406460551,
+          "im": -59.444863728671
+        },
+        "b": {
+          "re": -26.837782471254,
+          "im": -59.903294038319
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999859411782,
+          -0.016767727093
+        ],
+        [
+          -0.653060006712,
+          0.757306165057
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acDe",
+        "acEf",
+        "aecB",
+        "aeDc",
+        "afdB",
+        "afDB",
+        "afEc",
+        "afEC",
+        "aBce",
+        "aBcE",
+        "aBdf",
+        "aBDf",
+        "aCdE",
+        "aCEf",
+        "aEcB",
+        "aEdC",
+        "bdEf",
+        "bfdC",
+        "bfEd",
+        "bCdf",
+        "bCdF",
+        "bDeF",
+        "bFdC",
+        "bFeD"
+      ]
+    },
+    {
+      "id": "geo-019",
+      "word": "acf",
+      "inverse_word": "FCA",
+      "word_length": 3,
+      "trace": 68.641016151378,
+      "trace_abs": 68.641016151378,
+      "length": 8.457355897842,
+      "matrix": {
+        "a": {
+          "re": 34.320508075689,
+          "im": 114.157676649773
+        },
+        "b": {
+          "re": 31.749437554113,
+          "im": 114.894932993779
+        }
+      },
+      "fixed_points": [
+        [
+          -0.846439046927,
+          0.532485624066
+        ],
+        [
+          -0.999750886867,
+          -0.022319592469
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acf",
+        "acD",
+        "adf",
+        "adE",
+        "afc",
+        "afd",
+        "aBD",
+        "aBE",
+        "aDc",
+        "aDB",
+        "aEd",
+        "aEB",
+        "bdE",
+        "beF",
+        "bCE",
+        "bCF",
+        "bEd",
+        "bEC",
+        "bFe",
+        "bFC",
+        "ceF",
+        "cDF",
+        "cFe",
+        "cFD"
+      ]
+    },
+    {
+      "id": "geo-020",
+      "word": "acDf",
+      "inverse_word": "FdCA",
+      "word_length": 4,
+      "trace": -68.641016151378,
+      "trace_abs": 68.641016151378,
+      "length": 8.457355897842,
+      "matrix": {
+        "a": {
+          "re": -34.320508075689,
+          "im": -144.746133917893
+        },
+        "b": {
+          "re": -31.749437554113,
+          "im": -145.32829653494
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999844665265,
+          -0.017625133789
+        ],
+        [
+          -0.901401297256,
+          0.432984643267
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "acDf",
+        "aeDB",
+        "afdC",
+        "afDc",
+        "aBdE",
+        "aBDe",
+        "aCdf",
+        "aEdB",
+        "bfEC",
+        "bCeF",
+        "bCEf",
+        "bFeC"
+      ]
+    },
+    {
+      "id": "geo-021",
+      "word": "aeaf",
+      "inverse_word": "FAEA",
+      "word_length": 4,
+      "trace": 76.105117766515,
+      "trace_abs": 76.105117766515,
+      "length": 8.663885632317,
+      "matrix": {
+        "a": {
+          "re": 38.052558883258,
+          "im": 102.961524227066
+        },
+        "b": {
+          "re": 31.749437554113,
+          "im": 105.07162282806
+        }
+      },
+      "fixed_points": [
+        [
+          -0.797688109999,
+          0.60307021081
+        ],
+        [
+          -0.998173303015,
+          -0.060415702832
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aeaf",
+        "aeFe",
+        "afbf",
+        "aBaC",
+        "aBFB",
+        "aCbC",
+        "bCbD",
+        "bDcD",
+        "cDcE",
+        "cEdE",
+        "dEdF",
+        "dFeF"
+      ]
+    },
+    {
+      "id": "geo-022",
+      "word": "aafEf",
+      "inverse_word": "FeFAA",
+      "word_length": 5,
+      "trace": 78.105117766515,
+      "trace_abs": 78.105117766515,
+      "length": 8.715783238668,
+      "matrix": {
+        "a": {
+          "re": 39.052558883258,
+          "im": 180.066641993582
+        },
+        "b": {
+          "re": 38.458883171927,
+          "im": 180.191598636959
+        }
+      },
+      "fixed_points": [
+        [
+          -0.911540635954,
+          0.411210005964
+        ],
+        [
+          -0.999994800526,
+          -0.003224735914
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aafEf",
+        "aaBcB",
+        "afaBB",
+        "affaB",
+        "afEEf",
+        "aBccB",
+        "bbCdC",
+        "bCddC",
+        "ccDeD",
+        "cDeeD",
+        "ddEfE",
+        "dEffE"
+      ]
+    },
+    {
+      "id": "geo-023",
+      "word": "acBaB",
+      "inverse_word": "bAbCA",
+      "word_length": 5,
+      "trace": -89.033320996791,
+      "trace_abs": 89.033320996791,
+      "length": 8.977769033603,
+      "matrix": {
+        "a": {
+          "re": -44.516660498395,
+          "im": 144.746133917893
+        },
+        "b": {
+          "re": -48.282193337646,
+          "im": 143.530505999986
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999656776739,
+          -0.026197876252
+        ],
+        [
+          -0.812250259839,
+          -0.583309107928
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acBaB",
+        "acBcB",
+        "afafB",
+        "afafE",
+        "afaBf",
+        "afaEf",
+        "afBaB",
+        "afEfE",
+        "aBaBc",
+        "aBaBf",
+        "aBcBc",
+        "aEfEf",
+        "bdCbC",
+        "bdCdC",
+        "bCbCd",
+        "bCdCd",
+        "ceDcD",
+        "ceDeD",
+        "cDcDe",
+        "cDeDe",
+        "dfEdE",
+        "dfEfE",
+        "dEdEf",
+        "dEfEf"
+      ]
+    },
+    {
+      "id": "geo-024",
+      "word": "adCbf",
+      "inverse_word": "FBcDA",
+      "word_length": 5,
+      "trace": -89.033320996791,
+      "trace_abs": 89.033320996791,
+      "length": 8.977769033603,
+      "matrix": {
+        "a": {
+          "re": -44.516660498395,
+          "im": -131.817930687617
+        },
+        "b": {
+          "re": -38.458883171927,
+          "im": -133.707195834266
+        }
+      },
+      "fixed_points": [
+        [
+          -0.998963407522,
+          -0.045520439721
+        ],
+        [
+          -0.822112080801,
+          0.569325677096
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adCbf",
+        "adEcB",
+        "aeDcf",
+        "aeFcB",
+        "afbCd",
+        "afcDe",
+        "afCdB",
+        "afDeB",
+        "afEbC",
+        "afEcD",
+        "aBcEd",
+        "aBcFe",
+        "aBdCf",
+        "aBeDf",
+        "aBEdC",
+        "aBFeD",
+        "aCbEf",
+        "aCdEB",
+        "aDcEf",
+        "aDeFB",
+        "beFdC",
+        "bCdFe",
+        "bCFeD",
+        "bDeFC"
+      ]
+    },
+    {
+      "id": "geo-025",
+      "word": "abCd",
+      "inverse_word": "DcBA",
+      "word_length": 4,
+      "trace": -91.033320996791,
+      "trace_abs": 91.033320996791,
+      "length": 9.022209824942,
+      "matrix": {
+        "a": {
+          "re": -45.516660498395,
+          "im": -54.712812921102
+        },
+        "b": {
+          "re": -45.16832878974,
+          "im": -54.99163895546
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999981088457,
+          -0.006150018499
+        ],
+        [
+          -0.188247113047,
+          0.982121695326
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abCd",
+        "abEf",
+        "adcB",
+        "adCb",
+        "afeB",
+        "afCB",
+        "afEb",
+        "afED",
+        "aBcd",
+        "aBcF",
+        "aBef",
+        "aBCf",
+        "aDeF",
+        "aDEf",
+        "aFcB",
+        "aFeD",
+        "bcDe",
+        "bedC",
+        "beDc",
+        "bCde",
+        "cdEf",
+        "cfeD",
+        "cfEd",
+        "cDef"
+      ]
+    },
+    {
+      "id": "geo-026",
+      "word": "adCf",
+      "inverse_word": "FcDA",
+      "word_length": 4,
+      "trace": 98.497422611929,
+      "trace_abs": 98.497422611929,
+      "length": 9.179854582499,
+      "matrix": {
+        "a": {
+          "re": 49.248711305964,
+          "im": 180.066641993582
+        },
+        "b": {
+          "re": 41.572747719833,
+          "im": 181.989389171913
+        }
+      },
+      "fixed_points": [
+        [
+          -0.881624654478,
+          0.471951235423
+        ],
+        [
+          -0.999103810452,
+          -0.042327011957
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "adCf",
+        "adEB",
+        "afcD",
+        "afCd",
+        "aBeD",
+        "aBEd",
+        "aDcf",
+        "aDeB",
+        "beFC",
+        "bCfE",
+        "bCFe",
+        "bEfC"
+      ]
+    },
+    {
+      "id": "geo-027",
+      "word": "abAFe",
+      "inverse_word": "EfaBA",
+      "word_length": 5,
+      "trace": -98.497422611929,
+      "trace_abs": 98.497422611929,
+      "length": 9.179854582499,
+      "matrix": {
+        "a": {
+          "re": -49.248711305964,
+          "im": -65.908965343809
+        },
+        "b": {
+          "re": -48.282193337646,
+          "im": -66.612739656133
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999895844999,
+          -0.014432572636
+        ],
+        [
+          -0.297414909518,
+          0.954748328931
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abAFe",
+        "abDcB",
+        "aedEf",
+        "aeFAb",
+        "afbcB",
+        "afAcB",
+        "afEde",
+        "afEdF",
+        "afEFB",
+        "aBcbf",
+        "aBcAf",
+        "aBcDb",
+        "aBcDC",
+        "aBFEf",
+        "aCDcB",
+        "aFdEf",
+        "bcEdC",
+        "bCdEc",
+        "bCdED",
+        "bDEdC",
+        "cdFeD",
+        "cDeFd",
+        "cDeFE",
+        "cEFeD"
+      ]
+    },
+    {
+      "id": "geo-028",
+      "word": "aae",
+      "inverse_word": "EAA",
+      "word_length": 3,
+      "trace": 103.961524227066,
+      "trace_abs": 103.961524227066,
+      "length": 9.287856668844,
+      "matrix": {
+        "a": {
+          "re": 51.980762113533,
+          "im": 83.569219381653
+        },
+        "b": {
+          "re": 51.877774407554,
+          "im": 83.627211961667
+        }
+      },
+      "fixed_points": [
+        [
+          -0.443221067756,
+          0.896412341
+        ],
+        [
+          -0.999999376307,
+          -0.001116864071
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aae",
+        "aaC",
+        "aee",
+        "aCC",
+        "bbf",
+        "bbD",
+        "bff",
+        "bDD",
+        "ccE",
+        "cEE",
+        "ddF",
+        "dFF"
+      ]
+    },
+    {
+      "id": "geo-029",
+      "word": "adaB",
+      "inverse_word": "bADA",
+      "word_length": 4,
+      "trace": 111.425625842204,
+      "trace_abs": 111.425625842204,
+      "length": 9.426553564839,
+      "matrix": {
+        "a": {
+          "re": 55.712812921102,
+          "im": -168.870489570875
+        },
+        "b": {
+          "re": 61.701084573273,
+          "im": -166.772707401333
+        }
+      },
+      "fixed_points": [
+        [
+          -0.781969532402,
+          -0.623316653391
+        ],
+        [
+          -0.999361678411,
+          -0.035724441546
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "adaB",
+        "adCd",
+        "afaD",
+        "afCf",
+        "aBeB",
+        "aDeD",
+        "bebC",
+        "beDe",
+        "bCfC",
+        "bEfE",
+        "cfcD",
+        "cfEf"
+      ]
+    },
+    {
+      "id": "geo-030",
+      "word": "adBaf",
+      "inverse_word": "FAbDA",
+      "word_length": 5,
+      "trace": -111.425625842204,
+      "trace_abs": 111.425625842204,
+      "length": 9.426553564839,
+      "matrix": {
+        "a": {
+          "re": -55.712812921102,
+          "im": -138.282032302755
+        },
+        "b": {
+          "re": -50.0799838726,
+          "im": -140.41664145208
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999185949364,
+          -0.040341524434
+        ],
+        [
+          -0.748147242932,
+          0.663532744401
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adBaf",
+        "adEdC",
+        "aeBcB",
+        "aeDcD",
+        "afaBd",
+        "afcEf",
+        "afDaB",
+        "afEcf",
+        "afEfC",
+        "aBaDf",
+        "aBcBe",
+        "aBcEB",
+        "aBEcB",
+        "aCdEd",
+        "aCfEf",
+        "aDcDe",
+        "beFeD",
+        "bfCdC",
+        "bfEdE",
+        "bCdCf",
+        "bCdFC",
+        "bCFdC",
+        "bDeFe",
+        "bEdEf"
+      ]
+    },
+    {
+      "id": "geo-031",
+      "word": "aacB",
+      "inverse_word": "bCAA",
+      "word_length": 4,
+      "trace": -116.889727457341,
+      "trace_abs": 116.889727457341,
+      "length": 9.522315585424,
+      "matrix": {
+        "a": {
+          "re": -58.444863728671,
+          "im": 305.420471066061
+        },
+        "b": {
+          "re": -58.587220025367,
+          "im": 305.391558318459
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999999877915,
+          -0.000494135604
+        ],
+        [
+          -0.929188172604,
+          -0.369607007363
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aacB",
+        "aafE",
+        "aaBc",
+        "aaEf",
+        "accB",
+        "affB",
+        "afBB",
+        "afEE",
+        "aBcc",
+        "aBff",
+        "aBBf",
+        "aEEf",
+        "bbdC",
+        "bbCd",
+        "bddC",
+        "bCdd",
+        "cceD",
+        "ccDe",
+        "ceeD",
+        "cDee",
+        "ddfE",
+        "ddEf",
+        "dffE",
+        "dEff"
+      ]
+    },
+    {
+      "id": "geo-032",
+      "word": "abCf",
+      "inverse_word": "FcBA",
+      "word_length": 4,
+      "trace": -116.889727457342,
+      "trace_abs": 116.889727457342,
+      "length": 9.522315585424,
+      "matrix": {
+        "a": {
+          "re": -58.444863728671,
+          "im": -234.779454914684
+        },
+        "b": {
+          "re": -56.789429490413,
+          "im": -235.183237592419
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999975440414,
+          -0.007008464047
+        ],
+        [
+          -0.886590393084,
+          0.462555374946
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "abCf",
+        "adCB",
+        "afeD",
+        "afCb",
+        "aBeF",
+        "aBCd",
+        "aDef",
+        "aFeB",
+        "beDC",
+        "bCDe",
+        "cfED",
+        "cDEf"
+      ]
+    },
+    {
+      "id": "geo-033",
+      "word": "adBcB",
+      "inverse_word": "bCbDA",
+      "word_length": 5,
+      "trace": -124.353829072479,
+      "trace_abs": 124.353829072479,
+      "length": 9.646132578717,
+      "matrix": {
+        "a": {
+          "re": -62.17691453624,
+          "im": 329.544826719043
+        },
+        "b": {
+          "re": -75.1199758089,
+          "im": 326.835969184852
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999221671815,
+          -0.039446806911
+        ],
+        [
+          -0.916171227726,
+          -0.400787077495
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adBcB",
+        "adCbC",
+        "aeBaf",
+        "aeFeD",
+        "afaBe",
+        "afbEf",
+        "afCaB",
+        "afEbf",
+        "afEfD",
+        "aBaCf",
+        "aBcBd",
+        "aBcFB",
+        "aBFcB",
+        "aCbCd",
+        "aDeFe",
+        "aDfEf",
+        "beCdC",
+        "beDcD",
+        "bCdCe",
+        "bDcDe",
+        "cfDeD",
+        "cfEdE",
+        "cDeDf",
+        "cEdEf"
+      ]
+    },
+    {
+      "id": "geo-034",
+      "word": "adCaf",
+      "inverse_word": "FAcDA",
+      "word_length": 5,
+      "trace": -124.35382907248,
+      "trace_abs": 124.35382907248,
+      "length": 9.646132578717,
+      "matrix": {
+        "a": {
+          "re": -62.17691453624,
+          "im": -162.406387955737
+        },
+        "b": {
+          "re": -54.99163895546,
+          "im": -164.974916866379
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999039211685,
+          -0.043825261151
+        ],
+        [
+          -0.772936212658,
+          0.634483735932
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adCaf",
+        "adEdB",
+        "aeDaB",
+        "aeDeB",
+        "afaCd",
+        "afcDf",
+        "afCdC",
+        "afDcf",
+        "afDcD",
+        "aBaDe",
+        "aBdEd",
+        "aBdEB",
+        "aBeDe",
+        "aBEdB",
+        "aCdCf",
+        "aDcDf",
+        "beFeC",
+        "bfEbC",
+        "bfEfC",
+        "bCbEf",
+        "bCeFe",
+        "bCeFC",
+        "bCfEf",
+        "bCFeC"
+      ]
+    },
+    {
+      "id": "geo-035",
+      "word": "abcB",
+      "inverse_word": "bCBA",
+      "word_length": 4,
+      "trace": -126.353829072479,
+      "trace_abs": 126.353829072479,
+      "length": 9.678046993784,
+      "matrix": {
+        "a": {
+          "re": -63.17691453624,
+          "im": 336.008928334181
+        },
+        "b": {
+          "re": -66.612739656133,
+          "im": 335.343205337619
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999947376648,
+          -0.010258846634
+        ],
+        [
+          -0.92795188461,
+          -0.372700013213
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "abcB",
+        "abAF",
+        "afAB",
+        "afEF",
+        "aBcb",
+        "aFEf",
+        "bcdC",
+        "bCdc",
+        "cdeD",
+        "cDed",
+        "defE",
+        "dEfe"
+      ]
+    },
+    {
+      "id": "geo-036",
+      "word": "aafaB",
+      "inverse_word": "bAFAA",
+      "word_length": 5,
+      "trace": 126.35382907248,
+      "trace_abs": 126.35382907248,
+      "length": 9.678046993784,
+      "matrix": {
+        "a": {
+          "re": 63.17691453624,
+          "im": -173.602540378444
+        },
+        "b": {
+          "re": 63.498875108227,
+          "im": -173.482153019146
+        }
+      },
+      "fixed_points": [
+        [
+          -0.764933666596,
+          -0.644109063519
+        ],
+        [
+          -0.999998193415,
+          -0.001900833194
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aafaB",
+        "aaBaf",
+        "affEf",
+        "afEff",
+        "aBcBB",
+        "aBBcB",
+        "bCdCC",
+        "bCCdC",
+        "cDeDD",
+        "cDDeD",
+        "dEfEE",
+        "dEEfE"
+      ]
+    },
+    {
+      "id": "geo-037",
+      "word": "adaf",
+      "inverse_word": "FADA",
+      "word_length": 4,
+      "trace": 137.282032302755,
+      "trace_abs": 137.282032302755,
+      "length": 9.843968749645,
+      "matrix": {
+        "a": {
+          "re": 68.641016151378,
+          "im": 191.262794416288
+        },
+        "b": {
+          "re": 61.701084573273,
+          "im": 193.610489872586
+        }
+      },
+      "fixed_points": [
+        [
+          -0.794237901095,
+          0.607606909494
+        ],
+        [
+          -0.999351288288,
+          -0.036013922272
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "adaf",
+        "adEd",
+        "afcf",
+        "aBaD",
+        "aBEB",
+        "aDcD",
+        "beFe",
+        "bCbE",
+        "bCFC",
+        "bEdE",
+        "cDcF",
+        "cFeF"
+      ]
+    },
+    {
+      "id": "geo-038",
+      "word": "adCe",
+      "inverse_word": "EcDA",
+      "word_length": 4,
+      "trace": 137.282032302755,
+      "trace_abs": 137.282032302755,
+      "length": 9.843968749645,
+      "matrix": {
+        "a": {
+          "re": 68.641016151378,
+          "im": 120.621778264911
+        },
+        "b": {
+          "re": 63.498875108227,
+          "im": 123.402169146546
+        }
+      },
+      "fixed_points": [
+        [
+          -0.546558342027,
+          0.837421028373
+        ],
+        [
+          -0.999114824376,
+          -0.042066230071
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adCe",
+        "adFB",
+        "aebC",
+        "aeCd",
+        "aeCf",
+        "aeFC",
+        "afbD",
+        "afCe",
+        "aBeC",
+        "aBFd",
+        "aCbe",
+        "aCeB",
+        "aCeD",
+        "aCFe",
+        "aDbf",
+        "aDeC",
+        "beDf",
+        "bfcD",
+        "bfDe",
+        "bCfD",
+        "bDcf",
+        "bDfC",
+        "bDfE",
+        "bEfD"
+      ]
+    },
+    {
+      "id": "geo-039",
+      "word": "aadEf",
+      "inverse_word": "FeDAA",
+      "word_length": 5,
+      "trace": -137.282032302755,
+      "trace_abs": 137.282032302755,
+      "length": 9.843968749645,
+      "matrix": {
+        "a": {
+          "re": -68.641016151377,
+          "im": -401.91789367799
+        },
+        "b": {
+          "re": -68.410530191087,
+          "im": -401.955944993752
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999999845813,
+          -0.000555314208
+        ],
+        [
+          -0.943514913506,
+          0.331330058991
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aadEf",
+        "aafEd",
+        "aaBcD",
+        "aaDcB",
+        "addEf",
+        "afccB",
+        "affcB",
+        "afEdd",
+        "afEBB",
+        "afEEB",
+        "aBccf",
+        "aBcff",
+        "aBcDD",
+        "aBBEf",
+        "aBEEf",
+        "aDDcB",
+        "bbCdE",
+        "bbEdC",
+        "bCdEE",
+        "bEEdC",
+        "ccDeF",
+        "ccFeD",
+        "cDeFF",
+        "cFFeD"
+      ]
+    },
+    {
+      "id": "geo-040",
+      "word": "adCaB",
+      "inverse_word": "bAcDA",
+      "word_length": 5,
+      "trace": -137.282032302755,
+      "trace_abs": 137.282032302755,
+      "length": 9.843968749645,
+      "matrix": {
+        "a": {
+          "re": -68.641016151378,
+          "im": 221.851251684408
+        },
+        "b": {
+          "re": -78.233840356806,
+          "im": 218.650481808886
+        }
+      },
+      "fixed_points": [
+        [
+          -0.99905053088,
+          -0.043566463573
+        ],
+        [
+          -0.799917466756,
+          -0.600110028561
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adCaB",
+        "adCdB",
+        "aeDaf",
+        "aeFeB",
+        "afaDe",
+        "afbCf",
+        "afCbf",
+        "afCbC",
+        "afDeD",
+        "aBaCd",
+        "aBdCd",
+        "aBeFe",
+        "aBeFB",
+        "aBFeB",
+        "aCbCf",
+        "aDeDf",
+        "beDbC",
+        "beDeC",
+        "bCbDe",
+        "bCeDe",
+        "cfEcD",
+        "cfEfD",
+        "cDcEf",
+        "cDfEf"
+      ]
+    },
+    {
+      "id": "geo-041",
+      "word": "abe",
+      "inverse_word": "EBA",
+      "word_length": 3,
+      "trace": 139.282032302755,
+      "trace_abs": 139.282032302755,
+      "length": 9.872898670192,
+      "matrix": {
+        "a": {
+          "re": 69.641016151378,
+          "im": 114.157676649773
+        },
+        "b": {
+          "re": 68.410530191086,
+          "im": 114.894932993779
+        }
+      },
+      "fixed_points": [
+        [
+          -0.46711720669,
+          0.884195405561
+        ],
+        [
+          -0.999942955041,
+          -0.010681135861
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abe",
+        "abD",
+        "ade",
+        "adF",
+        "aeb",
+        "aed",
+        "aCD",
+        "aCF",
+        "aDb",
+        "aDC",
+        "aFd",
+        "aFC",
+        "bcf",
+        "bcE",
+        "bef",
+        "bfc",
+        "bfe",
+        "bDE",
+        "bEc",
+        "bED",
+        "cdF",
+        "cEF",
+        "cFd",
+        "cFE"
+      ]
+    },
+    {
+      "id": "geo-042",
+      "word": "abDe",
+      "inverse_word": "EdBA",
+      "word_length": 4,
+      "trace": -139.282032302755,
+      "trace_abs": 139.282032302755,
+      "length": 9.872898670192,
+      "matrix": {
+        "a": {
+          "re": -69.641016151378,
+          "im": -144.746133917893
+        },
+        "b": {
+          "re": -68.410530191086,
+          "im": -145.32829653494
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999964430847,
+          -0.008434277749
+        ],
+        [
+          -0.630690818863,
+          0.776034207366
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "abDe",
+        "aedB",
+        "aeDb",
+        "afDC",
+        "aBde",
+        "aCdF",
+        "aCDf",
+        "aFdC",
+        "bcEf",
+        "bfeC",
+        "bfEc",
+        "bCef"
+      ]
+    },
+    {
+      "id": "geo-043",
+      "word": "abAEf",
+      "inverse_word": "FeaBA",
+      "word_length": 5,
+      "trace": 139.282032302755,
+      "trace_abs": 139.282032302755,
+      "length": 9.872898670192,
+      "matrix": {
+        "a": {
+          "re": 69.641016151378,
+          "im": 329.544826719043
+        },
+        "b": {
+          "re": 65.29666564318,
+          "im": 330.431550254759
+        }
+      },
+      "fixed_points": [
+        [
+          -0.919756540329,
+          0.392489371222
+        ],
+        [
+          -0.999913629101,
+          -0.013142843622
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abAEf",
+        "abCdB",
+        "aeDEf",
+        "aeFAB",
+        "afbCB",
+        "afeFB",
+        "afAbC",
+        "afDeF",
+        "afEDe",
+        "aBcdC",
+        "aBcAF",
+        "aBdCb",
+        "aBCbf",
+        "aBFef",
+        "aCdcB",
+        "aFeDf",
+        "bcDeC",
+        "bCdeD",
+        "bCeDc",
+        "bDedC",
+        "cdEfD",
+        "cDefE",
+        "cDfEd",
+        "cEfeD"
+      ]
+    },
+    {
+      "id": "geo-044",
+      "word": "acBf",
+      "inverse_word": "FbCA",
+      "word_length": 4,
+      "trace": 146.746133917893,
+      "trace_abs": 146.746133917893,
+      "length": 9.977315346352,
+      "matrix": {
+        "a": {
+          "re": 73.373066958946,
+          "im": 270.099962990372
+        },
+        "b": {
+          "re": 66.612739656133,
+          "im": 271.844330229392
+        }
+      },
+      "fixed_points": [
+        [
+          -0.8749169499,
+          0.484272991996
+        ],
+        [
+          -0.999689463482,
+          -0.024919402142
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "acBf",
+        "acDB",
+        "afdE",
+        "afBc",
+        "aBfE",
+        "aBDc",
+        "aEdf",
+        "aEfB",
+        "bdEC",
+        "bCEd",
+        "ceFD",
+        "cDFe"
+      ]
+    },
+    {
+      "id": "geo-045",
+      "word": "ace",
+      "inverse_word": "ECA",
+      "word_length": 3,
+      "trace": 152.210235533031,
+      "trace_abs": 152.210235533031,
+      "length": 10.050439055703,
+      "matrix": {
+        "a": {
+          "re": 76.105117766515,
+          "im": 125.35382907248
+        },
+        "b": {
+          "re": 73.322185273946,
+          "im": 126.997750216453
+        }
+      },
+      "fixed_points": [
+        [
+          -0.480825321584,
+          0.876816406167
+        ],
+        [
+          -0.999757942988,
+          -0.022001259809
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "ace",
+        "acE",
+        "aec",
+        "aCE",
+        "aEc",
+        "aEC",
+        "bdf",
+        "bdF",
+        "bfd",
+        "bDF",
+        "bFd",
+        "bFD"
+      ]
+    },
+    {
+      "id": "geo-046",
+      "word": "aafB",
+      "inverse_word": "bFAA",
+      "word_length": 4,
+      "trace": -152.210235533031,
+      "trace_abs": 152.210235533031,
+      "length": 10.050439055703,
+      "matrix": {
+        "a": {
+          "re": -76.105117766515,
+          "im": 300.688420258492
+        },
+        "b": {
+          "re": -76.917766343853,
+          "im": 300.4799032356
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999996286044,
+          -0.002725417052
+        ],
+        [
+          -0.878311138451,
+          -0.478089472874
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aafB",
+        "aaBf",
+        "acBB",
+        "affE",
+        "aBBc",
+        "aEff",
+        "bdCC",
+        "bCCd",
+        "ceDD",
+        "cDDe",
+        "dfEE",
+        "dEEf"
+      ]
+    },
+    {
+      "id": "geo-047",
+      "word": "abCe",
+      "inverse_word": "EcBA",
+      "word_length": 4,
+      "trace": -152.21023553303,
+      "trace_abs": 152.21023553303,
+      "length": 10.050439055703,
+      "matrix": {
+        "a": {
+          "re": -76.105117766515,
+          "im": -143.014083110324
+        },
+        "b": {
+          "re": -75.1199758089,
+          "im": -143.530505999986
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999976674771,
+          -0.006830074188
+        ],
+        [
+          -0.564332918381,
+          0.825547307688
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abCe",
+        "abDf",
+        "aedC",
+        "aeCb",
+        "aeCB",
+        "aeDC",
+        "afeC",
+        "afDb",
+        "aBdF",
+        "aBCe",
+        "aCde",
+        "aCef",
+        "aCeF",
+        "aCDe",
+        "aFdB",
+        "aFeC",
+        "bcDf",
+        "bfeD",
+        "bfDc",
+        "bfDC",
+        "bfED",
+        "bCDf",
+        "bDef",
+        "bDEf"
+      ]
+    },
+    {
+      "id": "geo-048",
+      "word": "abdEf",
+      "inverse_word": "FeDBA",
+      "word_length": 5,
+      "trace": -159.674337148169,
+      "trace_abs": 159.674337148169,
+      "length": 10.146194247746,
+      "matrix": {
+        "a": {
+          "re": -79.837168574084,
+          "im": -456.630706599092
+        },
+        "b": {
+          "re": -75.1199758089,
+          "im": -457.429300471213
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999946877035,
+          -0.010307429724
+        ],
+        [
+          -0.944131836084,
+          0.329568014364
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abdEf",
+        "abCdE",
+        "acdEf",
+        "acDeF",
+        "afdcB",
+        "afecB",
+        "afEdb",
+        "afEdc",
+        "afECB",
+        "afEDB",
+        "aBcdf",
+        "aBcef",
+        "aBcDE",
+        "aBcDF",
+        "aBCEf",
+        "aBDEf",
+        "aEdCb",
+        "aEDcB",
+        "aFeDc",
+        "aFDcB",
+        "bcDeF",
+        "bCdEF",
+        "bFeDc",
+        "bFEdC"
+      ]
+    },
+    {
+      "id": "geo-049",
+      "word": "abAcB",
+      "inverse_word": "bCaBA",
+      "word_length": 5,
+      "trace": -159.674337148168,
+      "trace_abs": 159.674337148168,
+      "length": 10.146194247746,
+      "matrix": {
+        "a": {
+          "re": -79.837168574084,
+          "im": 408.381995293127
+        },
+        "b": {
+          "re": -84.943285974619,
+          "im": 407.349316598613
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999921446599,
+          -0.012533979072
+        ],
+        [
+          -0.921594616002,
+          -0.388153788795
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abAcB",
+        "abAFB",
+        "aeFAf",
+        "aeFEf",
+        "afbAB",
+        "afbAF",
+        "afAFe",
+        "afAFB",
+        "afEFe",
+        "aBcbC",
+        "aBcAb",
+        "aCbcB",
+        "bcBdC",
+        "bCdcD",
+        "bCdBc",
+        "bDcdC",
+        "cdCeD",
+        "cDedE",
+        "cDeCd",
+        "cEdeD",
+        "deDfE",
+        "dEfeF",
+        "dEfDe",
+        "dFefE"
+      ]
+    },
+    {
+      "id": "geo-050",
+      "word": "adBaB",
+      "inverse_word": "bAbDA",
+      "word_length": 5,
+      "trace": -159.674337148168,
+      "trace_abs": 159.674337148168,
+      "length": 10.146194247746,
+      "matrix": {
+        "a": {
+          "re": -79.837168574084,
+          "im": 263.635861375235
+        },
+        "b": {
+          "re": -90.33665757948,
+          "im": 260.223229528719
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999195954393,
+          -0.040092951058
+        ],
+        [
+          -0.809107461059,
+          -0.587660715429
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "adBaB",
+        "adCdC",
+        "aeBaB",
+        "aeDeD",
+        "afafC",
+        "afafD",
+        "afaCf",
+        "afaDf",
+        "aBaBd",
+        "aBaBe",
+        "aCdCd",
+        "aDeDe",
+        "beCbC",
+        "beDeD",
+        "bfCbC",
+        "bfEfE",
+        "bCbCe",
+        "bCbCf",
+        "bDeDe",
+        "bEfEf",
+        "cfDcD",
+        "cfEfE",
+        "cDcDf",
+        "cEfEf"
+      ]
+    },
+    {
+      "id": "geo-051",
+      "word": "aeCbf",
+      "inverse_word": "FBcEA",
+      "word_length": 5,
+      "trace": -159.674337148168,
+      "trace_abs": 159.674337148168,
+      "length": 10.146194247746,
+      "matrix": {
+        "a": {
+          "re": -79.837168574084,
+          "im": -228.315353299546
+        },
+        "b": {
+          "re": -63.498875108227,
+          "im": -233.385447057465
+        }
+      },
+      "fixed_points": [
+        [
+          -0.997500541018,
+          -0.070658832908
+        ],
+        [
+          -0.824198080615,
+          0.566301619201
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aeCbf",
+        "aeCdB",
+        "aeDbf",
+        "aeDbC",
+        "aeFdB",
+        "aeFdC",
+        "afbCe",
+        "afbDe",
+        "afDbC",
+        "afDeC",
+        "aBdCe",
+        "aBdFe",
+        "aBFdC",
+        "aBFeC",
+        "aCbDe",
+        "aCbDf",
+        "aCdFe",
+        "aCdFB",
+        "aCeDf",
+        "aCeFB",
+        "bfDeC",
+        "bfEcD",
+        "bCeDf",
+        "bDcEf"
+      ]
+    },
+    {
+      "id": "geo-052",
+      "word": "abAB",
+      "inverse_word": "baBA",
+      "word_length": 4,
+      "trace": -165.138438763306,
+      "trace_abs": 165.138438763306,
+      "length": 10.213494947043,
+      "matrix": {
+        "a": {
+          "re": -82.569219381653,
+          "im": 324.812775911474
+        },
+        "b": {
+          "re": -86.741076509573,
+          "im": 323.722104636946
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999917002683,
+          -0.012883623141
+        ],
+        [
+          -0.87239533757,
+          -0.488800956408
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "abAB",
+        "afAF",
+        "bcBC",
+        "cdCD",
+        "deDE",
+        "efEF"
+      ]
+    },
+    {
+      "id": "geo-053",
+      "word": "abfEf",
+      "inverse_word": "FeFBA",
+      "word_length": 5,
+      "trace": 165.138438763306,
+      "trace_abs": 165.138438763306,
+      "length": 10.213494947043,
+      "matrix": {
+        "a": {
+          "re": 82.569219381653,
+          "im": 377.793538025008
+        },
+        "b": {
+          "re": 78.233840356806,
+          "im": 378.713743592405
+        }
+      },
+      "fixed_points": [
+        [
+          -0.913549143525,
+          0.406728364347
+        ],
+        [
+          -0.999934501768,
+          -0.011445181299
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abfEf",
+        "abCdC",
+        "aefaB",
+        "aeDeF",
+        "afaBC",
+        "afaCB",
+        "afeaB",
+        "afDEf",
+        "afEfb",
+        "afEDf",
+        "aBcdB",
+        "aBcBF",
+        "aBdcB",
+        "aCdCb",
+        "aFeDe",
+        "aFBcB",
+        "bcDeD",
+        "bCdeC",
+        "bCedC",
+        "bDeDc",
+        "cdEfE",
+        "cDefD",
+        "cDfeD",
+        "cEfEd"
+      ]
+    },
+    {
+      "id": "geo-054",
+      "word": "acaB",
+      "inverse_word": "bACA",
+      "word_length": 4,
+      "trace": 172.602540378444,
+      "trace_abs": 172.602540378444,
+      "length": 10.301915857366,
+      "matrix": {
+        "a": {
+          "re": 86.301270189222,
+          "im": -257.171759760097
+        },
+        "b": {
+          "re": 91.652731592433,
+          "im": -255.311574445859
+        }
+      },
+      "fixed_points": [
+        [
+          -0.784811039689,
+          -0.619735130505
+        ],
+        [
+          -0.999781471681,
+          -0.020904757449
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "acaB",
+        "acBc",
+        "afaE",
+        "afBf",
+        "aBfB",
+        "aEfE",
+        "bdbC",
+        "bdCd",
+        "cecD",
+        "ceDe",
+        "dfdE",
+        "dfEf"
+      ]
+    },
+    {
+      "id": "geo-055",
+      "word": "adFe",
+      "inverse_word": "EfDA",
+      "word_length": 4,
+      "trace": 172.602540378444,
+      "trace_abs": 172.602540378444,
+      "length": 10.301915857366,
+      "matrix": {
+        "a": {
+          "re": 86.301270189222,
+          "im": 125.35382907248
+        },
+        "b": {
+          "re": 81.829421426713,
+          "im": 128.313824229406
+        }
+      },
+      "fixed_points": [
+        [
+          -0.389591050431,
+          0.920987955092
+        ],
+        [
+          -0.99938025457,
+          -0.035200948516
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "adFe",
+        "aebf",
+        "aeFd",
+        "afbe",
+        "aBFC",
+        "aCbD",
+        "aCFB",
+        "aDbC",
+        "bDcE",
+        "bEcD",
+        "cEdF",
+        "cFdE"
+      ]
+    },
+    {
+      "id": "geo-056",
+      "word": "aafaf",
+      "inverse_word": "FAFAA",
+      "word_length": 5,
+      "trace": 174.602540378444,
+      "trace_abs": 174.602540378444,
+      "length": 10.324958778998,
+      "matrix": {
+        "a": {
+          "re": 87.301270189222,
+          "im": 263.635861375235
+        },
+        "b": {
+          "re": 86.741076509573,
+          "im": 263.818810598627
+        }
+      },
+      "fixed_points": [
+        [
+          -0.80363680965,
+          0.595120053583
+        ],
+        [
+          -0.999997789913,
+          -0.002102419848
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aafaf",
+        "aaBaB",
+        "afaff",
+        "aBaBB",
+        "bbCbC",
+        "bCbCC",
+        "ccDcD",
+        "cDcDD",
+        "ddEdE",
+        "dEdEE",
+        "eeFeF",
+        "eFeFF"
+      ]
+    },
+    {
+      "id": "geo-057",
+      "word": "acBEf",
+      "inverse_word": "FebCA",
+      "word_length": 5,
+      "trace": 174.602540378444,
+      "trace_abs": 174.602540378444,
+      "length": 10.324958778998,
+      "matrix": {
+        "a": {
+          "re": 87.301270189222,
+          "im": 408.381995293127
+        },
+        "b": {
+          "re": 76.917766343853,
+          "im": 410.463181146518
+        }
+      },
+      "fixed_points": [
+        [
+          -0.92267515991,
+          0.385578201258
+        ],
+        [
+          -0.999678807594,
+          -0.025343276192
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acBEf",
+        "acDeB",
+        "adCEf",
+        "adEfB",
+        "afcDB",
+        "afdEB",
+        "afBcD",
+        "afCdE",
+        "afEBc",
+        "afECd",
+        "aBceD",
+        "aBcfE",
+        "aBeDc",
+        "aBfEd",
+        "aBDcf",
+        "aBEdf",
+        "aDcBf",
+        "aDecB",
+        "aEdCf",
+        "aEfcB",
+        "bdEfC",
+        "bCdfE",
+        "bCfEd",
+        "bEfdC"
+      ]
+    },
+    {
+      "id": "geo-058",
+      "word": "abAf",
+      "inverse_word": "FaBA",
+      "word_length": 4,
+      "trace": 182.066641993582,
+      "trace_abs": 182.066641993582,
+      "length": 10.408685231991,
+      "matrix": {
+        "a": {
+          "re": 91.033320996791,
+          "im": 336.008928334181
+        },
+        "b": {
+          "re": 86.741076509573,
+          "im": 337.140995872572
+        }
+      },
+      "fixed_points": [
+        [
+          -0.869611479524,
+          0.493736645064
+        ],
+        [
+          -0.999918895404,
+          -0.012735878993
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "abAf",
+        "abCB",
+        "afeF",
+        "afAb",
+        "aBCb",
+        "aFef",
+        "bcDC",
+        "bCDc",
+        "cdED",
+        "cDEd",
+        "deFE",
+        "dEFe"
+      ]
+    },
+    {
+      "id": "geo-059",
+      "word": "aeaC",
+      "inverse_word": "cAEA",
+      "word_length": 4,
+      "trace": 182.066641993582,
+      "trace_abs": 182.066641993582,
+      "length": 10.408685231991,
+      "matrix": {
+        "a": {
+          "re": 91.033320996791,
+          "im": -155.9422863406
+        },
+        "b": {
+          "re": 100.1599677452,
+          "im": -150.2399516178
+        }
+      },
+      "fixed_points": [
+        [
+          -0.438945831863,
+          -0.898513526159
+        ],
+        [
+          -0.998222421017,
+          -0.059598642428
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "aeaC",
+        "aeCe",
+        "aCeC",
+        "bfbD",
+        "bfDf",
+        "bDfD"
+      ]
+    },
+    {
+      "id": "geo-060",
+      "word": "aaff",
+      "inverse_word": "FFAA",
+      "word_length": 4,
+      "trace": 194.994845223857,
+      "trace_abs": 194.994845223857,
+      "length": 10.545893645098,
+      "matrix": {
+        "a": {
+          "re": 97.497422611929,
+          "im": 360.133283987164
+        },
+        "b": {
+          "re": 96.564386675293,
+          "im": 360.383197273919
+        }
+      },
+      "fixed_points": [
+        [
+          -0.864734696727,
+          0.502228936121
+        ],
+        [
+          -0.99999668296,
+          -0.002575668833
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 6,
+      "equivalent_words": [
+        "aaff",
+        "aaBB",
+        "bbCC",
+        "ccDD",
+        "ddEE",
+        "eeFF"
+      ]
+    },
+    {
+      "id": "geo-061",
+      "word": "acaf",
+      "inverse_word": "FACA",
+      "word_length": 4,
+      "trace": 194.994845223857,
+      "trace_abs": 194.994845223857,
+      "length": 10.545893645098,
+      "matrix": {
+        "a": {
+          "re": 97.497422611929,
+          "im": 276.56406460551
+        },
+        "b": {
+          "re": 91.652731592433,
+          "im": 278.553775847206
+        }
+      },
+      "fixed_points": [
+        [
+          -0.791959594455,
+          0.610573501514
+        ],
+        [
+          -0.999778704696,
+          -0.021036673602
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "acaf",
+        "acDc",
+        "afdf",
+        "aBaE",
+        "aBDB",
+        "aEdE",
+        "bdEd",
+        "bCbF",
+        "bCEC",
+        "bFeF",
+        "ceFe",
+        "cDFD"
+      ]
+    },
+    {
+      "id": "geo-062",
+      "word": "acBae",
+      "inverse_word": "EAbCA",
+      "word_length": 5,
+      "trace": -194.994845223857,
+      "trace_abs": 194.994845223857,
+      "length": 10.545893645098,
+      "matrix": {
+        "a": {
+          "re": -97.497422611928,
+          "im": -149.478184725461
+        },
+        "b": {
+          "re": -93.450522127386,
+          "im": -152.037742152753
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999640685227,
+          -0.02680485848
+        ],
+        [
+          -0.42751245901,
+          0.904009456472
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acBae",
+        "acEcB",
+        "aeaBc",
+        "aecDe",
+        "aeDce",
+        "afBdB",
+        "afDfB",
+        "afEaC",
+        "afEcE",
+        "aBcEc",
+        "aBdBf",
+        "aBfDf",
+        "aCaEf",
+        "aCdEC",
+        "aCEdC",
+        "aEcEf",
+        "bdCbf",
+        "bdFdC",
+        "bfbCd",
+        "bfdEf",
+        "bfEdf",
+        "bCdFd",
+        "bDeFD",
+        "bDFeD"
+      ]
+    },
+    {
+      "id": "geo-063",
+      "word": "aeCaf",
+      "inverse_word": "FAcEA",
+      "word_length": 5,
+      "trace": -194.994845223857,
+      "trace_abs": 194.994845223857,
+      "length": 10.545893645098,
+      "matrix": {
+        "a": {
+          "re": -97.497422611929,
+          "im": -245.97560733739
+        },
+        "b": {
+          "re": -80.03163089176,
+          "im": -252.197709897953
+        }
+      },
+      "fixed_points": [
+        [
+          -0.997546097189,
+          -0.070012741574
+        ],
+        [
+          -0.774646312422,
+          0.632394726932
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aeCaf",
+        "aeCaB",
+        "aeCbC",
+        "aeCdC",
+        "aeDeC",
+        "aeFeC",
+        "afaCe",
+        "afbDf",
+        "afDbf",
+        "aBaCe",
+        "aBdFB",
+        "aBFdB",
+        "aCbCe",
+        "aCdCe",
+        "aCeDe",
+        "aCeFe",
+        "bfDbC",
+        "bfDcD",
+        "bfDeD",
+        "bfEfD",
+        "bCbDf",
+        "bDcDf",
+        "bDeDf",
+        "bDfEf"
+      ]
+    },
+    {
+      "id": "geo-064",
+      "word": "aad",
+      "inverse_word": "DAA",
+      "word_length": 3,
+      "trace": 200.458946838995,
+      "trace_abs": 200.458946838995,
+      "length": 10.601169170551,
+      "matrix": {
+        "a": {
+          "re": 100.229473419497,
+          "im": 96.497422611929
+        },
+        "b": {
+          "re": 100.1599677452,
+          "im": 96.564386675293
+        }
+      },
+      "fixed_points": [
+        [
+          0.037210202777,
+          0.999307460599
+        ],
+        [
+          -0.99999977665,
+          -0.000668355804
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aad",
+        "aaD",
+        "add",
+        "aDD",
+        "bbe",
+        "bbE",
+        "bee",
+        "bEE",
+        "ccf",
+        "ccF",
+        "cff",
+        "cFF"
+      ]
+    },
+    {
+      "id": "geo-065",
+      "word": "abfaB",
+      "inverse_word": "bAFBA",
+      "word_length": 5,
+      "trace": 200.458946838995,
+      "trace_abs": 200.458946838995,
+      "length": 10.601169170551,
+      "matrix": {
+        "a": {
+          "re": 100.229473419498,
+          "im": -276.56406460551
+        },
+        "b": {
+          "re": 103.273832293106,
+          "im": -275.4399112993
+        }
+      },
+      "fixed_points": [
+        [
+          -0.760709751034,
+          -0.649092192745
+        ],
+        [
+          -0.999938969605,
+          -0.011047943971
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abfaB",
+        "abAbC",
+        "aefEf",
+        "aeFAF",
+        "afaBF",
+        "afaFB",
+        "afbaB",
+        "afAEf",
+        "afEfe",
+        "aBcAB",
+        "aBcBC",
+        "aCBcB",
+        "bcBcD",
+        "bCdBC",
+        "bCdCD",
+        "bDCdC",
+        "cdCdE",
+        "cDeCD",
+        "cDeDE",
+        "cEDeD",
+        "deDeF",
+        "dEfDE",
+        "dEfEF",
+        "dFEfE"
+      ]
+    },
+    {
+      "id": "geo-066",
+      "word": "aadC",
+      "inverse_word": "cDAA",
+      "word_length": 4,
+      "trace": -213.38715006927,
+      "trace_abs": 213.38715006927,
+      "length": 10.726172319047,
+      "matrix": {
+        "a": {
+          "re": -106.693575034635,
+          "im": 221.851251684408
+        },
+        "b": {
+          "re": -106.869413363013,
+          "im": 221.764346356792
+        }
+      },
+      "fixed_points": [
+        [
+          -0.9999996688,
+          -0.000813879043
+        ],
+        [
+          -0.623706419227,
+          -0.781658686778
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aadC",
+        "aaeD",
+        "aaCd",
+        "aaDe",
+        "addB",
+        "aeeB",
+        "afCC",
+        "afDD",
+        "aBdd",
+        "aBee",
+        "aCCf",
+        "aDDf",
+        "bbeD",
+        "bbfE",
+        "bbDe",
+        "bbEf",
+        "beeC",
+        "bffC",
+        "bCee",
+        "bCff",
+        "ccfE",
+        "ccEf",
+        "cffD",
+        "cDff"
+      ]
+    },
+    {
+      "id": "geo-067",
+      "word": "abaB",
+      "inverse_word": "bABA",
+      "word_length": 4,
+      "trace": 220.851251684408,
+      "trace_abs": 220.851251684408,
+      "length": 10.794937805565,
+      "matrix": {
+        "a": {
+          "re": 110.425625842204,
+          "im": -324.812775911474
+        },
+        "b": {
+          "re": 113.578858980827,
+          "im": -323.722104636946
+        }
+      },
+      "fixed_points": [
+        [
+          -0.786835989553,
+          -0.617162154983
+        ],
+        [
+          -0.999952585456,
+          -0.009737907393
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "abaB",
+        "abAb",
+        "afaF",
+        "afAf",
+        "bcbC",
+        "bcBc",
+        "cdcD",
+        "cdCd",
+        "dedE",
+        "deDe",
+        "efeF",
+        "efEf"
+      ]
+    },
+    {
+      "id": "geo-068",
+      "word": "aafcB",
+      "inverse_word": "bCFAA",
+      "word_length": 5,
+      "trace": -220.851251684408,
+      "trace_abs": 220.851251684408,
+      "length": 10.794937805565,
+      "matrix": {
+        "a": {
+          "re": -110.425625842204,
+          "im": 557.86018001859
+        },
+        "b": {
+          "re": -111.781068445873,
+          "im": 557.589268216413
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999997027043,
+          -0.002438422667
+        ],
+        [
+          -0.923664573198,
+          -0.38320197836
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aafcB",
+        "aafEB",
+        "aaBcf",
+        "aaBEf",
+        "adEff",
+        "adEEf",
+        "afcBB",
+        "affEd",
+        "affEB",
+        "afEEd",
+        "aBccD",
+        "aBBcf",
+        "aBBcD",
+        "aBEff",
+        "aDccB",
+        "aDcBB",
+        "bCddE",
+        "bCCdE",
+        "bEddC",
+        "bEdCC",
+        "cDeeF",
+        "cDDeF",
+        "cFeeD",
+        "cFeDD"
+      ]
+    },
+    {
+      "id": "geo-069",
+      "word": "acAFe",
+      "inverse_word": "EfaCA",
+      "word_length": 5,
+      "trace": -220.851251684409,
+      "trace_abs": 220.851251684409,
+      "length": 10.794937805565,
+      "matrix": {
+        "a": {
+          "re": -110.425625842204,
+          "im": -149.478184725462
+        },
+        "b": {
+          "re": -106.869413363013,
+          "im": -152.037742152754
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999722528762,
+          -0.023555582907
+        ],
+        [
+          -0.316351484191,
+          0.948642049695
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acAFe",
+        "acEdC",
+        "aecEf",
+        "aeAcB",
+        "aeDcE",
+        "aeFAc",
+        "afbdB",
+        "afDFB",
+        "afEce",
+        "aBcAe",
+        "aBcEC",
+        "aBdbf",
+        "aBFDf",
+        "aCdEc",
+        "aCEcB",
+        "aEcDe",
+        "bdFeD",
+        "bfBdC",
+        "bfEdF",
+        "bCdBf",
+        "bCdFD",
+        "bDeFd",
+        "bDFdC",
+        "bFdEf"
+      ]
+    },
+    {
+      "id": "geo-070",
+      "word": "aadB",
+      "inverse_word": "bDAA",
+      "word_length": 4,
+      "trace": -222.851251684408,
+      "trace_abs": 222.851251684408,
+      "length": 10.812968759274,
+      "matrix": {
+        "a": {
+          "re": -111.425625842204,
+          "im": 480.755062252074
+        },
+        "b": {
+          "re": -111.781068445873,
+          "im": 480.671501872559
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999999719693,
+          -0.000748741412
+        ],
+        [
+          -0.897718625901,
+          -0.440569255293
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aadB",
+        "aafD",
+        "aaBd",
+        "aaDf",
+        "addC",
+        "aeBB",
+        "aeDD",
+        "affC",
+        "aBBe",
+        "aCdd",
+        "aCff",
+        "aDDe",
+        "bbeC",
+        "bbCe",
+        "beeD",
+        "bfCC",
+        "bfEE",
+        "bCCf",
+        "bDee",
+        "bEEf",
+        "ccfD",
+        "ccDf",
+        "cffE",
+        "cEff"
+      ]
+    },
+    {
+      "id": "geo-071",
+      "word": "acfEf",
+      "inverse_word": "FeFCA",
+      "word_length": 5,
+      "trace": 222.851251684408,
+      "trace_abs": 222.851251684408,
+      "length": 10.812968759274,
+      "matrix": {
+        "a": {
+          "re": 111.425625842204,
+          "im": 498.415316289918
+        },
+        "b": {
+          "re": 100.1599677452,
+          "im": 500.799838725999
+        }
+      },
+      "fixed_points": [
+        [
+          -0.91417432479,
+          0.405321235435
+        ],
+        [
+          -0.999746005743,
+          -0.022537169329
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acfEf",
+        "acDeD",
+        "adfaB",
+        "adCdE",
+        "afaBD",
+        "afaDB",
+        "afdaB",
+        "afCEf",
+        "afEfc",
+        "afECf",
+        "aBceB",
+        "aBcBE",
+        "aBecB",
+        "aDeDc",
+        "aEdCd",
+        "aEBcB",
+        "bdEfE",
+        "beDeF",
+        "bCdfC",
+        "bCdCF",
+        "bCfdC",
+        "bEfEd",
+        "bFeDe",
+        "bFCdC"
+      ]
+    },
+    {
+      "id": "geo-072",
+      "word": "adCbe",
+      "inverse_word": "EBcDA",
+      "word_length": 5,
+      "trace": -230.315353299545,
+      "trace_abs": 230.315353299545,
+      "length": 10.878861237461,
+      "matrix": {
+        "a": {
+          "re": -115.157676649773,
+          "im": -180.066641993581
+        },
+        "b": {
+          "re": -106.869413363013,
+          "im": -185.103253719819
+        }
+      },
+      "fixed_points": [
+        [
+          -0.998971300436,
+          -0.045346895218
+        ],
+        [
+          -0.460214086976,
+          0.887807971438
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "adCbe",
+        "adFcB",
+        "aebCd",
+        "afCeB",
+        "afEbD",
+        "aBcFd",
+        "aBeCf",
+        "aCFeD",
+        "aDbEf",
+        "aDeFC",
+        "beDcf",
+        "bfcDe"
+      ]
+    },
+    {
+      "id": "geo-073",
+      "word": "abaf",
+      "inverse_word": "FABA",
+      "word_length": 4,
+      "trace": 233.779454914684,
+      "trace_abs": 233.779454914684,
+      "length": 10.90871974549,
+      "matrix": {
+        "a": {
+          "re": 116.889727457342,
+          "im": 336.008928334181
+        },
+        "b": {
+          "re": 113.578858980827,
+          "im": 337.140995872573
+        }
+      },
+      "fixed_points": [
+        [
+          -0.790165482288,
+          0.612893555685
+        ],
+        [
+          -0.999951743387,
+          -0.009823995996
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "abaf",
+        "abCb",
+        "afef",
+        "aBaF",
+        "aBCB",
+        "aFeF",
+        "bcDc",
+        "bCDC",
+        "cdEd",
+        "cDED",
+        "deFe",
+        "dEFE"
+      ]
+    },
+    {
+      "id": "geo-074",
+      "word": "acBe",
+      "inverse_word": "EbCA",
+      "word_length": 4,
+      "trace": 233.779454914684,
+      "trace_abs": 233.779454914684,
+      "length": 10.90871974549,
+      "matrix": {
+        "a": {
+          "re": 116.889727457342,
+          "im": 204.190997646564
+        },
+        "b": {
+          "re": 111.781068445873,
+          "im": 207.029381108213
+        }
+      },
+      "fixed_points": [
+        [
+          -0.527636836079,
+          0.849470051981
+        ],
+        [
+          -0.999691894066,
+          -0.024821702989
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acBe",
+        "acEB",
+        "adBf",
+        "adEC",
+        "aecD",
+        "aeBc",
+        "afcE",
+        "afBd",
+        "aBfD",
+        "aBEc",
+        "aCfE",
+        "aCEd",
+        "aDce",
+        "aDfB",
+        "aEcf",
+        "aEfC",
+        "bdCf",
+        "bdFC",
+        "beFD",
+        "bfdE",
+        "bfCd",
+        "bCFd",
+        "bDFe",
+        "bEdf"
+      ]
+    },
+    {
+      "id": "geo-075",
+      "word": "abd",
+      "inverse_word": "DBA",
+      "word_length": 3,
+      "trace": 235.779454914684,
+      "trace_abs": 235.779454914684,
+      "length": 10.925757732644,
+      "matrix": {
+        "a": {
+          "re": 117.889727457342,
+          "im": 114.157676649773
+        },
+        "b": {
+          "re": 116.692723528733,
+          "im": 115.37664951578
+        }
+      },
+      "fixed_points": [
+        [
+          0.021733038627,
+          0.999763809623
+        ],
+        [
+          -0.999945995368,
+          -0.010392610232
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abd",
+        "abE",
+        "acd",
+        "acF",
+        "adb",
+        "adc",
+        "aDE",
+        "aDF",
+        "aEb",
+        "aED",
+        "aFc",
+        "aFD",
+        "bce",
+        "bcF",
+        "bde",
+        "bec",
+        "bed",
+        "bEF",
+        "bFc",
+        "bFE",
+        "cdf",
+        "cef",
+        "cfd",
+        "cfe"
+      ]
+    },
+    {
+      "id": "geo-076",
+      "word": "aaeB",
+      "inverse_word": "bEAA",
+      "word_length": 4,
+      "trace": -235.779454914684,
+      "trace_abs": 235.779454914684,
+      "length": 10.925757732644,
+      "matrix": {
+        "a": {
+          "re": -117.889727457342,
+          "im": 479.023011444505
+        },
+        "b": {
+          "re": -118.490514063686,
+          "im": 478.873711337605
+        }
+      },
+      "fixed_points": [
+        [
+          -0.999999202109,
+          -0.001263242015
+        ],
+        [
+          -0.885203755538,
+          -0.465203515875
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "aaeB",
+        "aafC",
+        "aaBe",
+        "aaCf",
+        "adBB",
+        "adCC",
+        "aeeD",
+        "affD",
+        "aBBd",
+        "aCCd",
+        "aDee",
+        "aDff",
+        "bbfC",
+        "bbCf",
+        "beCC",
+        "beDD",
+        "bffE",
+        "bCCe",
+        "bDDe",
+        "bEff",
+        "cfDD",
+        "cfEE",
+        "cDDf",
+        "cEEf"
+      ]
+    },
+    {
+      "id": "geo-077",
+      "word": "abCaf",
+      "inverse_word": "FAcBA",
+      "word_length": 5,
+      "trace": 235.779454914684,
+      "trace_abs": 235.779454914684,
+      "length": 10.925757732644,
+      "matrix": {
+        "a": {
+          "re": 117.889727457342,
+          "im": 329.544826719044
+        },
+        "b": {
+          "re": 115.37664951578,
+          "im": 330.43155025476
+        }
+      },
+      "fixed_points": [
+        [
+          -0.777904325679,
+          0.628382733761
+        ],
+        [
+          -0.999971099078,
+          -0.007602697452
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "abCaf",
+        "abCbf",
+        "aeDef",
+        "aeFaB",
+        "afaCb",
+        "afbCb",
+        "afeDe",
+        "afeDf",
+        "afDef",
+        "aBaFe",
+        "aBdCB",
+        "aBCdB",
+        "aBCdC",
+        "aBFeF",
+        "aCdCB",
+        "aFeFB",
+        "bCeDC",
+        "bCDeC",
+        "bCDeD",
+        "bDeDC",
+        "cDfED",
+        "cDEfD",
+        "cDEfE",
+        "cEfED"
+      ]
+    },
+    {
+      "id": "geo-078",
+      "word": "acfaB",
+      "inverse_word": "bAFCA",
+      "word_length": 5,
+      "trace": 235.779454914684,
+      "trace_abs": 235.779454914684,
+      "length": 10.925757732644,
+      "matrix": {
+        "a": {
+          "re": 117.889727457342,
+          "im": -329.544826719044
+        },
+        "b": {
+          "re": 125.1999596815,
+          "im": -326.835969184852
+        }
+      },
+      "fixed_points": [
+        [
+          -0.75877785703,
+          -0.651349494267
+        ],
+        [
+          -0.99975166926,
+          -0.022284519576
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acfaB",
+        "acBcD",
+        "adfEf",
+        "adEfE",
+        "afaBE",
+        "afaEB",
+        "afcaB",
+        "afBEf",
+        "afEfd",
+        "afEBf",
+        "aBcfB",
+        "aBcBD",
+        "aBfcB",
+        "aDcBc",
+        "aDBcB",
+        "aEfEd",
+        "bdCdE",
+        "bCdCE",
+        "bEdCd",
+        "bECdC",
+        "ceDeF",
+        "cDeDF",
+        "cFeDe",
+        "cFDeD"
+      ]
+    },
+    {
+      "id": "geo-079",
+      "word": "aaaf",
+      "inverse_word": "FAAA",
+      "word_length": 4,
+      "trace": 243.243556529822,
+      "trace_abs": 243.243556529822,
+      "length": 10.988092660019,
+      "matrix": {
+        "a": {
+          "re": 121.621778264911,
+          "im": 353.669182372026
+        },
+        "b": {
+          "re": 121.604378611593,
+          "im": 353.673751656106
+        }
+      },
+      "fixed_points": [
+        [
+          -0.788532917992,
+          0.614992550559
+        ],
+        [
+          -0.999999999294,
+          -3.7572943e-05
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 12,
+      "equivalent_words": [
+        "aaaf",
+        "aaaB",
+        "afff",
+        "aBBB",
+        "bbbC",
+        "bCCC",
+        "cccD",
+        "cDDD",
+        "dddE",
+        "dEEE",
+        "eeeF",
+        "eFFF"
+      ]
+    },
+    {
+      "id": "geo-080",
+      "word": "acBd",
+      "inverse_word": "DbCA",
+      "word_length": 4,
+      "trace": 243.243556529821,
+      "trace_abs": 243.243556529821,
+      "length": 10.988092660019,
+      "matrix": {
+        "a": {
+          "re": 121.621778264911,
+          "im": 125.35382907248
+        },
+        "b": {
+          "re": 118.490514063686,
+          "im": 128.313824229406
+        }
+      },
+      "fixed_points": [
+        [
+          -0.054880185629,
+          0.998492947008
+        ],
+        [
+          -0.999696099031,
+          -0.0246517663
+        ]
+      ],
+      "primitive": true,
+      "symmetry_multiplicity": 24,
+      "equivalent_words": [
+        "acBd",
+        "acFB",
+        "adbC",
+        "adBc",
+        "aeBf",
+        "aeFD",
+        "afbE",
+        "afBe",
+        "aBfC",
+        "aBFc",
+        "aCbd",
+        "aCfB",
+        "aDfE",
+        "aDFe",
+        "aEbf",
+        "aEfD",
+        "bdCe",
+        "becD",
+        "beCd",
+        "bDce",
+        "ceDf",
+        "cfdE",
+        "cfDe",
+        "cEdf"
+      ]
+    }
+  ],
+  "enumeration": {
+    "method": "local enumeration of primitive cyclically reduced words, condensed by regular-polygon dihedral symmetries",
+    "max_word_length": 5,
+    "retained_shortest": 80,
+    "raw_primitive_conjugacy_classes": 18175,
+    "symmetry_orbits_before_limit": 860,
+    "generated_by": "scripts/generate_hyperbolic_octagon_geodesics.py"
+  }
+}

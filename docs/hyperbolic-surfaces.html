@@ -41,18 +41,12 @@
 
         <div class="switch-stack" aria-label="layers">
           <label><input id="tileToggle" type="checkbox" checked> Neighboring lifts</label>
-          <label><input id="labelToggle" type="checkbox" checked> Edge labels</label>
           <label><input id="domainToggle" type="checkbox" checked> Quotient path</label>
         </div>
 
         <dl id="surfaceDetails" class="details"></dl>
 
-        <div class="legend" aria-label="edge pair legend">
-          <span><i class="swatch pair-a"></i>a edges</span>
-          <span><i class="swatch pair-b"></i>b edges</span>
-          <span><i class="swatch pair-c"></i>c edges</span>
-          <span><i class="swatch pair-d"></i>d edges</span>
-        </div>
+        <div id="edgeLegend" class="legend" aria-label="edge pair legend"></div>
       </aside>
 
       <section class="workspace">
@@ -61,7 +55,7 @@
             <h2 id="surfaceTitle">Regular octagon quotient</h2>
             <p id="surfaceSubtitle"></p>
           </div>
-          <a class="data-link" href="data/hyperbolic/bolza_octagon_geodesics.json">Source JSON</a>
+          <a id="sourceLink" class="data-link" href="data/hyperbolic/bolza_octagon_geodesics.json">Source JSON</a>
         </div>
 
         <section class="scene-panel" aria-label="Hyperbolic surface visualization">
@@ -80,6 +74,7 @@
                 <thead>
                   <tr>
                     <th scope="col">Word</th>
+                    <th scope="col">Mult.</th>
                     <th scope="col">Letters</th>
                     <th scope="col">Length</th>
                     <th scope="col">Trace</th>
