@@ -256,12 +256,6 @@ function weightedBaryPoint(row, vertices = baseVertices) {
   return out;
 }
 
-function lerpVertexMaps(a, b, t) {
-  return Object.fromEntries(
-    VERTEX_NAMES.map(name => [name, a[name].clone().lerp(b[name], t)])
-  );
-}
-
 function setupUnfoldingScene() {
   const canvas = document.getElementById("unfoldCanvas");
   if (!canvas) return null;
@@ -279,35 +273,29 @@ function setupUnfoldingScene() {
     [4, 3, 0, 3]
   ];
 
-  const copies = [];
-  const foldedPoints = [];
-  const unfoldedPoints = [];
+  const reflectedCopies = [];
+  const stateVertices = [];
   let vertices = Object.fromEntries(VERTEX_NAMES.map(name => [name, baseVertices[name].clone()]));
-  for (let i = 0; i < word.length; i++) {
-    copies.push({
-      face: word[i],
-      folded: Object.fromEntries(VERTEX_NAMES.map(name => [name, baseVertices[name].clone()])),
-      unfolded: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]))
-    });
-    foldedPoints.push(baryPoint(rows[i], baseVertices));
-    unfoldedPoints.push(baryPoint(rows[i], vertices));
-    vertices = reflectedVertices(vertices, word[i]);
+  for (let i = 0; i <= word.length; i++) {
+    stateVertices.push(Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()])));
+    reflectedCopies.push({ face: word[i] ?? word[word.length - 1], vertices: stateVertices[i] });
+    if (i < word.length) vertices = reflectedVertices(vertices, word[i]);
   }
-  foldedPoints.push(foldedPoints[0].clone());
-  unfoldedPoints.push(baryPoint(rows[0], vertices));
 
-  let t = 0;
+  let step = 0;
   let playing = false;
+  let lastStepTime = null;
+  const stepDurationMs = 1500;
 
   const unfoldingBounds = () => {
     const box = new THREE.Box3();
-    copies.forEach(copy => {
-      for (const vertices of [copy.folded, copy.unfolded]) {
-        VERTEX_NAMES.forEach(name => box.expandByPoint(vertices[name]));
-      }
+    reflectedCopies.forEach(copy => {
+      VERTEX_NAMES.forEach(name => box.expandByPoint(copy.vertices[name]));
     });
-    foldedPoints.forEach(point => box.expandByPoint(point));
-    unfoldedPoints.forEach(point => box.expandByPoint(point));
+    for (let stateIndex = 0; stateIndex < stateVertices.length; stateIndex++) {
+      rows.forEach(row => box.expandByPoint(baryPoint(row, stateVertices[stateIndex])));
+    }
+    box.expandByPoint(baryPoint(rows[0], stateVertices[stateVertices.length - 1]));
     return box;
   };
 
@@ -317,12 +305,17 @@ function setupUnfoldingScene() {
 
   const draw = () => {
     clearRoot(controller.root);
-    copies.forEach((copy, index) => {
-      const verticesNow = lerpVertexMaps(copy.folded, copy.unfolded, t);
-      addFace(controller.root, verticesNow, copy.face, 0.11 + index * 0.012);
-      addEdges(controller.root, verticesNow, index === 0 ? materials.edge : materials.faintEdge);
-    });
-    const points = foldedPoints.map((point, index) => point.clone().lerp(unfoldedPoints[index], t));
+    const visibleCopies = step === word.length ? word.length + 1 : step + 1;
+    for (let index = 0; index < visibleCopies; index++) {
+      const copy = reflectedCopies[index];
+      addFace(controller.root, copy.vertices, copy.face, 0.12);
+      addEdges(controller.root, copy.vertices, index === 0 ? materials.edge : materials.faintEdge);
+    }
+    const points = [];
+    for (let index = 0; index <= rows.length; index++) {
+      const stateIndex = Math.min(index, step);
+      points.push(baryPoint(rows[index % rows.length], stateVertices[stateIndex]));
+    }
     addLine(controller.root, points, materials.path);
     points.slice(0, -1).forEach(point => {
       const marker = new THREE.Mesh(
@@ -332,21 +325,32 @@ function setupUnfoldingScene() {
       marker.position.copy(point);
       controller.root.add(marker);
     });
-    const percent = Math.round(t * 100);
-    slider.value = String(percent);
-    title.textContent = t < 0.18 ? "Closed path DABC" : t > 0.82 ? "Straight-line lift" : "Unfolding mirror copies";
-    view.textContent = t < 0.18 ? "folded tetrahedron" : t > 0.82 ? "reflected copies" : "interpolating copies";
-    path.textContent = t < 0.18 ? "closed broken line" : t > 0.82 ? "one straight segment" : "straightening";
+    slider.value = String(step);
+    title.textContent = step === 0
+      ? "Closed path DABC"
+      : step === word.length
+        ? "Straight-line lift"
+        : `Tail reflected across F_${word[step - 1]}`;
+    view.textContent = step === 0
+      ? "folded tetrahedron"
+      : `${step} of ${word.length} reflections`;
+    path.textContent = step === 0
+      ? "closed broken line"
+      : step === word.length
+        ? "one straight segment"
+        : "remaining tail reflected";
   };
 
   play.addEventListener("click", () => {
     playing = !playing;
+    lastStepTime = null;
     play.textContent = playing ? "Pause unfolding" : "Animate unfolding";
   });
   slider.addEventListener("input", () => {
     playing = false;
+    lastStepTime = null;
     play.textContent = "Animate unfolding";
-    t = Number(slider.value) / 100;
+    step = Number(slider.value);
     draw();
   });
 
@@ -356,8 +360,12 @@ function setupUnfoldingScene() {
     controller,
     update(now) {
       if (playing) {
-        t = (Math.sin(now * 0.00065) + 1) / 2;
-        draw();
+        if (lastStepTime == null) lastStepTime = now;
+        if (now - lastStepTime >= stepDurationMs) {
+          step = (step + 1) % (word.length + 1);
+          lastStepTime = now;
+          draw();
+        }
       }
       controller.controls.update();
       controller.renderer.render(controller.scene, controller.camera);

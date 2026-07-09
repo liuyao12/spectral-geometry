@@ -58,14 +58,14 @@
           <div class="scene-controls">
             <button id="unfoldPlay" class="scene-control-button" type="button">Animate unfolding</button>
             <label class="scene-slider">
-              <span>Unfolding</span>
-              <input id="unfoldSlider" type="range" min="0" max="100" value="0">
+              <span>Reflection step</span>
+              <input id="unfoldSlider" type="range" min="0" max="4" step="1" value="0">
             </label>
           </div>
           <p class="scene-caption">
-            The example uses the period-4 tetrahedron word <code>DABC</code>. The red
-            path starts as a closed broken orbit and becomes a straight line as the
-            mirror copies unfold.
+            Each step reflects the still-folded tail across the current hit face. After
+            four reflections, the same red billiard path appears as one straight segment
+            through reflected copies.
           </p>
         </section>
       </section>
