@@ -545,7 +545,8 @@ dd {
 .three-scene,
 .normal-scene,
 .unfold-scene,
-.smooth-scene {
+.smooth-scene,
+.fixed-limit-scene {
   min-width: 0;
 }
 
@@ -558,6 +559,7 @@ dd {
 
 .scene-tab,
 .smooth-tab,
+.fixed-limit-tab,
 .scene-control-button {
   min-height: 38px;
   border: 1px solid var(--line);
@@ -569,10 +571,15 @@ dd {
 }
 
 .scene-tab.is-active,
-.smooth-tab.is-active {
+.smooth-tab.is-active,
+.fixed-limit-tab.is-active {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: #064c50;
+}
+
+.fixed-limit-scene .scene-toolbar {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .scene-frame {
@@ -585,7 +592,8 @@ dd {
 
 #normalConeCanvas,
 #unfoldCanvas,
-#smoothCanvas {
+#smoothCanvas,
+#fixedLimitCanvas {
   display: block;
   width: 100%;
   height: 100%;

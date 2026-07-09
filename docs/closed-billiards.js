@@ -46,6 +46,8 @@ const materials = {
   edge: new THREE.LineBasicMaterial({ color: COLORS.edge, transparent: true, opacity: 0.82 }),
   faintEdge: new THREE.LineBasicMaterial({ color: COLORS.edge, transparent: true, opacity: 0.22 }),
   path: new THREE.LineBasicMaterial({ color: COLORS.path }),
+  faintPath: new THREE.LineBasicMaterial({ color: COLORS.path, transparent: true, opacity: 0.18 }),
+  limitPath: new THREE.LineBasicMaterial({ color: COLORS.cone, transparent: true, opacity: 0.92 }),
   coneLine: new THREE.LineBasicMaterial({ color: COLORS.cone, transparent: true, opacity: 0.84 }),
   grid: new THREE.LineBasicMaterial({ color: COLORS.grid, transparent: true, opacity: 0.22 }),
   smoothLine: new THREE.LineBasicMaterial({ color: COLORS.smooth, transparent: true, opacity: 0.85 }),
@@ -173,16 +175,21 @@ function addArrow(group, start, end, color, headLength = 0.16, headWidth = 0.09)
   return arrow;
 }
 
+function addMarker(group, point, color, radius = 0.045) {
+  const marker = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 24, 16),
+    new THREE.MeshBasicMaterial({ color })
+  );
+  marker.position.copy(Array.isArray(point) ? vector(point) : point);
+  group.add(marker);
+  return marker;
+}
+
 function addPath(group, incomingStart, hit, outgoingEnd) {
   addLine(group, [incomingStart, hit, outgoingEnd], materials.path);
   addArrow(group, incomingStart, hit, COLORS.path, 0.18, 0.1);
   addArrow(group, hit, outgoingEnd, COLORS.path, 0.18, 0.1);
-  const marker = new THREE.Mesh(
-    new THREE.SphereGeometry(0.055, 24, 16),
-    new THREE.MeshBasicMaterial({ color: COLORS.hit })
-  );
-  marker.position.copy(Array.isArray(hit) ? vector(hit) : hit);
-  group.add(marker);
+  addMarker(group, hit, COLORS.hit, 0.055);
 }
 
 function addConeFan(group, points) {
@@ -230,6 +237,15 @@ function baryPoint(row, vertices) {
   const out = new THREE.Vector3();
   row.forEach((value, index) => {
     out.addScaledVector(vertices[VERTEX_NAMES[index]], value / 10);
+  });
+  return out;
+}
+
+function weightedBaryPoint(row, vertices = baseVertices) {
+  const out = new THREE.Vector3();
+  const total = row.reduce((sum, value) => sum + value, 0);
+  row.forEach((value, index) => {
+    out.addScaledVector(vertices[VERTEX_NAMES[index]], value / total);
   });
   return out;
 }
@@ -462,6 +478,138 @@ function setupSmoothingScene() {
   };
 }
 
+function addArrowedCycle(group, points, material = materials.path) {
+  addLine(group, [...points, points[0]], material);
+  if (material === materials.faintPath) return;
+  points.forEach((point, index) => {
+    const next = points[(index + 1) % points.length];
+    if (point.distanceTo(next) < 0.08) return;
+    const start = point.clone().lerp(next, 0.34);
+    const end = point.clone().lerp(next, 0.62);
+    addArrow(group, start, end, COLORS.path, 0.08, 0.045);
+  });
+}
+
+function addTetrahedronShell(group, faceOpacity = 0.11) {
+  for (const face of Object.keys(FACES)) addFace(group, baseVertices, face, faceOpacity);
+  addEdges(group, baseVertices);
+}
+
+function fixedEdgePoints(margin) {
+  const half = 0.5 - margin / 2;
+  return [
+    weightedBaryPoint([half, 0, margin, half]),
+    weightedBaryPoint([0, half, half, margin]),
+    weightedBaryPoint([half, margin, 0, half]),
+    weightedBaryPoint([margin, half, half, 0])
+  ];
+}
+
+function fixedVertexPoints(margin) {
+  return [
+    weightedBaryPoint([0, margin, margin, 1 - 2 * margin]),
+    weightedBaryPoint([margin, 0, margin, 1 - 2 * margin]),
+    weightedBaryPoint([margin, margin, 0, 1 - 2 * margin])
+  ];
+}
+
+function setupFixedLimitScene() {
+  const canvas = document.getElementById("fixedLimitCanvas");
+  if (!canvas) return null;
+  const controller = makeScene(canvas, { autoRotate: true, autoRotateSpeed: 0.3 });
+  const tabs = [...document.querySelectorAll(".fixed-limit-tab")];
+  const title = document.getElementById("fixedLimitTitle");
+  const stratum = document.getElementById("fixedLimitStratum");
+  const marginText = document.getElementById("fixedLimitMargin");
+  const body = document.getElementById("fixedLimitBody");
+  const play = document.getElementById("fixedLimitPlay");
+  const slider = document.getElementById("fixedLimitSlider");
+
+  let mode = "edge";
+  let approach = 0;
+  let playing = true;
+
+  const setMode = next => {
+    mode = next;
+    tabs.forEach(button => {
+      const selected = button.dataset.fixedLimit === mode;
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-selected", selected ? "true" : "false");
+    });
+    draw();
+  };
+
+  const drawEdgeLimit = margin => {
+    const group = controller.root;
+    addTetrahedronShell(group, 0.1);
+    addLine(group, [baseVertices.A, baseVertices.D], materials.limitPath);
+    addLine(group, [baseVertices.B, baseVertices.C], materials.limitPath);
+
+    const edgeAD = weightedBaryPoint([0.5, 0, 0, 0.5]);
+    const edgeBC = weightedBaryPoint([0, 0.5, 0.5, 0]);
+    addLine(group, [edgeAD, edgeBC], materials.limitPath);
+    addMarker(group, edgeAD, COLORS.cone, 0.06);
+    addMarker(group, edgeBC, COLORS.cone, 0.06);
+
+    addArrowedCycle(group, fixedEdgePoints(0.28), materials.faintPath);
+    const points = fixedEdgePoints(margin);
+    addArrowedCycle(group, points, materials.path);
+    points.forEach(point => addMarker(group, point, COLORS.path, 0.038));
+  };
+
+  const drawVertexLimit = margin => {
+    const group = controller.root;
+    addTetrahedronShell(group, 0.1);
+    addLine(group, [baseVertices.D, baseVertices.A], materials.limitPath);
+    addLine(group, [baseVertices.D, baseVertices.B], materials.limitPath);
+    addLine(group, [baseVertices.D, baseVertices.C], materials.limitPath);
+    addMarker(group, baseVertices.D, COLORS.cone, 0.075);
+
+    addArrowedCycle(group, fixedVertexPoints(0.25), materials.faintPath);
+    const points = fixedVertexPoints(margin);
+    addArrowedCycle(group, points, materials.path);
+    points.forEach(point => addMarker(group, point, COLORS.path, 0.038));
+  };
+
+  const draw = () => {
+    clearRoot(controller.root);
+    const margin = 0.28 - approach * 0.268;
+    if (mode === "vertex") drawVertexLimit(margin);
+    else drawEdgeLimit(margin);
+    fitCamera(controller, 2.15, new THREE.Vector3(3.15, 2.45, 2.9));
+    slider.value = String(Math.round(approach * 100));
+    title.textContent = mode === "vertex" ? "Approaching a vertex" : "Approaching opposite edges";
+    stratum.textContent = mode === "vertex" ? "[D]" : "(AD)(BC)";
+    marginText.textContent = margin.toFixed(3);
+    body.textContent = approach > 0.88 ? "fixed, singular closure" : "fixed, ordinary face hits";
+  };
+
+  tabs.forEach(button => button.addEventListener("click", () => setMode(button.dataset.fixedLimit)));
+  play.addEventListener("click", () => {
+    playing = !playing;
+    play.textContent = playing ? "Pause" : "Play";
+  });
+  slider.addEventListener("input", () => {
+    playing = false;
+    play.textContent = "Play";
+    approach = Number(slider.value) / 100;
+    draw();
+  });
+
+  draw();
+  return {
+    controller,
+    update(now) {
+      if (playing) {
+        approach = (Math.sin(now * 0.00068) + 1) / 2;
+        draw();
+      }
+      controller.controls.update();
+      controller.renderer.render(controller.scene, controller.camera);
+    }
+  };
+}
+
 const NORMAL_COPY = {
   face: {
     title: "Smooth face reflection",
@@ -571,6 +719,7 @@ function setupNormalScene() {
 const controllers = [
   setupUnfoldingScene(),
   setupSmoothingScene(),
+  setupFixedLimitScene(),
   setupNormalScene()
 ].filter(Boolean);
 

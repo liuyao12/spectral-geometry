@@ -164,7 +164,7 @@
           <p>
             Deleting every such path loses legitimate limits of ordinary paths. Choosing
             one incident face adds an arbitrary tie-breaker that the polyhedron did not
-            provide. The smoothing picture points to a better rule: keep the limiting
+            provide. Two limiting pictures point to a better rule: keep the limiting
             stationarity condition, but let all active face normals participate.
           </p>
         </section>
@@ -186,11 +186,73 @@
             surfaces.
           </p>
         </section>
+
+        <section id="fixed-tetrahedron-evidence">
+          <h2>The fixed tetrahedron gives a second limit</h2>
+          <p>
+            There is another way to take the limit without changing the tetrahedron at
+            all. Keep the sharp tetrahedron fixed and follow ordinary closed paths whose
+            bounce points stay in face interiors while their boundary margin tends to
+            zero. In barycentric coordinates, an ordinary face hit has exactly one zero
+            coordinate; approaching an edge means a second coordinate tends to zero, and
+            approaching a vertex means three coordinates do.
+          </p>
+          <p>
+            From this viewpoint, a singular stratum word records the closure of ordinary
+            face words. Adjacent ordinary hits may merge onto an edge or a vertex, and
+            the geometric broken line, length, and stationarity condition converge to the
+            singular representative.
+          </p>
+        </section>
       </article>
+
+      <section class="diagram-band" aria-labelledby="fixed-limit-heading">
+        <div class="diagram-copy">
+          <h2 id="fixed-limit-heading">Ordinary hits can collapse onto strata</h2>
+          <p>
+            This scene keeps the tetrahedron fixed. The red face-interior hits move
+            toward the boundary of their faces. In the limit, the same geometric path is
+            better recorded by an edge or vertex stratum rather than by an arbitrary
+            choice of incident face.
+          </p>
+        </div>
+        <section class="three-scene fixed-limit-scene" aria-label="Animated fixed tetrahedron convergence to singular billiard paths">
+          <div class="scene-toolbar" role="tablist" aria-label="fixed tetrahedron limit target">
+            <button class="fixed-limit-tab is-active" type="button" data-fixed-limit="edge" role="tab" aria-selected="true">Edge Limit</button>
+            <button class="fixed-limit-tab" type="button" data-fixed-limit="vertex" role="tab" aria-selected="false">Vertex Limit</button>
+          </div>
+          <div class="scene-frame">
+            <canvas id="fixedLimitCanvas" aria-label="3D fixed tetrahedron convergence animation"></canvas>
+            <div class="scene-readout" aria-live="polite">
+              <h3 id="fixedLimitTitle">Approaching opposite edges</h3>
+              <dl>
+                <dt>Limit stratum</dt>
+                <dd id="fixedLimitStratum">(AD)(BC)</dd>
+                <dt>Margin</dt>
+                <dd id="fixedLimitMargin">decreasing</dd>
+                <dt>Tetrahedron</dt>
+                <dd id="fixedLimitBody">fixed</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="scene-controls">
+            <button id="fixedLimitPlay" class="scene-control-button" type="button">Pause</button>
+            <label class="scene-slider">
+              <span>Boundary margin</span>
+              <input id="fixedLimitSlider" type="range" min="0" max="100" value="0">
+            </label>
+          </div>
+          <p class="scene-caption">
+            The amber object is the singular limit. In edge mode, two pairs of ordinary
+            face hits merge onto the opposite edges <code>AD</code> and <code>BC</code>.
+            In vertex mode, ordinary hits on incident faces collapse to <code>[D]</code>.
+          </p>
+        </section>
+      </section>
 
       <section class="diagram-band" aria-labelledby="rule-heading">
         <div class="diagram-copy">
-          <h2 id="rule-heading">The normal-cone rule records the limit</h2>
+          <h2 id="rule-heading">The normal-cone rule records both limits</h2>
           <p>
             On a smooth face the normal cone is one ray, so the rule is exactly ordinary
             reflection. On an edge it is a wedge. At a vertex it is a higher-dimensional
@@ -257,6 +319,13 @@
                 Rounded approximations obey the ordinary reflection law. As the rounding
                 shrinks, the limiting normal lies in the normal cone of the sharp
                 polyhedron.
+              </p>
+            </section>
+            <section>
+              <h3>It is the fixed-polyhedron limit</h3>
+              <p>
+                Ordinary paths in the same tetrahedron can approach edges or vertices as
+                their face-interior boundary margin tends to zero.
               </p>
             </section>
             <section>
