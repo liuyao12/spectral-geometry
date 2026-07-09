@@ -33,11 +33,11 @@
         <div class="diagram-copy">
           <h2 id="unfold-heading">A period-four closed path</h2>
           <p>
-            The red orbit has face word <code>DABC</code>. It hits the face opposite
-            <code>D</code>, then the face opposite <code>A</code>, then
-            <code>B</code>, then <code>C</code>, and closes up. The slider below shows
-            the unfolding trick, but the object to keep in mind is the folded billiard
-            path at the left end of the slider.
+            The red orbit has compact face word <code>DABC</code>. In the dual notation
+            introduced below, this is
+            <code class="stratum-word"><span class="dual-face-token">D</span><span class="dual-face-token">A</span><span class="dual-face-token">B</span><span class="dual-face-token">C</span></code>:
+            the path hits the face opposite <code>D</code>, then the faces opposite
+            <code>A</code>, <code>B</code>, and <code>C</code>, and closes up.
           </p>
         </div>
         <section class="three-scene unfold-scene" aria-label="Closed tetrahedron billiard path and unfolding animation">
@@ -264,8 +264,16 @@
           <h2>Stratum words</h2>
           <p>
             The notation records the smallest boundary stratum containing each bounce.
-            Ordinary face words are the special case where every token is a face.
-            Parentheses mark edges and brackets mark vertices.
+            In a tetrahedron there is a useful exterior-calculus convention: write a
+            face as the Hodge-star, or complementary simplex, of the opposite vertex.
+            Thus an overlined <code>D</code> means the face \(F_D = *D\), while a plain
+            <code>D</code> means the vertex \(D\) itself.
+          </p>
+          <p>
+            With this convention, every token names a vertex subset, and an overline
+            means "take the complementary face." Ordinary face words are exactly the
+            all-overlined special case. This notation is special to the tetrahedron,
+            where four vertices are naturally paired with four opposite faces.
           </p>
           <div class="example-table-wrap">
             <table class="example-table">
@@ -278,17 +286,17 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><code>D</code></td>
-                  <td>Face <code>F_D</code>, opposite vertex <code>D</code></td>
+                  <td><code><span class="dual-face-token">D</span></code></td>
+                  <td>Face <code>F_D = *D</code>, opposite vertex <code>D</code></td>
                   <td><code>d = 0</code>, while <code>a,b,c &gt; 0</code></td>
                 </tr>
                 <tr>
-                  <td><code>(AD)</code></td>
-                  <td>Edge joining vertices <code>A</code> and <code>D</code></td>
+                  <td><code>AD</code></td>
+                  <td>Edge joining vertices <code>A</code> and <code>D</code>; its dual edge is <code>BC</code></td>
                   <td><code>b = c = 0</code>, while <code>a,d &gt; 0</code></td>
                 </tr>
                 <tr>
-                  <td><code>[D]</code></td>
+                  <td><code>D</code></td>
                   <td>Vertex <code>D</code></td>
                   <td><code>a = b = c = 0</code>, while <code>d &gt; 0</code></td>
                 </tr>
@@ -384,7 +392,7 @@
               <h3 id="fixedLimitTitle">Approaching opposite edges</h3>
               <dl>
                 <dt>Limit stratum</dt>
-                <dd id="fixedLimitStratum">(AD) (BC)</dd>
+                <dd id="fixedLimitStratum">AD BC</dd>
                 <dt>Margin</dt>
                 <dd id="fixedLimitMargin">decreasing</dd>
                 <dt>Tetrahedron</dt>
@@ -402,7 +410,8 @@
           <p class="scene-caption">
             The amber object is the singular limit. In edge mode, two pairs of ordinary
             face hits merge onto the opposite edges <code>AD</code> and <code>BC</code>.
-            In vertex mode, ordinary hits on incident faces collapse to <code>[D]</code>.
+            In vertex mode, ordinary hits on incident faces collapse to the vertex token
+            <code>D</code>.
           </p>
         </section>
       </section>
@@ -411,12 +420,10 @@
         <section id="examples">
           <h2>How it appears in the inventory</h2>
           <p>
-            In the tetrahedron visualization, ordinary rows use face words such as
-            <code>DABC</code>. Singular rows use stratum words: <code>(AD)</code>
-            means the edge joining vertices <code>A</code> and <code>D</code>, and
-            <code>[D]</code> means the vertex <code>D</code>. The canonical display
-            separates mixed tokens with spaces; the compact stored word is just a
-            shorthand.
+            The data still uses compact row ids and stored words such as
+            <code>p04_DABC</code>, but the canonical display below uses the dual
+            stratum notation. Overlined letters are faces, two-letter tokens are edges,
+            and plain single letters are vertices.
           </p>
           <div class="example-table-wrap">
             <table class="example-table">
@@ -432,19 +439,19 @@
                 <tr>
                   <td><code>p04_DABC</code></td>
                   <td>ordinary</td>
-                  <td><code>DABC</code></td>
+                  <td><code class="stratum-word"><span class="dual-face-token">D</span><span class="dual-face-token">A</span><span class="dual-face-token">B</span><span class="dual-face-token">C</span></code></td>
                   <td>The basic period-4 face orbit, unfoldable through reflected tetrahedra.</td>
                 </tr>
                 <tr>
                   <td><code>s02_AD_BC</code></td>
                   <td>singular</td>
-                  <td><code>(AD) (BC)</code></td>
+                  <td><code>AD BC</code></td>
                   <td>A symmetric edge-to-opposite-edge path with total length <code>2</code>.</td>
                 </tr>
                 <tr>
                   <td><code>s04_AD_D_AD_A</code></td>
                   <td>singular family</td>
-                  <td><code>(AD) D (AD) A</code></td>
+                  <td><code class="stratum-word">AD <span class="dual-face-token">D</span> AD <span class="dual-face-token">A</span></code></td>
                   <td>A one-parameter normal-cone family whose length is constant.</td>
                 </tr>
               </tbody>
