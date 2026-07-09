@@ -52,6 +52,13 @@ const STRATUM_CSS = {
   vertex: "#8b5cf6",
   singular: "#ff7a00"
 };
+const FILTER_LABELS = {
+  all: "All paths",
+  ordinary: "Ordinary face hits",
+  edge: "Singular edge-only hits",
+  vertex: "Singular vertex-only hits",
+  edge_vertex: "Singular edge + vertex hits"
+};
 
 const els = {
   status: document.getElementById("inventoryStatus"),
@@ -93,6 +100,7 @@ const cubeMaterial = new THREE.LineBasicMaterial({ color: 0x3f4c5a, transparent:
 const pathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c });
 const singularPathMaterial = new THREE.LineBasicMaterial({ color: 0xff7a00, linewidth: 2 });
 const unfoldedPathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c, linewidth: 2 });
+const periodicPathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c, transparent: true, opacity: 0.38 });
 
 function createViewer(canvas, mode) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -112,8 +120,13 @@ function createViewer(canvas, mode) {
     new THREE.SphereGeometry(1, 24, 16),
     new THREE.MeshBasicMaterial({ color: 0x111111 })
   );
+  const wrapMarker = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 24, 16),
+    new THREE.MeshBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.45 })
+  );
   movingMarker.visible = false;
-  overlay.add(movingMarker);
+  wrapMarker.visible = false;
+  overlay.add(movingMarker, wrapMarker);
   scene.add(root, overlay);
 
   return {
@@ -126,6 +139,7 @@ function createViewer(canvas, mode) {
     root,
     overlay,
     movingMarker,
+    wrapMarker,
     bounds: null,
     markerRadius: 0.035
   };
@@ -310,8 +324,34 @@ function displayWord(orbit) {
   return orbit.word;
 }
 
-function kindLabel(orbit) {
-  return isSingular(orbit) ? "singular" : "ordinary";
+function stratumProfile(orbit) {
+  if (!isSingular(orbit)) return { ordinary: true, hasEdge: false, hasVertex: false };
+  const strata = Array.isArray(orbit.barycentric_points)
+    ? orbit.barycentric_points.map(inferStratum)
+    : [];
+  return {
+    ordinary: false,
+    hasEdge: strata.some(stratum => stratum.type === "edge"),
+    hasVertex: strata.some(stratum => stratum.type === "vertex")
+  };
+}
+
+function pathClassLabel(orbit) {
+  const profile = stratumProfile(orbit);
+  if (profile.ordinary) return "ordinary face hits";
+  if (profile.hasEdge && profile.hasVertex) return "singular edge + vertex hits";
+  if (profile.hasVertex) return "singular vertex-only hits";
+  if (profile.hasEdge) return "singular edge-only hits";
+  return "singular boundary hits";
+}
+
+function stratumFilterKey(orbit) {
+  const profile = stratumProfile(orbit);
+  if (profile.ordinary) return "ordinary";
+  if (profile.hasEdge && profile.hasVertex) return "edge_vertex";
+  if (profile.hasVertex) return "vertex";
+  if (profile.hasEdge) return "edge";
+  return "edge_vertex";
 }
 
 const PERMUTATIONS_4 = (() => {
@@ -395,7 +435,7 @@ function normalizeOrbit(raw, fallbackKind) {
     orbit.path_center_xyz = orbit.path_center_xyz ?? center;
     orbit.centroid_distance_numeric = Math.hypot(center[0] - 0.5, center[1] - 0.5, center[2] - 0.5);
   }
-  orbit.search_text = `${orbit.id} ${orbit.word} ${displayWord(orbit)} ${orbit.stratum_word?.join(" ") ?? ""}`.toUpperCase();
+  orbit.search_text = `${orbit.id} ${displayWord(orbit)}`.toUpperCase();
   return orbit;
 }
 
@@ -533,7 +573,13 @@ function unfoldedChain(orbit) {
     hitFace: word[0]
   });
   points.push(baryPoint(orbit.barycentric_points[0], orbit.barycentric_denominator, vertices));
-  return { copies, points };
+  const nextVertices = reflectedVertices(vertices, word[0]);
+  const nextIndex = orbit.barycentric_points.length > 1 ? 1 : 0;
+  const continuationPoints = [
+    points[points.length - 1],
+    baryPoint(orbit.barycentric_points[nextIndex], orbit.barycentric_denominator, nextVertices)
+  ];
+  return { copies, points, continuationPoints };
 }
 
 function updateBoundsAndCamera(view) {
@@ -619,7 +665,8 @@ function orientedChain(orbit) {
       ...copy,
       vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, copy.vertices[name].clone().applyQuaternion(q)]))
     })),
-    points: chain.points.map(point => point.clone().applyQuaternion(q))
+    points: chain.points.map(point => point.clone().applyQuaternion(q)),
+    continuationPoints: chain.continuationPoints.map(point => point.clone().applyQuaternion(q))
   };
 }
 
@@ -635,12 +682,13 @@ function drawFolded(view, orbit) {
 }
 
 function drawUnfolded(view, orbit) {
-  const { copies, points } = orientedChain(orbit);
+  const { copies, points, continuationPoints } = orientedChain(orbit);
   copies.forEach((copy, i) => {
     addEdges(view.root, copy.vertices, faintEdgeMaterial);
     if (i < copies.length - 1) addFace(view.root, copy.vertices, copy.hitFace, 0.11);
   });
   addPath(view.root, points, unfoldedPathMaterial);
+  addPath(view.root, continuationPoints, periodicPathMaterial);
   points.slice(0, -1).forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
   return points;
 }
@@ -681,12 +729,25 @@ function progressAtPoint(points, pointIndex) {
   return (lengths[Math.min(pointIndex - 1, lengths.length - 1)] ?? 0) / total;
 }
 
+function finalSegmentStart(points) {
+  if (points.length < 3) return 1;
+  const { lengths, total } = polylineLengths(points);
+  if (total <= 0 || lengths.length < 2) return 1;
+  return lengths[lengths.length - 2] / total;
+}
+
 function setAnimationMarker(view, points) {
   const point = pointAtProgress(points, animationProgress);
   view.movingMarker.visible = animationRunning && point != null;
+  view.wrapMarker.visible = false;
   if (!point) return;
   view.movingMarker.position.copy(point);
   view.movingMarker.scale.setScalar(view.markerRadius);
+  if (view.mode === "unfolded" && animationRunning && animationProgress >= finalSegmentStart(points)) {
+    view.wrapMarker.visible = true;
+    view.wrapMarker.position.copy(points[0]);
+    view.wrapMarker.scale.setScalar(view.markerRadius * 0.92);
+  }
 }
 
 function updateAnimation(time) {
@@ -705,7 +766,10 @@ function stopAnimation() {
   lastAnimationTime = null;
   els.play.textContent = "Animate point";
   els.play.classList.remove("is-running");
-  for (const view of Object.values(views)) view.movingMarker.visible = false;
+  for (const view of Object.values(views)) {
+    view.movingMarker.visible = false;
+    view.wrapMarker.visible = false;
+  }
 }
 
 function toggleAnimation() {
@@ -755,6 +819,7 @@ function drawSelectedOrbit() {
     for (const view of Object.values(views)) {
       view.bounds = null;
       view.movingMarker.visible = false;
+      view.wrapMarker.visible = false;
     }
     resetCamera();
     return;
@@ -771,7 +836,7 @@ function drawSelectedOrbit() {
   } else {
     views.unfolded.bounds = null;
     resetCamera(views.unfolded);
-    els.note.textContent = "Singular normal-cone representatives do not have a unique deterministic face-unfolding chain.";
+    els.note.textContent = "Paths hitting edges or vertices do not have a unique deterministic face-unfolding chain.";
     els.note.classList.remove("is-hidden");
   }
   updateAnimation(performance.now());
@@ -824,8 +889,7 @@ function visibleOrbits() {
   const query = els.search.value.trim().toUpperCase();
   let rows = inventory.orbits.filter(orbit => {
     if (period !== "all" && String(orbit.period) !== period) return false;
-    if (kind === "ordinary" && isSingular(orbit)) return false;
-    if (kind === "singular" && !isSingular(orbit)) return false;
+    if (kind !== "all" && stratumFilterKey(orbit) !== kind) return false;
     if (query && !orbit.search_text.includes(query)) return false;
     return true;
   });
@@ -859,10 +923,9 @@ function renderRows() {
     row.className = `orbit-row${orbit.id === selectedId ? " is-selected" : ""}${isSingular(orbit) ? " is-singular" : ""}`;
     row.tabIndex = 0;
     row.setAttribute("role", "button");
-    row.setAttribute("aria-label", `Select period ${orbit.period} path ${orbit.word}`);
+    row.setAttribute("aria-label", `Select period ${orbit.period} path ${displayWord(orbit)}`);
     row.innerHTML = `
       <td class="period-cell"></td>
-      <td class="kind-cell"></td>
       <td class="word-cell mono"></td>
       <td class="numeric-cell"></td>
       <td class="exact-cell"></td>
@@ -873,15 +936,14 @@ function renderRows() {
       <td class="source-cell"></td>
     `;
     row.children[0].textContent = `p${String(orbit.period).padStart(2, "0")}`;
-    row.children[1].textContent = kindLabel(orbit);
-    row.children[2].textContent = displayWord(orbit);
-    row.children[3].textContent = orbit.length_numeric.toFixed(10);
-    row.children[4].textContent = centroidDistanceSquaredLabel(orbit);
-    row.children[5].textContent = orbitLengthLabel(orbit);
-    row.children[6].textContent = degeneracyLabel(orbit);
-    row.children[7].textContent = orbit.height;
-    row.children[8].textContent = orbit.boundary_margin;
-    row.children[9].textContent = provenanceLabel(orbit);
+    row.children[1].textContent = displayWord(orbit);
+    row.children[2].textContent = orbit.length_numeric.toFixed(10);
+    row.children[3].textContent = centroidDistanceSquaredLabel(orbit);
+    row.children[4].textContent = orbitLengthLabel(orbit);
+    row.children[5].textContent = degeneracyLabel(orbit);
+    row.children[6].textContent = orbit.height;
+    row.children[7].textContent = orbit.boundary_margin;
+    row.children[8].textContent = provenanceLabel(orbit);
     const selectRow = () => {
       stopAnimation();
       selectedId = orbit.id;
@@ -952,9 +1014,9 @@ function equivalenceLabel(orbit) {
 
 function renderDetails(orbit) {
   els.title.textContent = displayWord(orbit);
-  els.subtitle.textContent = `period ${orbit.period} | ${equivalenceLabel(orbit)} | ${orbit.id}`;
+  els.subtitle.textContent = `period ${orbit.period} | ${pathClassLabel(orbit)} | ${equivalenceLabel(orbit)} | ${orbit.id}`;
   els.details.innerHTML = "";
-  detailRow("Kind", isSingular(orbit) ? "singular normal-cone" : "ordinary");
+  detailRow("Class", pathClassLabel(orbit));
   detailRow("Equivalence", equivalenceLabel(orbit));
   detailRow("Length", `${orbit.length_exact} (${orbit.length_numeric.toFixed(10)})`);
   if (orbit.path_center_xyz_exact) detailRow("Center", orbit.path_center_xyz_exact.join(", "), "mono");
@@ -1013,6 +1075,22 @@ function populatePeriods() {
   }
 }
 
+function populateStratumFilters() {
+  const existing = els.kind.value || "all";
+  const counts = Object.fromEntries(Object.keys(FILTER_LABELS).map(key => [key, 0]));
+  counts.all = inventory.orbits.length;
+  inventory.orbits.forEach(orbit => {
+    counts[stratumFilterKey(orbit)] += 1;
+  });
+  for (const option of els.kind.options) {
+    const count = counts[option.value] ?? 0;
+    option.textContent = `${FILTER_LABELS[option.value] ?? option.textContent} (${count})`;
+    option.disabled = option.value !== "all" && count === 0;
+  }
+  const existingOption = [...els.kind.options].find(option => option.value === existing);
+  els.kind.value = existingOption && !existingOption.disabled ? existing : "all";
+}
+
 async function loadInventory() {
   try {
     const timestamp = Date.now();
@@ -1043,6 +1121,7 @@ async function loadInventory() {
       }
     };
     populatePeriods();
+    populateStratumFilters();
     renderSummary();
     selectDefaultVisibleOrbit();
     stopAnimation();

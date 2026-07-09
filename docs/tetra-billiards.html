@@ -27,11 +27,13 @@
         </label>
 
         <label class="field">
-          <span>Type</span>
+          <span>Stratum filter</span>
           <select id="kindSelect">
-            <option value="all">Ordinary and singular</option>
-            <option value="ordinary">Ordinary</option>
-            <option value="singular">Singular normal-cone</option>
+            <option value="all">All paths</option>
+            <option value="ordinary">Ordinary face hits</option>
+            <option value="edge">Singular edge-only hits</option>
+            <option value="vertex">Singular vertex-only hits</option>
+            <option value="edge_vertex">Singular edge + vertex hits</option>
           </select>
         </label>
 
@@ -103,7 +105,6 @@
                     <th scope="col">
                       <button class="sort-header" type="button" data-sort-key="period">Period</button>
                     </th>
-                    <th scope="col">Type</th>
                     <th scope="col">
                       <button class="sort-header" type="button" data-sort-key="word">Canonical word</button>
                     </th>

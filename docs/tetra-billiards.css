@@ -317,7 +317,7 @@ dd {
 
 .orbit-table {
   width: 100%;
-  min-width: 1120px;
+  min-width: 1040px;
   border-collapse: collapse;
   font-size: 12px;
   table-layout: fixed;
@@ -377,7 +377,6 @@ dd {
 
 .period-cell,
 .numeric-cell,
-.kind-cell,
 .deg-cell {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -407,7 +406,6 @@ dd {
   white-space: nowrap;
 }
 
-.kind-cell,
 .deg-cell {
   color: var(--muted);
 }
@@ -419,46 +417,41 @@ dd {
 
 .orbit-table th:nth-child(2),
 .orbit-table td:nth-child(2) {
-  width: 82px;
+  width: 250px;
 }
 
 .orbit-table th:nth-child(3),
 .orbit-table td:nth-child(3) {
-  width: 220px;
+  width: 112px;
 }
 
 .orbit-table th:nth-child(4),
 .orbit-table td:nth-child(4) {
-  width: 112px;
+  width: 105px;
 }
 
 .orbit-table th:nth-child(5),
 .orbit-table td:nth-child(5) {
-  width: 105px;
+  width: 145px;
 }
 
 .orbit-table th:nth-child(6),
 .orbit-table td:nth-child(6) {
-  width: 145px;
+  width: 98px;
 }
 
 .orbit-table th:nth-child(7),
 .orbit-table td:nth-child(7) {
-  width: 98px;
+  width: 92px;
 }
 
 .orbit-table th:nth-child(8),
 .orbit-table td:nth-child(8) {
-  width: 92px;
+  width: 90px;
 }
 
 .orbit-table th:nth-child(9),
 .orbit-table td:nth-child(9) {
-  width: 90px;
-}
-
-.orbit-table th:nth-child(10),
-.orbit-table td:nth-child(10) {
   width: 82px;
 }
 
