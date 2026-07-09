@@ -182,7 +182,29 @@ function bigIntFrom(value) {
   return BigInt(String(value));
 }
 
+function integerText(value) {
+  return /^[+-]?\d+$/.test(String(value));
+}
+
+function zeroValue(value) {
+  const text = String(value);
+  if (integerText(text)) return BigInt(text) === 0n;
+  return Math.abs(parseFractionApprox(text)) < 1e-12;
+}
+
+function scalarApprox(value) {
+  return parseFractionApprox(String(value));
+}
+
+function formatApprox(value) {
+  if (Math.abs(value) < 5e-13) return "0";
+  return Number(value).toPrecision(12).replace(/\.?0+$/, "");
+}
+
 function ratio(value, denominator) {
+  if (!integerText(value) || !integerText(denominator)) {
+    return scalarApprox(value) / scalarApprox(denominator);
+  }
   let a = bigIntFrom(value);
   let b = bigIntFrom(denominator);
   if (a === 0n) return 0;
@@ -199,6 +221,12 @@ function ratio(value, denominator) {
 }
 
 function compareIntegerStrings(a, b) {
+  if (!integerText(a) || !integerText(b)) {
+    const aa = scalarApprox(a);
+    const bb = scalarApprox(b);
+    if (Number.isFinite(aa) && Number.isFinite(bb)) return aa - bb;
+    return String(a).localeCompare(String(b));
+  }
   const aa = String(a).replace(/^-/, "");
   const bb = String(b).replace(/^-/, "");
   if (aa.length !== bb.length) return aa.length - bb.length;
@@ -224,6 +252,10 @@ function gcdBigInt(a, b) {
 }
 
 function fractionText(numerator, denominator) {
+  if (!integerText(numerator) || !integerText(denominator)) {
+    const den = scalarApprox(denominator);
+    return den === 1 ? String(numerator) : formatApprox(scalarApprox(numerator) / den);
+  }
   let a = bigIntFrom(numerator);
   let b = bigIntFrom(denominator);
   if (b < 0n) {
@@ -241,6 +273,10 @@ function barycentricExact(row, denominator) {
 }
 
 function pointExactFromBarycentric(row, denominator) {
+  if (!integerText(denominator) || row.some(value => !integerText(value))) {
+    const point = pointFloatFromBarycentric(row, denominator);
+    return point.map(formatApprox);
+  }
   const nums = row.map(bigIntFrom);
   const x = nums[0] + nums[3];
   const y = nums[1] + nums[3];
@@ -258,14 +294,14 @@ function pointFloatFromBarycentric(row, denominator) {
 }
 
 function faceFromBarycentric(row) {
-  const zeroIndex = row.findIndex(value => bigIntFrom(value) === 0n);
+  const zeroIndex = row.findIndex(value => zeroValue(value));
   return zeroIndex >= 0 ? VERTEX_NAMES[zeroIndex] : "?";
 }
 
 function inferStratum(row) {
   const zero = [];
   row.forEach((value, index) => {
-    if (bigIntFrom(value) === 0n) zero.push(VERTEX_NAMES[index]);
+    if (zeroValue(value)) zero.push(VERTEX_NAMES[index]);
   });
   const label = zero.join("");
   if (zero.length === 1) return { label, type: "face", face: zero[0] };
@@ -369,7 +405,7 @@ const PERMUTATIONS_4 = (() => {
 const copyCountCache = new Map();
 
 function rowKey(row) {
-  return row.map(value => bigIntFrom(value).toString()).join(",");
+  return row.map(value => String(value)).join(",");
 }
 
 function cyclicKeys(matrix) {
@@ -426,8 +462,10 @@ function normalizeOrbit(raw, fallbackKind) {
   orbit.initial_direction = orbit.initial_direction ?? [];
   orbit.height = String(orbit.height ?? orbit.barycentric_denominator);
   if (!isSingular(orbit) && orbit.boundary_margin == null) {
-    const positive = orbit.barycentric_points.flat().map(bigIntFrom).filter(value => value > 0n);
-    orbit.boundary_margin = positive.length ? fractionText(positive.reduce((a, b) => a < b ? a : b), orbit.barycentric_denominator) : "";
+    const positive = orbit.barycentric_points.flat().filter(value => scalarApprox(value) > 0);
+    orbit.boundary_margin = positive.length
+      ? fractionText(positive.reduce((a, b) => scalarApprox(a) < scalarApprox(b) ? a : b), orbit.barycentric_denominator)
+      : "";
   }
   orbit.boundary_margin = orbit.boundary_margin ?? "";
   if (!Number.isFinite(orbit.centroid_distance_numeric)) {
@@ -519,19 +557,11 @@ function markerGeometry(style, radius) {
 }
 
 function addPointMarker(group, point, style, selected) {
-  const radius = selected ? 0.043 : 0.024;
+  const radius = 0.026;
   const material = new THREE.MeshBasicMaterial({ color: style.color });
   const mesh = new THREE.Mesh(markerGeometry(style, radius), material);
   mesh.position.copy(point);
   group.add(mesh);
-  if (selected) {
-    const halo = new THREE.Mesh(
-      new THREE.SphereGeometry(radius * 1.45, 18, 12),
-      new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: true })
-    );
-    halo.position.copy(point);
-    group.add(halo);
-  }
 }
 
 function addPath(group, points, material = pathMaterial) {
@@ -693,6 +723,20 @@ function drawUnfolded(view, orbit) {
   return points;
 }
 
+function drawStraightenedSingular(view, orbit) {
+  const folded = foldedPoints(orbit);
+  if (!folded.length) return [];
+  const points = [new THREE.Vector3(0, 0, 0)];
+  let offset = 0;
+  for (let i = 0; i < folded.length; i++) {
+    offset += folded[i].distanceTo(folded[(i + 1) % folded.length]);
+    points.push(new THREE.Vector3(offset, 0, 0));
+  }
+  addPath(view.root, points, singularPathMaterial);
+  points.slice(0, -1).forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
+  return points;
+}
+
 function polylineLengths(points) {
   const lengths = [];
   let total = 0;
@@ -834,9 +878,9 @@ function drawSelectedOrbit() {
     currentPathPoints.unfolded = drawUnfolded(views.unfolded, orbit);
     updateBoundsAndCamera(views.unfolded);
   } else {
-    views.unfolded.bounds = null;
-    resetCamera(views.unfolded);
-    els.note.textContent = "Paths hitting edges or vertices do not have a unique deterministic face-unfolding chain.";
+    currentPathPoints.unfolded = drawStraightenedSingular(views.unfolded, orbit);
+    updateBoundsAndCamera(views.unfolded);
+    els.note.textContent = "Singular paths are shown with their segments straightened end-to-end; no unique reflected-tetrahedra chain is chosen.";
     els.note.classList.remove("is-hidden");
   }
   updateAnimation(performance.now());
@@ -849,7 +893,9 @@ function orbitLengthLabel(orbit) {
 }
 
 function provenanceLabel(orbit) {
-  if (isSingular(orbit)) return "notebook";
+  if (isSingular(orbit)) {
+    return orbit.coordinate_kind === "numeric" ? "singular numeric" : "singular exact";
+  }
   if (orbit.provenance === "exploratory_exactified") return "explore";
   if (orbit.period > (inventory?.summary?.exhaustive_checked_through ?? 40)) return "extra";
   return "exhaustive";
@@ -1026,6 +1072,7 @@ function renderDetails(orbit) {
   detailRow("Height", orbit.height);
   if (orbit.boundary_margin) detailRow("Margin", orbit.boundary_margin);
   detailRow("Source", provenanceLabel(orbit));
+  if (orbit.coordinate_kind) detailRow("Coordinates", orbit.coordinate_kind === "numeric" ? "numeric" : "exact rational");
   if (orbit.discovery_method) detailRow("Found by", orbit.discovery_method);
   if (orbit.family_dimension) detailRow("Family", `${orbit.family_dimension}D representative`);
   if (orbit.axis_direction.length) detailRow("Axis", orbit.axis_direction.join(", "), "mono");
@@ -1043,9 +1090,14 @@ function renderSummary() {
   els.status.textContent = `${summary.ordinary_orbits} ordinary + ${summary.singular_orbits} singular paths loaded`;
   els.summary.innerHTML = "";
   const coverage = `Exhaustive through level ${summary.exhaustive_checked_through ?? 40}; ${summary.extra_verified_orbits ?? 0} exactified extra paths`;
+  const singularSummary = inventory.singular_inventory?.summary;
+  const singularCoverage = singularSummary
+    ? `Exhaustive through period ${singularSummary.exhaustive_checked_through}; ${singularSummary.exact_rational_orbits ?? 0} exact rational, ${singularSummary.numeric_orbits ?? 0} numeric`
+    : "Singular data unavailable";
   const rows = [
     ["Generated", inventory.generated_at],
-    ["Coverage", coverage],
+    ["Ordinary", coverage],
+    ["Singular", singularCoverage],
     ["Catalogue", `${summary.total_orbits} paths (${summary.ordinary_orbits} ordinary, ${summary.singular_orbits} singular)`],
     ["Max period", String(summary.max_period)],
     ["Counts", counts],

@@ -5,6 +5,8 @@ const state = {
   formData: null,
   geodesicData: null,
   traceData: null,
+  formError: "",
+  geodesicError: "",
   selectedGeodesic: null,
   mode: "form"
 };
@@ -97,6 +99,8 @@ async function loadSurface(surfaceId) {
   state.surface = state.manifest.surfaces.find((surface) => surface.id === surfaceId);
   state.formData = null;
   state.geodesicData = null;
+  state.formError = "";
+  state.geodesicError = "";
   state.selectedGeodesic = null;
   populateForms();
   await Promise.all([loadCurrentForm(), loadGeodesics()]);
@@ -105,12 +109,24 @@ async function loadSurface(surfaceId) {
 
 async function loadCurrentForm() {
   if (!state.form) return;
-  state.formData = await fetchJson(state.form.json);
+  try {
+    state.formData = await fetchJson(state.form.json);
+    state.formError = "";
+  } catch (error) {
+    state.formData = null;
+    state.formError = error.message;
+  }
 }
 
 async function loadGeodesics() {
   if (!state.surface?.geodesics?.json) return;
-  state.geodesicData = await fetchJson(state.surface.geodesics.json);
+  try {
+    state.geodesicData = await fetchJson(state.surface.geodesics.json);
+    state.geodesicError = "";
+  } catch (error) {
+    state.geodesicData = null;
+    state.geodesicError = error.message;
+  }
 }
 
 async function loadTraceData() {
@@ -151,7 +167,11 @@ function showImage(src, alt) {
 
 function renderFormDetails() {
   if (!state.formData) {
-    setDetails(el.formDetails, []);
+    setDetails(el.formDetails, [
+      ["status", state.formError ? "data missing" : "no form selected"],
+      ["source", state.form?.json || ""],
+      ["note", state.formError || ""]
+    ]);
     return;
   }
   const r = state.formData.spectral_parameter;
@@ -194,7 +214,7 @@ function renderGeodesicSummary() {
     ["surface", state.surface.id],
     ["available", fmt(geodesics.length, 0)],
     ["shown", fmt(limit, 0)],
-    ["method", state.geodesicData?.enumeration?.method || ""]
+    ["method", state.geodesicData?.enumeration?.method || state.geodesicError || ""]
   ]);
 }
 
@@ -251,16 +271,22 @@ function render() {
   if (state.mode === "form") {
     renderFormDetails();
     renderFormList();
-    const image = selectedFormImage();
+    const image = state.formData ? selectedFormImage() : "";
     el.viewerTitle.textContent = `${state.surface.name}`;
     el.viewerSubtitle.textContent = state.formData ? `Eigenfunction ${state.formData.label}` : "Eigenfunction";
     showImage(image, "Maass eigenfunction render");
+    if (!state.formData && state.formError) {
+      el.emptyState.textContent = `${state.formError}. The manifest entry is preserved, but the referenced data is not checked in.`;
+    }
   } else if (state.mode === "geo") {
     renderGeodesicSummary();
     renderGeodesicList();
     el.viewerTitle.textContent = `${state.surface.name}`;
     el.viewerSubtitle.textContent = "Closed geodesic data with exact matrices and folded paths";
-    showImage(selectedGeodesicImage(), "Closed geodesic render");
+    showImage(state.geodesicData ? selectedGeodesicImage() : "", "Closed geodesic render");
+    if (!state.geodesicData && state.geodesicError) {
+      el.emptyState.textContent = `${state.geodesicError}. The manifest entry is preserved, but the referenced data is not checked in.`;
+    }
   } else {
     renderTracePanel();
     el.tableTitle.textContent = "Trace formula";

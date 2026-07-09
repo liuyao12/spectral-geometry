@@ -3,103 +3,155 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Arithmetic Surface Inspector</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Spectral Geometry Mini-Projects</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="home.css">
   </head>
   <body>
-    <main class="app-shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <h1>Arithmetic Surface Inspector</h1>
-          <p id="sourceStatus">Loading manifest...</p>
-          <nav class="project-links" aria-label="project pages">
-            <a href="tetra-billiards.html">Tetrahedron billiards</a>
-            <a href="closed-billiards.html">Closed billiard trajectories</a>
-            <a href="minimal-surfaces.html">Minimal surfaces</a>
-          </nav>
+    <main class="home-shell">
+      <header class="home-header">
+        <div>
+          <p class="kicker">Spectral geometry</p>
+          <h1>Mini-projects for spectra, geodesics, billiards, and surfaces</h1>
         </div>
+        <p class="home-lede">
+          A growing collection of small visual databases for geometric objects:
+          exact or enumerated data on lengths, paths, eigenfunctions, and
+          variational surface states.
+        </p>
+      </header>
 
-        <label class="field">
-          <span>Surface</span>
-          <select id="surfaceSelect"></select>
-        </label>
-
-        <div class="tabs" role="tablist" aria-label="data mode">
-          <button id="tabForm" class="tab is-active" type="button">Eigenfunction</button>
-          <button id="tabGeo" class="tab" type="button">Geodesics</button>
-          <button id="tabTrace" class="tab" type="button">Trace test</button>
-        </div>
-
-        <section id="formPanel" class="panel-section">
-          <label class="field">
-            <span>LMFDB form</span>
-            <select id="formSelect"></select>
-          </label>
-          <label class="field">
-            <span>View</span>
-            <select id="formViewSelect">
-              <option value="halfplane">H domain</option>
-              <option value="disk-domain">Disk domain</option>
-              <option value="disk">Full disk</option>
-            </select>
-          </label>
-          <dl id="formDetails" class="details"></dl>
-        </section>
-
-        <section id="geoPanel" class="panel-section is-hidden">
-          <label class="field">
-            <span>View</span>
-            <select id="geoViewSelect">
-              <option value="halfplane">H domain</option>
-              <option value="disk">Disk domain</option>
-              <option value="lifted">Lifted axes</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>Shown geodesics</span>
-            <input id="geoLimit" type="range" min="1" max="60" value="20">
-          </label>
-          <dl id="geoSummary" class="details"></dl>
-        </section>
-
-        <section id="tracePanel" class="panel-section is-hidden">
-          <dl id="traceDetails" class="details"></dl>
-        </section>
-      </aside>
-
-      <section class="workspace">
-        <div class="viewer-toolbar">
-          <div>
-            <h2 id="viewerTitle">Viewer</h2>
-            <p id="viewerSubtitle"></p>
+      <section class="project-grid" aria-label="mini-projects">
+        <a class="project-card project-card-featured" href="hyperbolic-surfaces.html">
+          <div class="project-visual hyperbolic-preview" aria-hidden="true">
+            <svg viewBox="0 0 240 170" role="img">
+              <circle cx="120" cy="85" r="70"></circle>
+              <path class="octagon" d="M185 112 L148 150 L92 150 L55 112 L55 58 L92 20 L148 20 L185 58 Z"></path>
+              <path class="geo-a" d="M55 107 C83 54 145 40 185 68"></path>
+              <path class="geo-b" d="M68 40 C101 110 154 132 194 103"></path>
+              <text x="188" y="89">a</text>
+              <text x="42" y="89">a^-1</text>
+            </svg>
           </div>
-          <button id="resetSelection" type="button">Reset</button>
-        </div>
+          <div class="project-copy">
+            <span class="project-kicker">2D hyperbolic metric</span>
+            <h2>Compact hyperbolic surfaces</h2>
+            <p>
+              Closed geodesics on a genus-2 regular octagon quotient, with
+              opposite-edge identifications in the Poincare disk and upper
+              half-plane models.
+            </p>
+            <dl>
+              <dt>Data</dt>
+              <dd>locally generated side-pairing search</dd>
+              <dt>Status</dt>
+              <dd>new interactive viewer</dd>
+            </dl>
+          </div>
+        </a>
 
-        <div id="imageStage" class="image-stage">
-          <img id="mainImage" alt="">
-          <svg id="geoOverlay" class="geo-overlay" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet"></svg>
-          <div id="emptyState" class="empty-state is-hidden"></div>
-        </div>
+        <a class="project-card" href="tetra-billiards.html">
+          <div class="project-visual tetra-preview" aria-hidden="true">
+            <svg viewBox="0 0 240 170" role="img">
+              <path class="solid" d="M48 125 L120 28 L196 124 L84 143 Z"></path>
+              <path class="edge" d="M120 28 L84 143"></path>
+              <path class="edge" d="M120 28 L48 125"></path>
+              <path class="edge" d="M120 28 L196 124"></path>
+              <path class="edge" d="M48 125 L84 143 L196 124"></path>
+              <path class="path" d="M82 119 L125 62 L158 119 L94 132 Z"></path>
+            </svg>
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Polyhedral billiards</span>
+            <h2>Tetrahedron billiards</h2>
+            <p>
+              Inventory of closed billiard trajectories in the regular
+              tetrahedron, with folded and unfolded 3D views.
+            </p>
+            <dl>
+              <dt>Data</dt>
+              <dd>exact and exploratory searches</dd>
+              <dt>Status</dt>
+              <dd>interactive inventory</dd>
+            </dl>
+          </div>
+        </a>
 
-        <div class="lower-grid">
-          <section class="table-panel">
-            <div class="section-title">
-              <h3 id="tableTitle">Records</h3>
-              <span id="recordCount"></span>
-            </div>
-            <div id="recordList" class="record-list"></div>
-          </section>
+        <a class="project-card" href="closed-billiards.html">
+          <div class="project-visual essay-preview" aria-hidden="true">
+            <svg viewBox="0 0 240 170" role="img">
+              <path class="panel" d="M54 126 L118 34 L188 126 Z"></path>
+              <path class="ray" d="M75 114 L115 60 L155 114 L92 128"></path>
+              <path class="normal" d="M118 34 L118 126"></path>
+              <path class="normal" d="M82 126 L118 92 L154 126"></path>
+            </svg>
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Exposition</span>
+            <h2>Closed billiard trajectories</h2>
+            <p>
+              A worked tetrahedron path, the unfolding trick, and the normal-cone
+              rule for singular edge and vertex hits.
+            </p>
+            <dl>
+              <dt>Data</dt>
+              <dd>ordinary and singular examples</dd>
+              <dt>Status</dt>
+              <dd>essay with 3D scenes</dd>
+            </dl>
+          </div>
+        </a>
 
-          <section class="table-panel">
-            <div class="section-title">
-              <h3>Selected object</h3>
-            </div>
-            <pre id="selectedJson" class="json-view">{}</pre>
-          </section>
-        </div>
+        <a class="project-card" href="minimal-surfaces.html">
+          <div class="project-visual surface-preview" aria-hidden="true">
+            <svg viewBox="0 0 240 170" role="img">
+              <path class="wire" d="M58 116 C78 46 160 46 182 116"></path>
+              <path class="wire" d="M58 116 C88 146 151 146 182 116"></path>
+              <path class="sheet" d="M58 116 C83 75 156 75 182 116 C151 145 88 145 58 116 Z"></path>
+              <path class="crease" d="M78 119 C110 95 142 95 164 119"></path>
+            </svg>
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Plateau states</span>
+            <h2>Platonic soap-film gallery</h2>
+            <p>
+              Relaxed minimal-surface examples for Platonic wireframes, including
+              live annulus controls.
+            </p>
+            <dl>
+              <dt>Data</dt>
+              <dd>Surface Evolver and relaxed meshes</dd>
+              <dt>Status</dt>
+              <dd>interactive 3D gallery</dd>
+            </dl>
+          </div>
+        </a>
+
+        <a class="project-card" href="arithmetic-surfaces.html">
+          <div class="project-visual arithmetic-preview" aria-hidden="true">
+            <svg viewBox="0 0 240 170" role="img">
+              <path class="domain" d="M62 130 C72 84 87 52 120 52 C153 52 168 84 178 130"></path>
+              <path class="axis" d="M86 132 C99 84 141 84 154 132"></path>
+              <path class="wave" d="M64 105 C82 92 98 119 116 105 C134 91 151 119 174 101"></path>
+              <line x1="44" y1="132" x2="196" y2="132"></line>
+            </svg>
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Arithmetic prototype</span>
+            <h2>Arithmetic surface inspector</h2>
+            <p>
+              Prototype manifest for modular orbifold eigenfunction images,
+              geodesic records, and trace-formula diagnostics.
+            </p>
+            <dl>
+              <dt>Data</dt>
+              <dd>manifest-driven records</dd>
+              <dt>Status</dt>
+              <dd>prototype viewer</dd>
+            </dl>
+          </div>
+        </a>
       </section>
     </main>
-    <script src="app.js"></script>
   </body>
 </html>

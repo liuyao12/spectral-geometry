@@ -1,168 +1,6894 @@
 {
-  "schema": "spectral.tetra_singular_normal_cones.v1",
-  "generated_at": "2026-07-08T00:00:00-0700",
+  "schema": "spectral.tetra_singular_normal_cones.v2",
+  "generated_at": "2026-07-08T23:22:41-0700",
   "title": "Singular normal-cone billiard paths in the regular tetrahedron",
+  "source_algorithm": "tetrahedron_singular_closed_paths.py",
   "source_notebook": "https://observablehq.com/@liuyao12/billiard-in-tetrahedra",
   "tetrahedron": {
-    "vertex_order": ["A", "B", "C", "D"],
-    "vertices": [
-      [1, 0, 0],
-      [0, 1, 0],
-      [0, 0, 1],
-      [1, 1, 1]
-    ]
+    "vertex_order": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "vertices": {
+      "A": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "B": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "C": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "D": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "face_convention": "A, B, C, D denote the faces opposite the corresponding vertices."
   },
   "notation": {
     "A": "face hit on F_A",
-    "(AD)": "edge hit on E_AD",
-    "[D]": "vertex hit on V_D"
+    "AB": "edge hit on F_A cap F_B",
+    "ABC": "vertex hit on F_A cap F_B cap F_C"
+  },
+  "summary": {
+    "total_orbits": 39,
+    "max_period": 7,
+    "exhaustive_checked_through": 7,
+    "period_counts": {
+      "2": 2,
+      "3": 1,
+      "4": 3,
+      "5": 3,
+      "6": 13,
+      "7": 17
+    },
+    "canonical_candidates_by_period": {
+      "2": 3,
+      "3": 1,
+      "4": 9,
+      "5": 13,
+      "6": 77,
+      "7": 187
+    },
+    "family_orbits": 1,
+    "exact_rational_orbits": 15,
+    "numeric_orbits": 24,
+    "rejected_after_float": 251,
+    "numeric_after_exact": 24,
+    "equivalence": "cyclic, reversal, and full tetrahedral relabeling",
+    "method": "Enumerate primitive cyclic active-face stratum words with disjoint adjacent active sets; minimize polygonal length over the product of closed strata; retain relative-interior minimizers satisfying the normal-cone velocity-jump condition."
   },
   "orbits": [
     {
-      "id": "s02_AD_BC",
+      "id": "s02_AB_CD",
       "kind": "singular_normal_cone",
+      "singular": true,
       "period": 2,
-      "word": "(AD)(BC)",
-      "stratum_word": ["(AD)", "(BC)"],
+      "word": "AB CD",
+      "stratum_word": [
+        "AB",
+        "CD"
+      ],
       "length_exact": "2",
       "length_numeric": 2.0,
       "barycentric_denominator": "2",
       "barycentric_points": [
-        ["1", "0", "0", "1"],
-        ["0", "1", "1", "0"]
-      ]
+        [
+          "0",
+          "0",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.5,
+          0.5,
+          0.0
+        ]
+      ],
+      "height": "2",
+      "boundary_margin": "1/2",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 3,
+      "path_center_xyz_exact": [
+        "1/2",
+        "1/2",
+        "1/2"
+      ],
+      "path_center_xyz": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "centroid_distance_squared_exact": "0",
+      "centroid_distance_numeric": 0.0
     },
     {
-      "id": "s02_D_vD",
+      "id": "s02_A_BCD",
       "kind": "singular_normal_cone",
+      "singular": true,
       "period": 2,
-      "word": "D[D]",
-      "stratum_word": ["D", "[D]"],
+      "word": "A BCD",
+      "stratum_word": [
+        "A",
+        "BCD"
+      ],
       "length_exact": "4*sqrt(3)/3",
       "length_numeric": 2.309401076758503,
       "barycentric_denominator": "3",
       "barycentric_points": [
-        ["1", "1", "1", "0"],
-        ["0", "0", "0", "3"]
-      ]
+        [
+          "0",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "3",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/3",
+          "1/3",
+          "1/3"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "1/3",
+          "2/3",
+          "2/3"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.3333333333333333,
+          0.6666666666666666,
+          0.6666666666666666
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "3",
+      "boundary_margin": "1/3",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 4,
+      "path_center_xyz_exact": [
+        "2/3",
+        "1/3",
+        "1/3"
+      ],
+      "path_center_xyz": [
+        0.6666666666666666,
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "centroid_distance_squared_exact": "1/12",
+      "centroid_distance_numeric": 0.28867513459481287
     },
     {
-      "id": "s03_AD_D_A",
+      "id": "s03_A_B_CD",
       "kind": "singular_normal_cone",
+      "singular": true,
       "period": 3,
-      "word": "(AD)DA",
-      "stratum_word": ["(AD)", "D", "A"],
+      "word": "A B CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "CD"
+      ],
       "length_exact": "4*sqrt(2)/3",
       "length_numeric": 1.8856180831641267,
       "barycentric_denominator": "6",
       "barycentric_points": [
-        ["3", "0", "0", "3"],
-        ["2", "2", "2", "0"],
-        ["0", "2", "2", "2"]
-      ]
+        [
+          "0",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "2",
+          "0",
+          "2",
+          "2"
+        ],
+        [
+          "3",
+          "3",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/3",
+          "1/3",
+          "1/3"
+        ],
+        [
+          "1/3",
+          "0",
+          "1/3",
+          "1/3"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "1/3",
+          "2/3",
+          "2/3"
+        ],
+        [
+          "2/3",
+          "1/3",
+          "2/3"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.3333333333333333,
+          0.6666666666666666,
+          0.6666666666666666
+        ],
+        [
+          0.6666666666666666,
+          0.3333333333333333,
+          0.6666666666666666
+        ],
+        [
+          0.5,
+          0.5,
+          0.0
+        ]
+      ],
+      "height": "6",
+      "boundary_margin": "1/3",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 6,
+      "path_center_xyz_exact": [
+        "1/2",
+        "1/2",
+        "4/9"
+      ],
+      "path_center_xyz": [
+        0.5,
+        0.5,
+        0.4444444444444444
+      ],
+      "centroid_distance_squared_exact": "1/324",
+      "centroid_distance_numeric": 0.05555555555555555
     },
     {
-      "id": "s04_AD_D_B_A",
+      "id": "s04_A_B_C_BD",
       "kind": "singular_normal_cone",
+      "singular": true,
       "period": 4,
-      "word": "(AD)DBA",
-      "stratum_word": ["(AD)", "D", "B", "A"],
+      "word": "A B C BD",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "BD"
+      ],
       "length_exact": "4*sqrt(21)/9",
-      "length_numeric": 2.036700308869266,
+      "length_numeric": 2.0367003088692623,
       "barycentric_denominator": "126",
       "barycentric_points": [
-        ["63", "0", "0", "63"],
-        ["60", "15", "51", "0"],
-        ["35", "0", "56", "35"],
-        ["0", "15", "51", "60"]
-      ]
+        [
+          "0",
+          "15",
+          "60",
+          "51"
+        ],
+        [
+          "35",
+          "0",
+          "35",
+          "56"
+        ],
+        [
+          "60",
+          "15",
+          "0",
+          "51"
+        ],
+        [
+          "63",
+          "0",
+          "63",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "5/42",
+          "10/21",
+          "17/42"
+        ],
+        [
+          "5/18",
+          "0",
+          "5/18",
+          "4/9"
+        ],
+        [
+          "10/21",
+          "5/42",
+          "0",
+          "17/42"
+        ],
+        [
+          "1/2",
+          "0",
+          "1/2",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "17/42",
+          "11/21",
+          "37/42"
+        ],
+        [
+          "13/18",
+          "4/9",
+          "13/18"
+        ],
+        [
+          "37/42",
+          "11/21",
+          "17/42"
+        ],
+        [
+          "1/2",
+          "0",
+          "1/2"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.40476190476190477,
+          0.5238095238095238,
+          0.8809523809523809
+        ],
+        [
+          0.7222222222222222,
+          0.4444444444444444,
+          0.7222222222222222
+        ],
+        [
+          0.8809523809523809,
+          0.5238095238095238,
+          0.40476190476190477
+        ],
+        [
+          0.5,
+          0.0,
+          0.5
+        ]
+      ],
+      "height": "126",
+      "boundary_margin": "5/42",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "79/126",
+        "47/126",
+        "79/126"
+      ],
+      "path_center_xyz": [
+        0.626984126984127,
+        0.373015873015873,
+        0.626984126984127
+      ],
+      "centroid_distance_squared_exact": "64/1323",
+      "centroid_distance_numeric": 0.21994295969128602
     },
     {
-      "id": "s04_AD_D_AD_A",
+      "id": "s04_A_BC_D_BC",
       "kind": "singular_normal_cone",
+      "singular": true,
       "period": 4,
-      "word": "(AD)D(AD)A",
-      "stratum_word": ["(AD)", "D", "(AD)", "A"],
-      "length_exact": "4*sqrt(3)/3",
-      "length_numeric": 2.3094010767585034,
-      "barycentric_denominator": "6",
-      "barycentric_points": [
-        ["3", "0", "0", "3"],
-        ["4", "1", "1", "0"],
-        ["3", "0", "0", "3"],
-        ["0", "1", "1", "4"]
+      "word": "A BC D BC",
+      "stratum_word": [
+        "A",
+        "BC",
+        "D",
+        "BC"
       ],
+      "length_exact": "~2.309401076759",
+      "length_numeric": 2.309401076758503,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.137884538731643",
+          "0.137884538731643",
+          "0.724230922536713"
+        ],
+        [
+          "0.413653616194413",
+          "0",
+          "0",
+          "0.586346383805587"
+        ],
+        [
+          "0.609102410797518",
+          "0.195448794601241",
+          "0.195448794601241",
+          "0"
+        ],
+        [
+          "0.413653616195487",
+          "0",
+          "0",
+          "0.586346383804513"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.137884538731643",
+          "0.137884538731643",
+          "0.724230922536713"
+        ],
+        [
+          "0.413653616194413",
+          "0",
+          "0",
+          "0.586346383805587"
+        ],
+        [
+          "0.609102410797518",
+          "0.195448794601241",
+          "0.195448794601241",
+          "0"
+        ],
+        [
+          "0.413653616195487",
+          "0",
+          "0",
+          "0.586346383804513"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.724230922536713",
+          "0.862115461268357",
+          "0.862115461268357"
+        ],
+        [
+          "1",
+          "0.586346383805587",
+          "0.586346383805587"
+        ],
+        [
+          "0.609102410797518",
+          "0.195448794601241",
+          "0.195448794601241"
+        ],
+        [
+          "1",
+          "0.586346383804513",
+          "0.586346383804513"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.7242309225367134,
+          0.8621154612683567,
+          0.8621154612683566
+        ],
+        [
+          1.0,
+          0.5863463838055873,
+          0.5863463838055873
+        ],
+        [
+          0.6091024107975178,
+          0.1954487946012411,
+          0.1954487946012411
+        ],
+        [
+          1.0,
+          0.5863463838045129,
+          0.5863463838045129
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.137884538731643",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
       "family_dimension": 1,
       "family_copy_count": 6,
       "representative_of_family": true,
-      "representative_parameter_value": "1/2",
-      "family_parameter": {
-        "name": "t",
-        "range": ["0", "1"],
-        "default": "1/2",
-        "open_interval": true,
-        "description": "edge point [t,0,0,1-t] on E_AD",
-        "length_constant": true,
-        "barycentric_points_formula": [
-          ["t", "0", "0", "1-t"],
-          ["(1+2*t)/3", "(1-t)/3", "(1-t)/3", "0"],
-          ["t", "0", "0", "1-t"],
-          ["0", "t/3", "t/3", "(3-2*t)/3"]
-        ]
-      }
+      "path_center_xyz_exact": [
+        "0.833333333333558",
+        "0.557564255869925",
+        "0.557564255869925"
+      ],
+      "path_center_xyz": [
+        0.8333333333335577,
+        0.5575642558699245,
+        0.5575642558699245
+      ],
+      "centroid_distance_squared_exact": "0.117738398218977",
+      "centroid_distance_numeric": 0.34313029335658635
     },
     {
-      "id": "s05_AD_D_B_C_A",
+      "id": "s04_A_BC_A_BD",
       "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 4,
+      "word": "A BC A BD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "A",
+        "BD"
+      ],
+      "length_exact": "8*sqrt(11)/11",
+      "length_numeric": 2.412090756622109,
+      "barycentric_denominator": "11",
+      "barycentric_points": [
+        [
+          "0",
+          "1",
+          "5",
+          "5"
+        ],
+        [
+          "3",
+          "0",
+          "0",
+          "8"
+        ],
+        [
+          "0",
+          "1",
+          "5",
+          "5"
+        ],
+        [
+          "3",
+          "0",
+          "8",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/11",
+          "5/11",
+          "5/11"
+        ],
+        [
+          "3/11",
+          "0",
+          "0",
+          "8/11"
+        ],
+        [
+          "0",
+          "1/11",
+          "5/11",
+          "5/11"
+        ],
+        [
+          "3/11",
+          "0",
+          "8/11",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "5/11",
+          "6/11",
+          "10/11"
+        ],
+        [
+          "1",
+          "8/11",
+          "8/11"
+        ],
+        [
+          "5/11",
+          "6/11",
+          "10/11"
+        ],
+        [
+          "3/11",
+          "0",
+          "8/11"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.45454545454545453,
+          0.5454545454545454,
+          0.9090909090909091
+        ],
+        [
+          1.0,
+          0.7272727272727273,
+          0.7272727272727273
+        ],
+        [
+          0.45454545454545453,
+          0.5454545454545454,
+          0.9090909090909091
+        ],
+        [
+          0.2727272727272727,
+          0.0,
+          0.7272727272727273
+        ]
+      ],
+      "height": "11",
+      "boundary_margin": "1/11",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "6/11",
+        "5/11",
+        "9/11"
+      ],
+      "path_center_xyz": [
+        0.5454545454545454,
+        0.45454545454545453,
+        0.8181818181818182
+      ],
+      "centroid_distance_squared_exact": "51/484",
+      "centroid_distance_numeric": 0.3246103831155841
+    },
+    {
+      "id": "s05_A_B_C_AB_D",
+      "kind": "singular_normal_cone",
+      "singular": true,
       "period": 5,
-      "word": "(AD)DBCA",
-      "stratum_word": ["(AD)", "D", "B", "C", "A"],
+      "word": "A B C AB D",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "AB",
+        "D"
+      ],
       "length_exact": "4*sqrt(26)/9",
-      "length_numeric": 2.2662308949301417,
+      "length_numeric": 2.2662308949301266,
       "barycentric_denominator": "234",
       "barycentric_points": [
-        ["117", "0", "0", "117"],
-        ["150", "24", "60", "0"],
-        ["130", "0", "52", "52"],
-        ["52", "52", "0", "130"],
-        ["0", "60", "24", "150"]
-      ]
+        [
+          "0",
+          "52",
+          "130",
+          "52"
+        ],
+        [
+          "52",
+          "0",
+          "52",
+          "130"
+        ],
+        [
+          "60",
+          "24",
+          "0",
+          "150"
+        ],
+        [
+          "0",
+          "0",
+          "117",
+          "117"
+        ],
+        [
+          "24",
+          "60",
+          "150",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "2/9",
+          "5/9",
+          "2/9"
+        ],
+        [
+          "2/9",
+          "0",
+          "2/9",
+          "5/9"
+        ],
+        [
+          "10/39",
+          "4/39",
+          "0",
+          "25/39"
+        ],
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "4/39",
+          "10/39",
+          "25/39",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "2/9",
+          "4/9",
+          "7/9"
+        ],
+        [
+          "7/9",
+          "5/9",
+          "7/9"
+        ],
+        [
+          "35/39",
+          "29/39",
+          "25/39"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "4/39",
+          "10/39",
+          "25/39"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.2222222222222222,
+          0.4444444444444444,
+          0.7777777777777778
+        ],
+        [
+          0.7777777777777778,
+          0.5555555555555556,
+          0.7777777777777778
+        ],
+        [
+          0.8974358974358975,
+          0.7435897435897436,
+          0.6410256410256411
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.10256410256410256,
+          0.2564102564102564,
+          0.6410256410256411
+        ]
+      ],
+      "height": "234",
+      "boundary_margin": "4/39",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "1/2",
+        "1/2",
+        "449/585"
+      ],
+      "path_center_xyz": [
+        0.5,
+        0.5,
+        0.7675213675213676
+      ],
+      "centroid_distance_squared_exact": "97969/1368900",
+      "centroid_distance_numeric": 0.2675213675213675
     },
     {
-      "id": "s06_AD_BC_AD_D_AD_A",
+      "id": "s05_A_BC_D_AB_CD",
       "kind": "singular_normal_cone",
-      "period": 6,
-      "word": "(AD)(BC)(AD)D(AD)A",
-      "stratum_word": ["(AD)", "(BC)", "(AD)", "D", "(AD)", "A"],
-      "length_exact": "2*sqrt(33)/3",
-      "length_numeric": 3.8297084310253537,
-      "barycentric_denominator": "90",
+      "singular": true,
+      "period": 5,
+      "word": "A BC D AB CD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "D",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~3.590765131743",
+      "length_numeric": 3.590765131742648,
+      "barycentric_denominator": "1",
       "barycentric_points": [
-        ["9", "0", "0", "81"],
-        ["0", "45", "45", "0"],
-        ["81", "0", "0", "9"],
-        ["80", "5", "5", "0"],
-        ["45", "0", "0", "45"],
-        ["0", "5", "5", "80"]
-      ]
+        [
+          "0",
+          "0.554763242666698",
+          "0.127210502099967",
+          "0.318026255233335"
+        ],
+        [
+          "0.500000000015761",
+          "0",
+          "0",
+          "0.499999999984239"
+        ],
+        [
+          "0.318026255268944",
+          "0.127210502102766",
+          "0.55476324262829",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.691420641409232",
+          "0.308579358590768"
+        ],
+        [
+          "0.308579358572446",
+          "0.691420641427554",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.554763242666698",
+          "0.127210502099967",
+          "0.318026255233335"
+        ],
+        [
+          "0.500000000015761",
+          "0",
+          "0",
+          "0.499999999984239"
+        ],
+        [
+          "0.318026255268944",
+          "0.127210502102766",
+          "0.55476324262829",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.691420641409232",
+          "0.308579358590768"
+        ],
+        [
+          "0.308579358572446",
+          "0.691420641427554",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.318026255233335",
+          "0.872789497900033",
+          "0.445236757333302"
+        ],
+        [
+          "1",
+          "0.499999999984239",
+          "0.499999999984239"
+        ],
+        [
+          "0.318026255268944",
+          "0.127210502102766",
+          "0.55476324262829"
+        ],
+        [
+          "0.308579358590768",
+          "0.308579358590768",
+          "1"
+        ],
+        [
+          "0.308579358572446",
+          "0.691420641427554",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.31802625523333483,
+          0.872789497900033,
+          0.44523675733330176
+        ],
+        [
+          1.0,
+          0.49999999998423916,
+          0.49999999998423916
+        ],
+        [
+          0.3180262552689439,
+          0.12721050210276563,
+          0.5547632426282905
+        ],
+        [
+          0.3085793585907679,
+          0.3085793585907679,
+          1.0
+        ],
+        [
+          0.30857935857244567,
+          0.6914206414275543,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.127210502099967",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.450642245533098",
+        "0.500000000001072",
+        "0.499999999989166"
+      ],
+      "path_center_xyz": [
+        0.4506422455330984,
+        0.500000000001072,
+        0.4999999999891663
+      ],
+      "centroid_distance_squared_exact": "0.00243618792601495",
+      "centroid_distance_numeric": 0.049357754466901604
     },
     {
-      "id": "s06_AD_D_BD_B_AB_A",
+      "id": "s05_A_B_CD_AB_CD",
       "kind": "singular_normal_cone",
-      "period": 6,
-      "word": "(AD)D(BD)B(AB)A",
-      "stratum_word": ["(AD)", "D", "(BD)", "B", "(AB)", "A"],
-      "length_exact": "sqrt(66)/2",
-      "length_numeric": 4.062019202317982,
+      "singular": true,
+      "period": 5,
+      "word": "A B CD AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "CD",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "8*sqrt(2)/3",
+      "length_numeric": 3.7712361663282534,
       "barycentric_denominator": "12",
       "barycentric_points": [
-        ["6", "0", "0", "6"],
-        ["5", "5", "2", "0"],
-        ["0", "6", "0", "6"],
-        ["5", "0", "2", "5"],
-        ["6", "6", "0", "0"],
-        ["0", "5", "2", "5"]
-      ]
+        [
+          "0",
+          "8",
+          "2",
+          "2"
+        ],
+        [
+          "8",
+          "0",
+          "2",
+          "2"
+        ],
+        [
+          "9",
+          "3",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "6",
+          "6"
+        ],
+        [
+          "3",
+          "9",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "2/3",
+          "1/6",
+          "1/6"
+        ],
+        [
+          "2/3",
+          "0",
+          "1/6",
+          "1/6"
+        ],
+        [
+          "3/4",
+          "1/4",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1/4",
+          "3/4",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "1/6",
+          "5/6",
+          "1/3"
+        ],
+        [
+          "5/6",
+          "1/6",
+          "1/3"
+        ],
+        [
+          "3/4",
+          "1/4",
+          "0"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "1/4",
+          "3/4",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.16666666666666666,
+          0.8333333333333334,
+          0.3333333333333333
+        ],
+        [
+          0.8333333333333334,
+          0.16666666666666666,
+          0.3333333333333333
+        ],
+        [
+          0.75,
+          0.25,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.25,
+          0.75,
+          0.0
+        ]
+      ],
+      "height": "12",
+      "boundary_margin": "1/6",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 6,
+      "path_center_xyz_exact": [
+        "1/2",
+        "1/2",
+        "1/3"
+      ],
+      "path_center_xyz": [
+        0.5,
+        0.5,
+        0.3333333333333333
+      ],
+      "centroid_distance_squared_exact": "1/36",
+      "centroid_distance_numeric": 0.16666666666666666
+    },
+    {
+      "id": "s06_A_B_C_AD_B_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A B C AD B CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "AD",
+        "B",
+        "CD"
+      ],
+      "length_exact": "~3.580596568264",
+      "length_numeric": 3.5805965682636334,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.179243475335042",
+          "0.219400152553712",
+          "0.601356372111246"
+        ],
+        [
+          "0.169447901537471",
+          "0",
+          "0.169447901224699",
+          "0.66110419723783"
+        ],
+        [
+          "0.219400152749527",
+          "0.179243474998109",
+          "0",
+          "0.601356372252364"
+        ],
+        [
+          "0",
+          "0.410012444866231",
+          "0.589987555133769",
+          "0"
+        ],
+        [
+          "0.431664592364896",
+          "0",
+          "0.431664592641843",
+          "0.136670814993261"
+        ],
+        [
+          "0.589987554913014",
+          "0.410012445086986",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.179243475335042",
+          "0.219400152553712",
+          "0.601356372111246"
+        ],
+        [
+          "0.169447901537471",
+          "0",
+          "0.169447901224699",
+          "0.66110419723783"
+        ],
+        [
+          "0.219400152749527",
+          "0.179243474998109",
+          "0",
+          "0.601356372252364"
+        ],
+        [
+          "0",
+          "0.410012444866231",
+          "0.589987555133769",
+          "0"
+        ],
+        [
+          "0.431664592364896",
+          "0",
+          "0.431664592641843",
+          "0.136670814993261"
+        ],
+        [
+          "0.589987554913014",
+          "0.410012445086986",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.601356372111246",
+          "0.780599847446288",
+          "0.820756524664958"
+        ],
+        [
+          "0.830552098775301",
+          "0.66110419723783",
+          "0.830552098462529"
+        ],
+        [
+          "0.820756525001891",
+          "0.780599847250473",
+          "0.601356372252364"
+        ],
+        [
+          "0",
+          "0.410012444866231",
+          "0.589987555133769"
+        ],
+        [
+          "0.568335407358157",
+          "0.136670814993261",
+          "0.568335407635104"
+        ],
+        [
+          "0.589987554913014",
+          "0.410012445086986",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.6013563721112462,
+          0.7805998474462884,
+          0.8207565246649577
+        ],
+        [
+          0.8305520987753009,
+          0.6611041972378302,
+          0.8305520984625292
+        ],
+        [
+          0.8207565250018911,
+          0.7805998472504729,
+          0.6013563722523642
+        ],
+        [
+          0.0,
+          0.41001244486623145,
+          0.5899875551337685
+        ],
+        [
+          0.5683354073581571,
+          0.13667081499326098,
+          0.5683354076351038
+        ],
+        [
+          0.5899875549130138,
+          0.4100124450869862,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.136670814993261",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.568497993026602",
+        "0.529833266146845",
+        "0.568497993024787"
+      ],
+      "path_center_xyz": [
+        0.5684979930266015,
+        0.529833266146845,
+        0.5684979930247872
+      ],
+      "centroid_distance_squared_exact": "0.0102739738660846",
+      "centroid_distance_numeric": 0.10136061299185517
+    },
+    {
+      "id": "s06_A_BC_A_BD_A_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC A BD A CD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "A",
+        "BD",
+        "A",
+        "CD"
+      ],
+      "length_exact": "12*sqrt(11)/11",
+      "length_numeric": 3.6181361349331636,
+      "barycentric_denominator": "11",
+      "barycentric_points": [
+        [
+          "0",
+          "5",
+          "1",
+          "5"
+        ],
+        [
+          "3",
+          "0",
+          "0",
+          "8"
+        ],
+        [
+          "0",
+          "1",
+          "5",
+          "5"
+        ],
+        [
+          "3",
+          "0",
+          "8",
+          "0"
+        ],
+        [
+          "0",
+          "5",
+          "5",
+          "1"
+        ],
+        [
+          "3",
+          "8",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "5/11",
+          "1/11",
+          "5/11"
+        ],
+        [
+          "3/11",
+          "0",
+          "0",
+          "8/11"
+        ],
+        [
+          "0",
+          "1/11",
+          "5/11",
+          "5/11"
+        ],
+        [
+          "3/11",
+          "0",
+          "8/11",
+          "0"
+        ],
+        [
+          "0",
+          "5/11",
+          "5/11",
+          "1/11"
+        ],
+        [
+          "3/11",
+          "8/11",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "5/11",
+          "10/11",
+          "6/11"
+        ],
+        [
+          "1",
+          "8/11",
+          "8/11"
+        ],
+        [
+          "5/11",
+          "6/11",
+          "10/11"
+        ],
+        [
+          "3/11",
+          "0",
+          "8/11"
+        ],
+        [
+          "1/11",
+          "6/11",
+          "6/11"
+        ],
+        [
+          "3/11",
+          "8/11",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.45454545454545453,
+          0.9090909090909091,
+          0.5454545454545454
+        ],
+        [
+          1.0,
+          0.7272727272727273,
+          0.7272727272727273
+        ],
+        [
+          0.45454545454545453,
+          0.5454545454545454,
+          0.9090909090909091
+        ],
+        [
+          0.2727272727272727,
+          0.0,
+          0.7272727272727273
+        ],
+        [
+          0.09090909090909091,
+          0.5454545454545454,
+          0.5454545454545454
+        ],
+        [
+          0.2727272727272727,
+          0.7272727272727273,
+          0.0
+        ]
+      ],
+      "height": "11",
+      "boundary_margin": "1/11",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 4,
+      "path_center_xyz_exact": [
+        "14/33",
+        "19/33",
+        "19/33"
+      ],
+      "path_center_xyz": [
+        0.42424242424242425,
+        0.5757575757575758,
+        0.5757575757575758
+      ],
+      "centroid_distance_squared_exact": "25/1452",
+      "centroid_distance_numeric": 0.1312159702703695
+    },
+    {
+      "id": "s06_A_B_AC_BD_A_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A B AC BD A CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "BD",
+        "A",
+        "CD"
+      ],
+      "length_exact": "~3.698391032234",
+      "length_numeric": 3.6983910322343574,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0596743269847486",
+          "0.0913020588067943",
+          "0.849023614208457"
+        ],
+        [
+          "0.0247107546596121",
+          "0",
+          "0.0814221468719313",
+          "0.893867098468457"
+        ],
+        [
+          "0",
+          "0.0978360493057424",
+          "0",
+          "0.902163950694258"
+        ],
+        [
+          "0.360872721466533",
+          "0",
+          "0.639127278533467",
+          "0"
+        ],
+        [
+          "0",
+          "0.454768288921691",
+          "0.428143521364997",
+          "0.117088189713312"
+        ],
+        [
+          "0.342154777715666",
+          "0.657845222284334",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0596743269847486",
+          "0.0913020588067943",
+          "0.849023614208457"
+        ],
+        [
+          "0.0247107546596121",
+          "0",
+          "0.0814221468719313",
+          "0.893867098468457"
+        ],
+        [
+          "0",
+          "0.0978360493057424",
+          "0",
+          "0.902163950694258"
+        ],
+        [
+          "0.360872721466533",
+          "0",
+          "0.639127278533467",
+          "0"
+        ],
+        [
+          "0",
+          "0.454768288921691",
+          "0.428143521364997",
+          "0.117088189713312"
+        ],
+        [
+          "0.342154777715666",
+          "0.657845222284334",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.849023614208457",
+          "0.908697941193206",
+          "0.940325673015251"
+        ],
+        [
+          "0.918577853128069",
+          "0.893867098468457",
+          "0.975289245340388"
+        ],
+        [
+          "0.902163950694258",
+          "1",
+          "0.902163950694258"
+        ],
+        [
+          "0.360872721466533",
+          "0",
+          "0.639127278533467"
+        ],
+        [
+          "0.117088189713312",
+          "0.571856478635003",
+          "0.545231711078309"
+        ],
+        [
+          "0.342154777715666",
+          "0.657845222284334",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.8490236142084571,
+          0.9086979411932057,
+          0.9403256730152514
+        ],
+        [
+          0.9185778531280688,
+          0.8938670984684567,
+          0.975289245340388
+        ],
+        [
+          0.9021639506942576,
+          1.0,
+          0.9021639506942576
+        ],
+        [
+          0.3608727214665335,
+          0.0,
+          0.6391272785334665
+        ],
+        [
+          0.11708818971331181,
+          0.5718564786350029,
+          0.5452317110783089
+        ],
+        [
+          0.3421547777156664,
+          0.6578452222843336,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0247107546596121",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.581646851154382",
+        "0.6720444567635",
+        "0.667022976443612"
+      ],
+      "path_center_xyz": [
+        0.5816468511543824,
+        0.6720444567634999,
+        0.6670229764436121
+      ],
+      "centroid_distance_squared_exact": "0.0641621780665571",
+      "centroid_distance_numeric": 0.25330254255841383
+    },
+    {
+      "id": "s06_A_B_C_BD_AC_BD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A B C BD AC BD",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "BD",
+        "AC",
+        "BD"
+      ],
+      "length_exact": "~3.803154177225",
+      "length_numeric": 3.8031541772254984,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.081951754075422",
+          "0.791330766078754",
+          "0.126717479845824"
+        ],
+        [
+          "0.422982634397851",
+          "0",
+          "0.422982634397852",
+          "0.154034731204298"
+        ],
+        [
+          "0.791330766085566",
+          "0.0819517540736788",
+          "0",
+          "0.126717479840755"
+        ],
+        [
+          "0.826710927408849",
+          "0",
+          "0.173289072591151",
+          "0"
+        ],
+        [
+          "0",
+          "0.5",
+          "0",
+          "0.5"
+        ],
+        [
+          "0.173289072595875",
+          "0",
+          "0.826710927404125",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.081951754075422",
+          "0.791330766078754",
+          "0.126717479845824"
+        ],
+        [
+          "0.422982634397851",
+          "0",
+          "0.422982634397852",
+          "0.154034731204298"
+        ],
+        [
+          "0.791330766085566",
+          "0.0819517540736788",
+          "0",
+          "0.126717479840755"
+        ],
+        [
+          "0.826710927408849",
+          "0",
+          "0.173289072591151",
+          "0"
+        ],
+        [
+          "0",
+          "0.5",
+          "0",
+          "0.5"
+        ],
+        [
+          "0.173289072595875",
+          "0",
+          "0.826710927404125",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.126717479845824",
+          "0.208669233921246",
+          "0.918048245924578"
+        ],
+        [
+          "0.577017365602148",
+          "0.154034731204298",
+          "0.577017365602149"
+        ],
+        [
+          "0.918048245926321",
+          "0.208669233914434",
+          "0.126717479840755"
+        ],
+        [
+          "0.826710927408849",
+          "0",
+          "0.173289072591151"
+        ],
+        [
+          "0.5",
+          "1",
+          "0.5"
+        ],
+        [
+          "0.173289072595875",
+          "0",
+          "0.826710927404125"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.12671747984582382,
+          0.2086692339212458,
+          0.918048245924578
+        ],
+        [
+          0.5770173656021483,
+          0.15403473120429778,
+          0.5770173656021494
+        ],
+        [
+          0.9180482459263212,
+          0.2086692339144341,
+          0.12671747984075524
+        ],
+        [
+          0.826710927408849,
+          0.0,
+          0.173289072591151
+        ],
+        [
+          0.5,
+          1.0,
+          0.5
+        ],
+        [
+          0.17328907259587534,
+          0.0,
+          0.8267109274041247
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0819517540736788",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.520297181896503",
+        "0.26189553317333",
+        "0.520297181893793"
+      ],
+      "path_center_xyz": [
+        0.520297181896503,
+        0.26189553317332964,
+        0.520297181893793
+      ],
+      "centroid_distance_squared_exact": "0.0575176883085824",
+      "centroid_distance_numeric": 0.23982845600258199
+    },
+    {
+      "id": "s06_A_B_AC_D_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A B AC D AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "D",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~3.824085045367",
+      "length_numeric": 3.8240850453674193,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0127798354916902",
+          "0.118735846715696",
+          "0.868484317792614"
+        ],
+        [
+          "0.00772818772059314",
+          "0",
+          "0.115430620179031",
+          "0.876841192100376"
+        ],
+        [
+          "0",
+          "0.12475008521259",
+          "0",
+          "0.87524991478741"
+        ],
+        [
+          "0.100516937769803",
+          "0.122007079625693",
+          "0.777475982604504",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.817845679395139",
+          "0.182154320604861"
+        ],
+        [
+          "0.496839893114153",
+          "0.503160106885847",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0127798354916902",
+          "0.118735846715696",
+          "0.868484317792614"
+        ],
+        [
+          "0.00772818772059314",
+          "0",
+          "0.115430620179031",
+          "0.876841192100376"
+        ],
+        [
+          "0",
+          "0.12475008521259",
+          "0",
+          "0.87524991478741"
+        ],
+        [
+          "0.100516937769803",
+          "0.122007079625693",
+          "0.777475982604504",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.817845679395139",
+          "0.182154320604861"
+        ],
+        [
+          "0.496839893114153",
+          "0.503160106885847",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.868484317792614",
+          "0.881264153284304",
+          "0.98722016450831"
+        ],
+        [
+          "0.884569379820969",
+          "0.876841192100376",
+          "0.992271812279407"
+        ],
+        [
+          "0.87524991478741",
+          "1",
+          "0.87524991478741"
+        ],
+        [
+          "0.100516937769803",
+          "0.122007079625693",
+          "0.777475982604504"
+        ],
+        [
+          "0.182154320604861",
+          "0.182154320604861",
+          "1"
+        ],
+        [
+          "0.496839893114153",
+          "0.503160106885847",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.8684843177926141,
+          0.8812641532843043,
+          0.9872201645083098
+        ],
+        [
+          0.8845693798209694,
+          0.8768411921003763,
+          0.992271812279407
+        ],
+        [
+          0.8752499147874098,
+          1.0,
+          0.8752499147874098
+        ],
+        [
+          0.10051693776980264,
+          0.1220070796256929,
+          0.7774759826045045
+        ],
+        [
+          0.18215432060486092,
+          0.18215432060486092,
+          1.0
+        ],
+        [
+          0.4968398931141531,
+          0.5031601068858469,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.00772818772059314",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.567969127314968",
+        "0.59423780875018",
+        "0.772036312363272"
+      ],
+      "path_center_xyz": [
+        0.5679691273149684,
+        0.5942378087501802,
+        0.7720363123632717
+      ],
+      "centroid_distance_squared_exact": "0.0875043221102015",
+      "centroid_distance_numeric": 0.29581129476441814
+    },
+    {
+      "id": "s06_A_BC_D_BC_AD_BC",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC D BC AD BC",
+      "stratum_word": [
+        "A",
+        "BC",
+        "D",
+        "BC",
+        "AD",
+        "BC"
+      ],
+      "length_exact": "2*sqrt(33)/3",
+      "length_numeric": 3.8297084310253524,
+      "barycentric_denominator": "90",
+      "barycentric_points": [
+        [
+          "0",
+          "5",
+          "5",
+          "80"
+        ],
+        [
+          "45",
+          "0",
+          "0",
+          "45"
+        ],
+        [
+          "80",
+          "5",
+          "5",
+          "0"
+        ],
+        [
+          "81",
+          "0",
+          "0",
+          "9"
+        ],
+        [
+          "0",
+          "45",
+          "45",
+          "0"
+        ],
+        [
+          "9",
+          "0",
+          "0",
+          "81"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/18",
+          "1/18",
+          "8/9"
+        ],
+        [
+          "1/2",
+          "0",
+          "0",
+          "1/2"
+        ],
+        [
+          "8/9",
+          "1/18",
+          "1/18",
+          "0"
+        ],
+        [
+          "9/10",
+          "0",
+          "0",
+          "1/10"
+        ],
+        [
+          "0",
+          "1/2",
+          "1/2",
+          "0"
+        ],
+        [
+          "1/10",
+          "0",
+          "0",
+          "9/10"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "8/9",
+          "17/18",
+          "17/18"
+        ],
+        [
+          "1",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "8/9",
+          "1/18",
+          "1/18"
+        ],
+        [
+          "1",
+          "1/10",
+          "1/10"
+        ],
+        [
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1",
+          "9/10",
+          "9/10"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.8888888888888888,
+          0.9444444444444444,
+          0.9444444444444444
+        ],
+        [
+          1.0,
+          0.5,
+          0.5
+        ],
+        [
+          0.8888888888888888,
+          0.05555555555555555,
+          0.05555555555555555
+        ],
+        [
+          1.0,
+          0.1,
+          0.1
+        ],
+        [
+          0.0,
+          0.5,
+          0.5
+        ],
+        [
+          1.0,
+          0.9,
+          0.9
+        ]
+      ],
+      "height": "90",
+      "boundary_margin": "1/18",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 6,
+      "path_center_xyz_exact": [
+        "43/54",
+        "1/2",
+        "1/2"
+      ],
+      "path_center_xyz": [
+        0.7962962962962963,
+        0.5,
+        0.5
+      ],
+      "centroid_distance_squared_exact": "64/729",
+      "centroid_distance_numeric": 0.2962962962962963
+    },
+    {
+      "id": "s06_A_BC_D_AB_C_BD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC D AB C BD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "D",
+        "AB",
+        "C",
+        "BD"
+      ],
+      "length_exact": "sqrt(66)/2",
+      "length_numeric": 4.06201920231798,
+      "barycentric_denominator": "12",
+      "barycentric_points": [
+        [
+          "0",
+          "2",
+          "5",
+          "5"
+        ],
+        [
+          "6",
+          "0",
+          "0",
+          "6"
+        ],
+        [
+          "5",
+          "2",
+          "5",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "6",
+          "6"
+        ],
+        [
+          "5",
+          "2",
+          "0",
+          "5"
+        ],
+        [
+          "6",
+          "0",
+          "6",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/6",
+          "5/12",
+          "5/12"
+        ],
+        [
+          "1/2",
+          "0",
+          "0",
+          "1/2"
+        ],
+        [
+          "5/12",
+          "1/6",
+          "5/12",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "5/12",
+          "1/6",
+          "0",
+          "5/12"
+        ],
+        [
+          "1/2",
+          "0",
+          "1/2",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "5/12",
+          "7/12",
+          "5/6"
+        ],
+        [
+          "1",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "5/12",
+          "1/6",
+          "5/12"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "5/6",
+          "7/12",
+          "5/12"
+        ],
+        [
+          "1/2",
+          "0",
+          "1/2"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4166666666666667,
+          0.5833333333333334,
+          0.8333333333333334
+        ],
+        [
+          1.0,
+          0.5,
+          0.5
+        ],
+        [
+          0.4166666666666667,
+          0.16666666666666666,
+          0.4166666666666667
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.8333333333333334,
+          0.5833333333333334,
+          0.4166666666666667
+        ],
+        [
+          0.5,
+          0.0,
+          0.5
+        ]
+      ],
+      "height": "12",
+      "boundary_margin": "1/6",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 4,
+      "path_center_xyz_exact": [
+        "11/18",
+        "7/18",
+        "11/18"
+      ],
+      "path_center_xyz": [
+        0.6111111111111112,
+        0.3888888888888889,
+        0.6111111111111112
+      ],
+      "centroid_distance_squared_exact": "1/27",
+      "centroid_distance_numeric": 0.19245008972987526
+    },
+    {
+      "id": "s06_A_B_C_BD_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A B C BD A BCD",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "BD",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "~4.194019243025",
+      "length_numeric": 4.194019243025497,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0951865462289861",
+          "0.137212449835635",
+          "0.767601003935379"
+        ],
+        [
+          "0.166561430256643",
+          "0",
+          "0.049025798220197",
+          "0.78441277152316"
+        ],
+        [
+          "0.199894309635956",
+          "0.0307732957832322",
+          "0",
+          "0.769332394580812"
+        ],
+        [
+          "0.210347891469661",
+          "0",
+          "0.789652108530339",
+          "0"
+        ],
+        [
+          "0",
+          "0.115860843510178",
+          "0.768278312979643",
+          "0.115860843510178"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0951865462289861",
+          "0.137212449835635",
+          "0.767601003935379"
+        ],
+        [
+          "0.166561430256643",
+          "0",
+          "0.049025798220197",
+          "0.78441277152316"
+        ],
+        [
+          "0.199894309635956",
+          "0.0307732957832322",
+          "0",
+          "0.769332394580812"
+        ],
+        [
+          "0.210347891469661",
+          "0",
+          "0.789652108530339",
+          "0"
+        ],
+        [
+          "0",
+          "0.115860843510178",
+          "0.768278312979643",
+          "0.115860843510178"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.767601003935379",
+          "0.862787550164365",
+          "0.904813453771014"
+        ],
+        [
+          "0.950974201779803",
+          "0.78441277152316",
+          "0.833438569743357"
+        ],
+        [
+          "0.969226704216768",
+          "0.800105690364044",
+          "0.769332394580812"
+        ],
+        [
+          "0.210347891469661",
+          "0",
+          "0.789652108530339"
+        ],
+        [
+          "0.115860843510178",
+          "0.231721687020357",
+          "0.884139156489822"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.7676010039353787,
+          0.8627875501643648,
+          0.904813453771014
+        ],
+        [
+          0.950974201779803,
+          0.7844127715231597,
+          0.8334385697433566
+        ],
+        [
+          0.9692267042167678,
+          0.8001056903640443,
+          0.769332394580812
+        ],
+        [
+          0.21034789146966126,
+          0.0,
+          0.7896521085303387
+        ],
+        [
+          0.11586084351017845,
+          0.2317216870203569,
+          0.8841391564898216
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0307732957832322",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.669001774151965",
+        "0.446504616511988",
+        "0.696895947185891"
+      ],
+      "path_center_xyz": [
+        0.6690017741519649,
+        0.44650461651198764,
+        0.6968959471858905
+      ],
+      "centroid_distance_squared_exact": "0.0701913697392703",
+      "centroid_distance_numeric": 0.26493653907921094
+    },
+    {
+      "id": "s06_A_BC_A_BD_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC A BD A BCD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "A",
+        "BD",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "~4.225546659624",
+      "length_numeric": 4.2255466596238955,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0444066514406682",
+          "0.0444066514406681",
+          "0.911186697118664"
+        ],
+        [
+          "0.0713634981437972",
+          "0",
+          "0",
+          "0.928636501856203"
+        ],
+        [
+          "0",
+          "0.0237878327207363",
+          "0.488106083510632",
+          "0.488106083768632"
+        ],
+        [
+          "0.0713634981793192",
+          "0",
+          "0.928636501820681",
+          "0"
+        ],
+        [
+          "0",
+          "0.0444066514621133",
+          "0.911186697075773",
+          "0.0444066514621133"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0444066514406682",
+          "0.0444066514406681",
+          "0.911186697118664"
+        ],
+        [
+          "0.0713634981437972",
+          "0",
+          "0",
+          "0.928636501856203"
+        ],
+        [
+          "0",
+          "0.0237878327207363",
+          "0.488106083510632",
+          "0.488106083768632"
+        ],
+        [
+          "0.0713634981793192",
+          "0",
+          "0.928636501820681",
+          "0"
+        ],
+        [
+          "0",
+          "0.0444066514621133",
+          "0.911186697075773",
+          "0.0444066514621133"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.911186697118664",
+          "0.955593348559332",
+          "0.955593348559332"
+        ],
+        [
+          "1",
+          "0.928636501856203",
+          "0.928636501856203"
+        ],
+        [
+          "0.488106083768632",
+          "0.511893916489369",
+          "0.976212167279264"
+        ],
+        [
+          "0.0713634981793192",
+          "0",
+          "0.928636501820681"
+        ],
+        [
+          "0.0444066514621133",
+          "0.0888133029242266",
+          "0.955593348537887"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.9111866971186637,
+          0.955593348559332,
+          0.9555933485593319
+        ],
+        [
+          1.0,
+          0.9286365018562028,
+          0.9286365018562028
+        ],
+        [
+          0.4881060837686322,
+          0.5118939164893686,
+          0.9762121672792639
+        ],
+        [
+          0.0713634981793192,
+          0.0,
+          0.9286365018206808
+        ],
+        [
+          0.04440665146211331,
+          0.08881330292422662,
+          0.9555933485378867
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0237878327207363",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.585843821754788",
+        "0.414156178304855",
+        "0.790778644675561"
+      ],
+      "path_center_xyz": [
+        0.585843821754788,
+        0.414156178304855,
+        0.790778644675561
+      ],
+      "centroid_distance_squared_exact": "0.0992905436560518",
+      "centroid_distance_numeric": 0.31510402037430724
+    },
+    {
+      "id": "s06_A_BC_A_BD_AC_BD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC A BD AC BD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "A",
+        "BD",
+        "AC",
+        "BD"
+      ],
+      "length_exact": "~4.43291135594",
+      "length_numeric": 4.432911355939531,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0638943847256071",
+          "0.17904881427148",
+          "0.757056801002913"
+        ],
+        [
+          "0.121471599498544",
+          "0",
+          "0",
+          "0.878528400501456"
+        ],
+        [
+          "0",
+          "0.0638943847238049",
+          "0.179048814265503",
+          "0.757056801010692"
+        ],
+        [
+          "0.454234080625598",
+          "0",
+          "0.545765919374402",
+          "0"
+        ],
+        [
+          "0",
+          "0.5",
+          "0",
+          "0.5"
+        ],
+        [
+          "0.454234080623868",
+          "0",
+          "0.545765919376132",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0638943847256071",
+          "0.17904881427148",
+          "0.757056801002913"
+        ],
+        [
+          "0.121471599498544",
+          "0",
+          "0",
+          "0.878528400501456"
+        ],
+        [
+          "0",
+          "0.0638943847238049",
+          "0.179048814265503",
+          "0.757056801010692"
+        ],
+        [
+          "0.454234080625598",
+          "0",
+          "0.545765919374402",
+          "0"
+        ],
+        [
+          "0",
+          "0.5",
+          "0",
+          "0.5"
+        ],
+        [
+          "0.454234080623868",
+          "0",
+          "0.545765919376132",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.757056801002913",
+          "0.82095118572852",
+          "0.936105615274393"
+        ],
+        [
+          "1",
+          "0.878528400501456",
+          "0.878528400501456"
+        ],
+        [
+          "0.757056801010692",
+          "0.820951185734497",
+          "0.936105615276195"
+        ],
+        [
+          "0.454234080625598",
+          "0",
+          "0.545765919374402"
+        ],
+        [
+          "0.5",
+          "1",
+          "0.5"
+        ],
+        [
+          "0.454234080623868",
+          "0",
+          "0.545765919376132"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.7570568010029128,
+          0.8209511857285199,
+          0.9361056152743928
+        ],
+        [
+          1.0,
+          0.8785284005014564,
+          0.8785284005014564
+        ],
+        [
+          0.757056801010692,
+          0.8209511857344969,
+          0.9361056152761953
+        ],
+        [
+          0.45423408062559756,
+          0.0,
+          0.5457659193744024
+        ],
+        [
+          0.5,
+          1.0,
+          0.5
+        ],
+        [
+          0.4542340806238685,
+          0.0,
+          0.5457659193761315
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0638943847238049",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.653763627210512",
+        "0.586738461994079",
+        "0.723711911633763"
+      ],
+      "path_center_xyz": [
+        0.6537636272105118,
+        0.5867384619940789,
+        0.7237119116337632
+      ],
+      "centroid_distance_squared_exact": "0.0812138332488642",
+      "centroid_distance_numeric": 0.28498040853515566
+    },
+    {
+      "id": "s06_A_B_CD_B_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A B CD B A BCD",
+      "stratum_word": [
+        "A",
+        "B",
+        "CD",
+        "B",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "40/9",
+      "length_numeric": 4.444444444444445,
+      "barycentric_denominator": "45",
+      "barycentric_points": [
+        [
+          "0",
+          "3",
+          "21",
+          "21"
+        ],
+        [
+          "5",
+          "0",
+          "20",
+          "20"
+        ],
+        [
+          "25",
+          "20",
+          "0",
+          "0"
+        ],
+        [
+          "5",
+          "0",
+          "20",
+          "20"
+        ],
+        [
+          "0",
+          "3",
+          "21",
+          "21"
+        ],
+        [
+          "45",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/15",
+          "7/15",
+          "7/15"
+        ],
+        [
+          "1/9",
+          "0",
+          "4/9",
+          "4/9"
+        ],
+        [
+          "5/9",
+          "4/9",
+          "0",
+          "0"
+        ],
+        [
+          "1/9",
+          "0",
+          "4/9",
+          "4/9"
+        ],
+        [
+          "0",
+          "1/15",
+          "7/15",
+          "7/15"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "7/15",
+          "8/15",
+          "14/15"
+        ],
+        [
+          "5/9",
+          "4/9",
+          "8/9"
+        ],
+        [
+          "5/9",
+          "4/9",
+          "0"
+        ],
+        [
+          "5/9",
+          "4/9",
+          "8/9"
+        ],
+        [
+          "7/15",
+          "8/15",
+          "14/15"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4666666666666667,
+          0.5333333333333333,
+          0.9333333333333333
+        ],
+        [
+          0.5555555555555556,
+          0.4444444444444444,
+          0.8888888888888888
+        ],
+        [
+          0.5555555555555556,
+          0.4444444444444444,
+          0.0
+        ],
+        [
+          0.5555555555555556,
+          0.4444444444444444,
+          0.8888888888888888
+        ],
+        [
+          0.4666666666666667,
+          0.5333333333333333,
+          0.9333333333333333
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "45",
+      "boundary_margin": "1/15",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "3/5",
+        "2/5",
+        "82/135"
+      ],
+      "path_center_xyz": [
+        0.6,
+        0.4,
+        0.6074074074074074
+      ],
+      "centroid_distance_squared_exact": "2299/72900",
+      "centroid_distance_numeric": 0.1775847717738793
+    },
+    {
+      "id": "s06_A_BC_AD_B_AC_BD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC AD B AC BD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "AD",
+        "B",
+        "AC",
+        "BD"
+      ],
+      "length_exact": "~4.534850686301",
+      "length_numeric": 4.534850686301306,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.120662067995565",
+          "0.439668965994036",
+          "0.4396689660104"
+        ],
+        [
+          "0.361986203983231",
+          "0",
+          "0",
+          "0.638013796016769"
+        ],
+        [
+          "0",
+          "0.361986203980031",
+          "0.638013796019969",
+          "0"
+        ],
+        [
+          "0.120662067995613",
+          "0",
+          "0.439668966011599",
+          "0.439668965992788"
+        ],
+        [
+          "0",
+          "0.361986203990781",
+          "0",
+          "0.638013796009219"
+        ],
+        [
+          "0.36198620399024",
+          "0",
+          "0.63801379600976",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.120662067995565",
+          "0.439668965994036",
+          "0.4396689660104"
+        ],
+        [
+          "0.361986203983231",
+          "0",
+          "0",
+          "0.638013796016769"
+        ],
+        [
+          "0",
+          "0.361986203980031",
+          "0.638013796019969",
+          "0"
+        ],
+        [
+          "0.120662067995613",
+          "0",
+          "0.439668966011599",
+          "0.439668965992788"
+        ],
+        [
+          "0",
+          "0.361986203990781",
+          "0",
+          "0.638013796009219"
+        ],
+        [
+          "0.36198620399024",
+          "0",
+          "0.63801379600976",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.4396689660104",
+          "0.560331034005964",
+          "0.879337932004435"
+        ],
+        [
+          "1",
+          "0.638013796016769",
+          "0.638013796016769"
+        ],
+        [
+          "0",
+          "0.361986203980031",
+          "0.638013796019969"
+        ],
+        [
+          "0.560331033988401",
+          "0.439668965992788",
+          "0.879337932004387"
+        ],
+        [
+          "0.638013796009219",
+          "1",
+          "0.638013796009219"
+        ],
+        [
+          "0.36198620399024",
+          "0",
+          "0.63801379600976"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4396689660103996,
+          0.5603310340059643,
+          0.8793379320044354
+        ],
+        [
+          1.0,
+          0.6380137960167687,
+          0.6380137960167687
+        ],
+        [
+          0.0,
+          0.361986203980031,
+          0.638013796019969
+        ],
+        [
+          0.5603310339884012,
+          0.4396689659927878,
+          0.8793379320043866
+        ],
+        [
+          0.6380137960092191,
+          1.0,
+          0.6380137960092191
+        ],
+        [
+          0.36198620399023973,
+          0.0,
+          0.6380137960097603
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.120662067995565",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 6,
+      "path_center_xyz_exact": [
+        "0.49999999999971",
+        "0.499999999999259",
+        "0.718455174677423"
+      ],
+      "path_center_xyz": [
+        0.49999999999971,
+        0.4999999999992586,
+        0.7184551746774231
+      ],
+      "centroid_distance_squared_exact": "0.0477226633433435",
+      "centroid_distance_numeric": 0.21845517467742315
+    },
+    {
+      "id": "s06_A_BC_AD_BC_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 6,
+      "word": "A BC AD BC A BCD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "AD",
+        "BC",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "sqrt(246)/3",
+      "length_numeric": 5.228129047119374,
+      "barycentric_denominator": "84",
+      "barycentric_points": [
+        [
+          "0",
+          "7",
+          "7",
+          "70"
+        ],
+        [
+          "12",
+          "0",
+          "0",
+          "72"
+        ],
+        [
+          "0",
+          "42",
+          "42",
+          "0"
+        ],
+        [
+          "12",
+          "0",
+          "0",
+          "72"
+        ],
+        [
+          "0",
+          "7",
+          "7",
+          "70"
+        ],
+        [
+          "84",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/12",
+          "1/12",
+          "5/6"
+        ],
+        [
+          "1/7",
+          "0",
+          "0",
+          "6/7"
+        ],
+        [
+          "0",
+          "1/2",
+          "1/2",
+          "0"
+        ],
+        [
+          "1/7",
+          "0",
+          "0",
+          "6/7"
+        ],
+        [
+          "0",
+          "1/12",
+          "1/12",
+          "5/6"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "5/6",
+          "11/12",
+          "11/12"
+        ],
+        [
+          "1",
+          "6/7",
+          "6/7"
+        ],
+        [
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1",
+          "6/7",
+          "6/7"
+        ],
+        [
+          "5/6",
+          "11/12",
+          "11/12"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.8333333333333334,
+          0.9166666666666666,
+          0.9166666666666666
+        ],
+        [
+          1.0,
+          0.8571428571428571,
+          0.8571428571428571
+        ],
+        [
+          0.0,
+          0.5,
+          0.5
+        ],
+        [
+          1.0,
+          0.8571428571428571,
+          0.8571428571428571
+        ],
+        [
+          0.8333333333333334,
+          0.9166666666666666,
+          0.9166666666666666
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "84",
+      "boundary_margin": "1/12",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "7/9",
+        "85/126",
+        "85/126"
+      ],
+      "path_center_xyz": [
+        0.7777777777777778,
+        0.6746031746031746,
+        0.6746031746031746
+      ],
+      "centroid_distance_squared_exact": "731/5292",
+      "centroid_distance_numeric": 0.37166252298311414
+    },
+    {
+      "id": "s07_A_B_C_AB_CD_AB_D",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B C AB CD AB D",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "AB",
+        "CD",
+        "AB",
+        "D"
+      ],
+      "length_exact": "~3.826929929554",
+      "length_numeric": 3.8269299295541392,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0480059447834902",
+          "0.609998142350062",
+          "0.341995912866448"
+        ],
+        [
+          "0.04800594478769",
+          "0",
+          "0.341995913049117",
+          "0.609998142163193"
+        ],
+        [
+          "0.0662476092738311",
+          "0.0547249934458555",
+          "0",
+          "0.879027397280313"
+        ],
+        [
+          "0",
+          "0",
+          "0.108013375783215",
+          "0.891986624216785"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.89198662425013",
+          "0.10801337574987"
+        ],
+        [
+          "0.0547249934254265",
+          "0.0662476092542471",
+          "0.879027397320326",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0480059447834902",
+          "0.609998142350062",
+          "0.341995912866448"
+        ],
+        [
+          "0.04800594478769",
+          "0",
+          "0.341995913049117",
+          "0.609998142163193"
+        ],
+        [
+          "0.0662476092738311",
+          "0.0547249934458555",
+          "0",
+          "0.879027397280313"
+        ],
+        [
+          "0",
+          "0",
+          "0.108013375783215",
+          "0.891986624216785"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.89198662425013",
+          "0.10801337574987"
+        ],
+        [
+          "0.0547249934254265",
+          "0.0662476092542471",
+          "0.879027397320326",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.341995912866448",
+          "0.390001857649938",
+          "0.95199405521651"
+        ],
+        [
+          "0.658004086950883",
+          "0.609998142163193",
+          "0.95199405521231"
+        ],
+        [
+          "0.945275006554145",
+          "0.933752390726169",
+          "0.879027397280313"
+        ],
+        [
+          "0.891986624216785",
+          "0.891986624216785",
+          "1"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0"
+        ],
+        [
+          "0.10801337574987",
+          "0.10801337574987",
+          "1"
+        ],
+        [
+          "0.0547249934254265",
+          "0.0662476092542471",
+          "0.879027397320326"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.3419959128664477,
+          0.3900018576499379,
+          0.9519940552165098
+        ],
+        [
+          0.6580040869508829,
+          0.6099981421631928,
+          0.9519940552123098
+        ],
+        [
+          0.9452750065541445,
+          0.933752390726169,
+          0.8790273972803134
+        ],
+        [
+          0.8919866242167849,
+          0.8919866242167849,
+          1.0
+        ],
+        [
+          0.5,
+          0.5,
+          0.0
+        ],
+        [
+          0.10801337574986952,
+          0.10801337574986952,
+          1.0
+        ],
+        [
+          0.05472499342542653,
+          0.06624760925424705,
+          0.8790273973203264
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0480059447834902",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.499999999966222",
+        "0.499999999965743",
+        "0.808863272147066"
+      ],
+      "path_center_xyz": [
+        0.49999999996622224,
+        0.49999999996574307,
+        0.8088632721470657
+      ],
+      "centroid_distance_squared_exact": "0.0953965208813923",
+      "centroid_distance_numeric": 0.30886327214706566
+    },
+    {
+      "id": "s07_A_B_AC_B_D_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B AC B D AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "B",
+        "D",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~3.83778775987",
+      "length_numeric": 3.837787759870043,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.00322149590014392",
+          "0.0316219363869862",
+          "0.96515656771287"
+        ],
+        [
+          "0.00193676425987033",
+          "0",
+          "0.0304534401088805",
+          "0.967609795631249"
+        ],
+        [
+          "0",
+          "0.0295841051678809",
+          "0",
+          "0.970415894832119"
+        ],
+        [
+          "0.0373527320680049",
+          "0",
+          "0.246178500285125",
+          "0.71646876764687"
+        ],
+        [
+          "0.083508128265729",
+          "0.0774513023269548",
+          "0.839040569407316",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.861338840987958",
+          "0.138661159012042"
+        ],
+        [
+          "0.499219822592422",
+          "0.500780177407578",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.00322149590014392",
+          "0.0316219363869862",
+          "0.96515656771287"
+        ],
+        [
+          "0.00193676425987033",
+          "0",
+          "0.0304534401088805",
+          "0.967609795631249"
+        ],
+        [
+          "0",
+          "0.0295841051678809",
+          "0",
+          "0.970415894832119"
+        ],
+        [
+          "0.0373527320680049",
+          "0",
+          "0.246178500285125",
+          "0.71646876764687"
+        ],
+        [
+          "0.083508128265729",
+          "0.0774513023269548",
+          "0.839040569407316",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.861338840987958",
+          "0.138661159012042"
+        ],
+        [
+          "0.499219822592422",
+          "0.500780177407578",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.96515656771287",
+          "0.968378063613014",
+          "0.996778504099856"
+        ],
+        [
+          "0.96954655989112",
+          "0.967609795631249",
+          "0.99806323574013"
+        ],
+        [
+          "0.970415894832119",
+          "1",
+          "0.970415894832119"
+        ],
+        [
+          "0.753821499714875",
+          "0.71646876764687",
+          "0.962647267931995"
+        ],
+        [
+          "0.083508128265729",
+          "0.0774513023269548",
+          "0.839040569407316"
+        ],
+        [
+          "0.138661159012042",
+          "0.138661159012042",
+          "1"
+        ],
+        [
+          "0.499219822592422",
+          "0.500780177407578",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.96515656771287,
+          0.9683780636130139,
+          0.9967785040998562
+        ],
+        [
+          0.9695465598911196,
+          0.9676097956312493,
+          0.9980632357401298
+        ],
+        [
+          0.9704158948321191,
+          1.0,
+          0.9704158948321191
+        ],
+        [
+          0.7538214997148749,
+          0.71646876764687,
+          0.9626472679319951
+        ],
+        [
+          0.08350812826572901,
+          0.0774513023269548,
+          0.8390405694073162
+        ],
+        [
+          0.1386611590120423,
+          0.1386611590120423,
+          1.0
+        ],
+        [
+          0.4992198225924225,
+          0.5007801774075775,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.00193676425987033",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.625761376003025",
+        "0.624192752233958",
+        "0.823849353144488"
+      ],
+      "path_center_xyz": [
+        0.6257613760030252,
+        0.6241927522339583,
+        0.823849353144488
+      ],
+      "centroid_distance_squared_exact": "0.136118166933723",
+      "centroid_distance_numeric": 0.3689419560496244
+    },
+    {
+      "id": "s07_A_B_AC_BD_A_B_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B AC BD A B CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "BD",
+        "A",
+        "B",
+        "CD"
+      ],
+      "length_exact": "~3.857014452289",
+      "length_numeric": 3.857014452289499,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.00587415590107643",
+          "0.0587415590097787",
+          "0.935384285089145"
+        ],
+        [
+          "0.00354951401855835",
+          "0",
+          "0.0567922242960406",
+          "0.939658261685401"
+        ],
+        [
+          "0",
+          "0.0568766292628935",
+          "0",
+          "0.943123370737107"
+        ],
+        [
+          "0.0568766292587852",
+          "0",
+          "0.943123370741215",
+          "0"
+        ],
+        [
+          "0",
+          "0.0035495140176442",
+          "0.939658261699137",
+          "0.0567922242832192"
+        ],
+        [
+          "0.00587415589865636",
+          "0",
+          "0.935384285113784",
+          "0.0587415589875599"
+        ],
+        [
+          "0.499999999999371",
+          "0.500000000000629",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.00587415590107643",
+          "0.0587415590097787",
+          "0.935384285089145"
+        ],
+        [
+          "0.00354951401855835",
+          "0",
+          "0.0567922242960406",
+          "0.939658261685401"
+        ],
+        [
+          "0",
+          "0.0568766292628935",
+          "0",
+          "0.943123370737107"
+        ],
+        [
+          "0.0568766292587852",
+          "0",
+          "0.943123370741215",
+          "0"
+        ],
+        [
+          "0",
+          "0.0035495140176442",
+          "0.939658261699137",
+          "0.0567922242832192"
+        ],
+        [
+          "0.00587415589865636",
+          "0",
+          "0.935384285113784",
+          "0.0587415589875599"
+        ],
+        [
+          "0.499999999999371",
+          "0.500000000000629",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.935384285089145",
+          "0.941258440990221",
+          "0.994125844098924"
+        ],
+        [
+          "0.943207775703959",
+          "0.939658261685401",
+          "0.996450485981442"
+        ],
+        [
+          "0.943123370737107",
+          "1",
+          "0.943123370737107"
+        ],
+        [
+          "0.0568766292587852",
+          "0",
+          "0.943123370741215"
+        ],
+        [
+          "0.0567922242832192",
+          "0.0603417383008634",
+          "0.996450485982356"
+        ],
+        [
+          "0.0646157148862163",
+          "0.0587415589875599",
+          "0.994125844101344"
+        ],
+        [
+          "0.499999999999371",
+          "0.500000000000629",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.9353842850891448,
+          0.9412584409902213,
+          0.9941258440989236
+        ],
+        [
+          0.9432077757039594,
+          0.939658261685401,
+          0.9964504859814416
+        ],
+        [
+          0.9431233707371065,
+          1.0,
+          0.9431233707371065
+        ],
+        [
+          0.05687662925878523,
+          0.0,
+          0.9431233707412148
+        ],
+        [
+          0.05679222428321917,
+          0.06034173830086337,
+          0.9964504859823559
+        ],
+        [
+          0.06461571488621631,
+          0.05874155898755995,
+          0.9941258441013436
+        ],
+        [
+          0.4999999999993705,
+          0.5000000000006295,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0035495140176442",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.499999999993972",
+        "0.499999999994954",
+        "0.838199914520341"
+      ],
+      "path_center_xyz": [
+        0.4999999999939718,
+        0.49999999999495365,
+        0.8381999145203408
+      ],
+      "centroid_distance_squared_exact": "0.114379182181566",
+      "centroid_distance_numeric": 0.3381999145203408
+    },
+    {
+      "id": "s07_A_B_AC_D_BC_A_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B AC D BC A CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "D",
+        "BC",
+        "A",
+        "CD"
+      ],
+      "length_exact": "~4.172901452357",
+      "length_numeric": 4.172901452356868,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.2895395361136",
+          "0.117339084815525",
+          "0.593121379070875"
+        ],
+        [
+          "0.0744126261161595",
+          "0",
+          "0.119647430131478",
+          "0.805939943752362"
+        ],
+        [
+          "0",
+          "0.181643364651572",
+          "0",
+          "0.818356635348428"
+        ],
+        [
+          "0.710694849869558",
+          "0.165296414509488",
+          "0.124008735620955",
+          "0"
+        ],
+        [
+          "0.759268420140665",
+          "0",
+          "0",
+          "0.240731579859335"
+        ],
+        [
+          "0",
+          "0.772766319686926",
+          "0.0917898581169156",
+          "0.135443822196158"
+        ],
+        [
+          "0.168182856322374",
+          "0.831817143677626",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.2895395361136",
+          "0.117339084815525",
+          "0.593121379070875"
+        ],
+        [
+          "0.0744126261161595",
+          "0",
+          "0.119647430131478",
+          "0.805939943752362"
+        ],
+        [
+          "0",
+          "0.181643364651572",
+          "0",
+          "0.818356635348428"
+        ],
+        [
+          "0.710694849869558",
+          "0.165296414509488",
+          "0.124008735620955",
+          "0"
+        ],
+        [
+          "0.759268420140665",
+          "0",
+          "0",
+          "0.240731579859335"
+        ],
+        [
+          "0",
+          "0.772766319686926",
+          "0.0917898581169156",
+          "0.135443822196158"
+        ],
+        [
+          "0.168182856322374",
+          "0.831817143677626",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.593121379070875",
+          "0.882660915184475",
+          "0.7104604638864"
+        ],
+        [
+          "0.880352569868522",
+          "0.805939943752362",
+          "0.92558737388384"
+        ],
+        [
+          "0.818356635348428",
+          "1",
+          "0.818356635348428"
+        ],
+        [
+          "0.710694849869558",
+          "0.165296414509488",
+          "0.124008735620955"
+        ],
+        [
+          "1",
+          "0.240731579859335",
+          "0.240731579859335"
+        ],
+        [
+          "0.135443822196158",
+          "0.908210141883084",
+          "0.227233680313074"
+        ],
+        [
+          "0.168182856322374",
+          "0.831817143677626",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.593121379070875,
+          0.8826609151844749,
+          0.7104604638864003
+        ],
+        [
+          0.8803525698685216,
+          0.8059399437523621,
+          0.9255873738838405
+        ],
+        [
+          0.818356635348428,
+          1.0,
+          0.818356635348428
+        ],
+        [
+          0.7106948498695579,
+          0.16529641450948765,
+          0.1240087356209545
+        ],
+        [
+          1.0,
+          0.24073157985933508,
+          0.24073157985933508
+        ],
+        [
+          0.13544382219615847,
+          0.9082101418830844,
+          0.22723368031307412
+        ],
+        [
+          0.1681828563223735,
+          0.8318171436776265,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0744126261161595",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.615164587525131",
+        "0.690665162695196",
+        "0.43519692413029"
+      ],
+      "path_center_xyz": [
+        0.6151645875251307,
+        0.6906651626951958,
+        0.4351969241302904
+      ],
+      "centroid_distance_squared_exact": "0.0538155251275943",
+      "centroid_distance_numeric": 0.23198173446975157
+    },
+    {
+      "id": "s07_A_B_CD_A_BC_A_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B CD A BC A CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "CD",
+        "A",
+        "BC",
+        "A",
+        "CD"
+      ],
+      "length_exact": "~4.179388906912",
+      "length_numeric": 4.179388906911594,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.775872950851726",
+          "0.112063524574137",
+          "0.112063524574137"
+        ],
+        [
+          "0.707963797866983",
+          "0",
+          "0.146018101066509",
+          "0.146018101066509"
+        ],
+        [
+          "0.76558475483218",
+          "0.23441524516782",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0.101992014512843",
+          "0.0698916923293639",
+          "0.828116293157793"
+        ],
+        [
+          "0.121471599459898",
+          "0",
+          "0",
+          "0.878528400540102"
+        ],
+        [
+          "0",
+          "0.413683529192064",
+          "0.0456328351736698",
+          "0.540683635634266"
+        ],
+        [
+          "0.156813885700381",
+          "0.843186114299619",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.775872950851726",
+          "0.112063524574137",
+          "0.112063524574137"
+        ],
+        [
+          "0.707963797866983",
+          "0",
+          "0.146018101066509",
+          "0.146018101066509"
+        ],
+        [
+          "0.76558475483218",
+          "0.23441524516782",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0.101992014512843",
+          "0.0698916923293639",
+          "0.828116293157793"
+        ],
+        [
+          "0.121471599459898",
+          "0",
+          "0",
+          "0.878528400540102"
+        ],
+        [
+          "0",
+          "0.413683529192064",
+          "0.0456328351736698",
+          "0.540683635634266"
+        ],
+        [
+          "0.156813885700381",
+          "0.843186114299619",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.112063524574137",
+          "0.887936475425863",
+          "0.224127049148274"
+        ],
+        [
+          "0.853981898933491",
+          "0.146018101066509",
+          "0.292036202133017"
+        ],
+        [
+          "0.76558475483218",
+          "0.23441524516782",
+          "0"
+        ],
+        [
+          "0.828116293157793",
+          "0.930108307670636",
+          "0.898007985487157"
+        ],
+        [
+          "1",
+          "0.878528400540102",
+          "0.878528400540102"
+        ],
+        [
+          "0.540683635634266",
+          "0.95436716482633",
+          "0.586316470807936"
+        ],
+        [
+          "0.156813885700381",
+          "0.843186114299619",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.11206352457413682,
+          0.8879364754258632,
+          0.2241270491482737
+        ],
+        [
+          0.8539818989334913,
+          0.1460181010665087,
+          0.2920362021330174
+        ],
+        [
+          0.7655847548321799,
+          0.23441524516782014,
+          0.0
+        ],
+        [
+          0.8281162931577934,
+          0.9301083076706361,
+          0.8980079854871573
+        ],
+        [
+          1.0,
+          0.8785284005401022,
+          0.8785284005401022
+        ],
+        [
+          0.5406836356342662,
+          0.9543671648263303,
+          0.586316470807936
+        ],
+        [
+          0.1568138857003809,
+          0.8431861142996191,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0456328351736698",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.60817771326175",
+        "0.696365686999554",
+        "0.411288015445212"
+      ],
+      "path_center_xyz": [
+        0.6081777132617499,
+        0.6963656869995541,
+        0.4112880154452124
+      ],
+      "centroid_distance_squared_exact": "0.0581317168809971",
+      "centroid_distance_numeric": 0.2411051987846739
+    },
+    {
+      "id": "s07_A_B_C_A_D_ABC_D",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B C A D ABC D",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "A",
+        "D",
+        "ABC",
+        "D"
+      ],
+      "length_exact": "80*sqrt(2)/27",
+      "length_numeric": 4.190262407031392,
+      "barycentric_denominator": "270",
+      "barycentric_points": [
+        [
+          "0",
+          "30",
+          "210",
+          "30"
+        ],
+        [
+          "20",
+          "0",
+          "200",
+          "50"
+        ],
+        [
+          "20",
+          "200",
+          "0",
+          "50"
+        ],
+        [
+          "0",
+          "210",
+          "30",
+          "30"
+        ],
+        [
+          "18",
+          "207",
+          "45",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "270"
+        ],
+        [
+          "18",
+          "45",
+          "207",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/9",
+          "7/9",
+          "1/9"
+        ],
+        [
+          "2/27",
+          "0",
+          "20/27",
+          "5/27"
+        ],
+        [
+          "2/27",
+          "20/27",
+          "0",
+          "5/27"
+        ],
+        [
+          "0",
+          "7/9",
+          "1/9",
+          "1/9"
+        ],
+        [
+          "1/15",
+          "23/30",
+          "1/6",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "1"
+        ],
+        [
+          "1/15",
+          "1/6",
+          "23/30",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "1/9",
+          "2/9",
+          "8/9"
+        ],
+        [
+          "7/27",
+          "5/27",
+          "25/27"
+        ],
+        [
+          "7/27",
+          "25/27",
+          "5/27"
+        ],
+        [
+          "1/9",
+          "8/9",
+          "2/9"
+        ],
+        [
+          "1/15",
+          "23/30",
+          "1/6"
+        ],
+        [
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1/15",
+          "1/6",
+          "23/30"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.1111111111111111,
+          0.2222222222222222,
+          0.8888888888888888
+        ],
+        [
+          0.25925925925925924,
+          0.18518518518518517,
+          0.9259259259259259
+        ],
+        [
+          0.25925925925925924,
+          0.9259259259259259,
+          0.18518518518518517
+        ],
+        [
+          0.1111111111111111,
+          0.8888888888888888,
+          0.2222222222222222
+        ],
+        [
+          0.06666666666666667,
+          0.7666666666666667,
+          0.16666666666666666
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          0.06666666666666667,
+          0.16666666666666666,
+          0.7666666666666667
+        ]
+      ],
+      "height": "270",
+      "boundary_margin": "1/15",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "253/945",
+        "187/315",
+        "187/315"
+      ],
+      "path_center_xyz": [
+        0.2677248677248677,
+        0.5936507936507937,
+        0.5936507936507937
+      ],
+      "centroid_distance_squared_exact": "255379/3572100",
+      "centroid_distance_numeric": 0.2673811500017854
+    },
+    {
+      "id": "s07_A_B_AC_D_C_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B AC D C AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "D",
+        "C",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~4.29947860708",
+      "length_numeric": 4.2994786070797435,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0415451176885617",
+          "0.330501683418935",
+          "0.627953198892503"
+        ],
+        [
+          "0.0255719645696701",
+          "0",
+          "0.33071891596219",
+          "0.64370911946814"
+        ],
+        [
+          "0",
+          "0.499999999800525",
+          "0",
+          "0.500000000199475"
+        ],
+        [
+          "0.330718916214409",
+          "0.643709119186717",
+          "0.0255719645988748",
+          "0"
+        ],
+        [
+          "0.330501683663818",
+          "0.627953198600135",
+          "0",
+          "0.0415451177360471"
+        ],
+        [
+          "0",
+          "0",
+          "0.489514918648168",
+          "0.510485081351832"
+        ],
+        [
+          "0.489514918660827",
+          "0.510485081339173",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0415451176885617",
+          "0.330501683418935",
+          "0.627953198892503"
+        ],
+        [
+          "0.0255719645696701",
+          "0",
+          "0.33071891596219",
+          "0.64370911946814"
+        ],
+        [
+          "0",
+          "0.499999999800525",
+          "0",
+          "0.500000000199475"
+        ],
+        [
+          "0.330718916214409",
+          "0.643709119186717",
+          "0.0255719645988748",
+          "0"
+        ],
+        [
+          "0.330501683663818",
+          "0.627953198600135",
+          "0",
+          "0.0415451177360471"
+        ],
+        [
+          "0",
+          "0",
+          "0.489514918648168",
+          "0.510485081351832"
+        ],
+        [
+          "0.489514918660827",
+          "0.510485081339173",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.627953198892503",
+          "0.669498316581065",
+          "0.958454882311438"
+        ],
+        [
+          "0.66928108403781",
+          "0.64370911946814",
+          "0.97442803543033"
+        ],
+        [
+          "0.500000000199475",
+          "1",
+          "0.500000000199475"
+        ],
+        [
+          "0.330718916214409",
+          "0.643709119186717",
+          "0.0255719645988748"
+        ],
+        [
+          "0.372046801399865",
+          "0.669498316336182",
+          "0.0415451177360471"
+        ],
+        [
+          "0.510485081351832",
+          "0.510485081351832",
+          "1"
+        ],
+        [
+          "0.489514918660827",
+          "0.510485081339173",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.6279531988925029,
+          0.6694983165810646,
+          0.9584548823114383
+        ],
+        [
+          0.6692810840378101,
+          0.6437091194681399,
+          0.9744280354303299
+        ],
+        [
+          0.5000000001994751,
+          1.0,
+          0.5000000001994751
+        ],
+        [
+          0.33071891621440863,
+          0.6437091191867166,
+          0.025571964598874786
+        ],
+        [
+          0.37204680139986535,
+          0.6694983163361817,
+          0.04154511773604708
+        ],
+        [
+          0.5104850813518325,
+          0.5104850813518325,
+          1.0
+        ],
+        [
+          0.48951491866082675,
+          0.5104850813391733,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0255719645696701",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.500000000108103",
+        "0.663912147751873",
+        "0.500000000039452"
+      ],
+      "path_center_xyz": [
+        0.5000000001081031,
+        0.6639121477518726,
+        0.5000000000394521
+      ],
+      "centroid_distance_squared_exact": "0.0268671921806317",
+      "centroid_distance_numeric": 0.16391214775187257
+    },
+    {
+      "id": "s07_A_B_C_AD_C_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B C AD C AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "AD",
+        "C",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~4.424205636736",
+      "length_numeric": 4.4242056367362474,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.16065642708234",
+          "0.369847574745196",
+          "0.469495998172463"
+        ],
+        [
+          "0.106677098887734",
+          "0",
+          "0.38518970744311",
+          "0.508133193669156"
+        ],
+        [
+          "0.104883902204449",
+          "0.674386997066034",
+          "0",
+          "0.220729100729517"
+        ],
+        [
+          "0",
+          "0.843765140923259",
+          "0.156234859076741",
+          "0"
+        ],
+        [
+          "0.0769100986588003",
+          "0.699953450988279",
+          "0",
+          "0.223136450352921"
+        ],
+        [
+          "0",
+          "0",
+          "0.4410126022012",
+          "0.5589873977988"
+        ],
+        [
+          "0.456328656832124",
+          "0.543671343167876",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.16065642708234",
+          "0.369847574745196",
+          "0.469495998172463"
+        ],
+        [
+          "0.106677098887734",
+          "0",
+          "0.38518970744311",
+          "0.508133193669156"
+        ],
+        [
+          "0.104883902204449",
+          "0.674386997066034",
+          "0",
+          "0.220729100729517"
+        ],
+        [
+          "0",
+          "0.843765140923259",
+          "0.156234859076741",
+          "0"
+        ],
+        [
+          "0.0769100986588003",
+          "0.699953450988279",
+          "0",
+          "0.223136450352921"
+        ],
+        [
+          "0",
+          "0",
+          "0.4410126022012",
+          "0.5589873977988"
+        ],
+        [
+          "0.456328656832124",
+          "0.543671343167876",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.469495998172463",
+          "0.630152425254804",
+          "0.839343572917659"
+        ],
+        [
+          "0.61481029255689",
+          "0.508133193669156",
+          "0.893322901112266"
+        ],
+        [
+          "0.325613002933966",
+          "0.895116097795551",
+          "0.220729100729517"
+        ],
+        [
+          "0",
+          "0.843765140923259",
+          "0.156234859076741"
+        ],
+        [
+          "0.300046549011721",
+          "0.9230899013412",
+          "0.223136450352921"
+        ],
+        [
+          "0.5589873977988",
+          "0.5589873977988",
+          "1"
+        ],
+        [
+          "0.456328656832124",
+          "0.543671343167876",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4694959981724631,
+          0.6301524252548036,
+          0.8393435729176595
+        ],
+        [
+          0.6148102925568903,
+          0.5081331936691562,
+          0.8933229011122658
+        ],
+        [
+          0.32561300293396556,
+          0.8951160977955515,
+          0.22072910072951696
+        ],
+        [
+          0.0,
+          0.8437651409232587,
+          0.15623485907674123
+        ],
+        [
+          0.30004654901172106,
+          0.9230899013411997,
+          0.22313645035292073
+        ],
+        [
+          0.5589873977988005,
+          0.5589873977988005,
+          1.0
+        ],
+        [
+          0.45632865683212365,
+          0.5436713431678764,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0769100986588003",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.389325985329423",
+        "0.70041649999295",
+        "0.476109554884158"
+      ],
+      "path_center_xyz": [
+        0.3893259853294235,
+        0.7004164999929495,
+        0.4761095548841577
+      ],
+      "centroid_distance_squared_exact": "0.05298626436056",
+      "centroid_distance_numeric": 0.23018745482879818
+    },
+    {
+      "id": "s07_A_B_C_AB_D_ABC_D",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B C AB D ABC D",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "AB",
+        "D",
+        "ABC",
+        "D"
+      ],
+      "length_exact": "~4.598809582706",
+      "length_numeric": 4.598809582705606,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.199050152242431",
+          "0.217711104015159",
+          "0.58323874374241"
+        ],
+        [
+          "0.145494772251397",
+          "0",
+          "0.0227335581642802",
+          "0.831771669584323"
+        ],
+        [
+          "0.146382438507669",
+          "0.0138096640101572",
+          "0",
+          "0.839807897482174"
+        ],
+        [
+          "0",
+          "0",
+          "0.233234128140777",
+          "0.766765871859223"
+        ],
+        [
+          "0.289329365055156",
+          "0.289329365055156",
+          "0.421341269889688",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "1"
+        ],
+        [
+          "0.245588879566269",
+          "0.37131227600863",
+          "0.383098844425101",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.199050152242431",
+          "0.217711104015159",
+          "0.58323874374241"
+        ],
+        [
+          "0.145494772251397",
+          "0",
+          "0.0227335581642802",
+          "0.831771669584323"
+        ],
+        [
+          "0.146382438507669",
+          "0.0138096640101572",
+          "0",
+          "0.839807897482174"
+        ],
+        [
+          "0",
+          "0",
+          "0.233234128140777",
+          "0.766765871859223"
+        ],
+        [
+          "0.289329365055156",
+          "0.289329365055156",
+          "0.421341269889688",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "1"
+        ],
+        [
+          "0.245588879566269",
+          "0.37131227600863",
+          "0.383098844425101",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.58323874374241",
+          "0.782288895984841",
+          "0.800949847757569"
+        ],
+        [
+          "0.97726644183572",
+          "0.831771669584323",
+          "0.854505227748603"
+        ],
+        [
+          "0.986190335989843",
+          "0.853617561492331",
+          "0.839807897482174"
+        ],
+        [
+          "0.766765871859223",
+          "0.766765871859223",
+          "1"
+        ],
+        [
+          "0.289329365055156",
+          "0.289329365055156",
+          "0.421341269889688"
+        ],
+        [
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "0.245588879566269",
+          "0.37131227600863",
+          "0.383098844425101"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.5832387437424096,
+          0.7822888959848411,
+          0.8009498477575685
+        ],
+        [
+          0.9772664418357198,
+          0.8317716695843227,
+          0.8545052277486029
+        ],
+        [
+          0.9861903359898428,
+          0.8536175614923307,
+          0.8398078974821735
+        ],
+        [
+          0.7667658718592225,
+          0.7667658718592225,
+          1.0
+        ],
+        [
+          0.2893293650551562,
+          0.2893293650551562,
+          0.4213412698896876
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          0.2455888795662694,
+          0.3713122760086298,
+          0.3830988444251007
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0138096640101572",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.692625662578374",
+        "0.699297948569215",
+        "0.757100441043305"
+      ],
+      "path_center_xyz": [
+        0.6926256625783743,
+        0.6992979485692148,
+        0.7571004410433047
+      ],
+      "centroid_distance_squared_exact": "0.142924954972317",
+      "centroid_distance_numeric": 0.37805416936242997
+    },
+    {
+      "id": "s07_A_B_C_BD_C_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B C BD C A BCD",
+      "stratum_word": [
+        "A",
+        "B",
+        "C",
+        "BD",
+        "C",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "~4.599099908092",
+      "length_numeric": 4.599099908092414,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.28549949768161",
+          "0.29394076279662",
+          "0.420559739521769"
+        ],
+        [
+          "0.749013873479534",
+          "0",
+          "0.0147638897953218",
+          "0.236222236725144"
+        ],
+        [
+          "0.766581774336638",
+          "0.00897762406397562",
+          "0",
+          "0.224440601599386"
+        ],
+        [
+          "0.846763719931524",
+          "0",
+          "0.153236280068476",
+          "0"
+        ],
+        [
+          "0.584676371542021",
+          "0.207661814228989",
+          "0",
+          "0.207661814228989"
+        ],
+        [
+          "0",
+          "0.377014558084378",
+          "0.245970883831245",
+          "0.377014558084378"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.28549949768161",
+          "0.29394076279662",
+          "0.420559739521769"
+        ],
+        [
+          "0.749013873479534",
+          "0",
+          "0.0147638897953218",
+          "0.236222236725144"
+        ],
+        [
+          "0.766581774336638",
+          "0.00897762406397562",
+          "0",
+          "0.224440601599386"
+        ],
+        [
+          "0.846763719931524",
+          "0",
+          "0.153236280068476",
+          "0"
+        ],
+        [
+          "0.584676371542021",
+          "0.207661814228989",
+          "0",
+          "0.207661814228989"
+        ],
+        [
+          "0",
+          "0.377014558084378",
+          "0.245970883831245",
+          "0.377014558084378"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.420559739521769",
+          "0.70605923720338",
+          "0.71450050231839"
+        ],
+        [
+          "0.985236110204678",
+          "0.236222236725144",
+          "0.250986126520466"
+        ],
+        [
+          "0.991022375936024",
+          "0.233418225663362",
+          "0.224440601599386"
+        ],
+        [
+          "0.846763719931524",
+          "0",
+          "0.153236280068476"
+        ],
+        [
+          "0.792338185771011",
+          "0.415323628457979",
+          "0.207661814228989"
+        ],
+        [
+          "0.377014558084378",
+          "0.754029116168755",
+          "0.622985441915622"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4205597395217693,
+          0.7060592372033796,
+          0.7145005023183897
+        ],
+        [
+          0.9852361102046782,
+          0.23622223672514422,
+          0.2509861265204661
+        ],
+        [
+          0.9910223759360244,
+          0.23341822566336168,
+          0.22444060159938606
+        ],
+        [
+          0.8467637199315241,
+          0.0,
+          0.15323628006847584
+        ],
+        [
+          0.7923381857710107,
+          0.4153236284579788,
+          0.20766181422898944
+        ],
+        [
+          0.37701455808437767,
+          0.7540291161687553,
+          0.6229854419156224
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.00897762406397562",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.773276384207055",
+        "0.335007492031231",
+        "0.310544395235904"
+      ],
+      "path_center_xyz": [
+        0.7732763842070549,
+        0.3350074920312314,
+        0.3105443952359042
+      ],
+      "centroid_distance_squared_exact": "0.137795936027635",
+      "centroid_distance_numeric": 0.37120874993409747
+    },
+    {
+      "id": "s07_A_B_AC_BD_C_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B AC BD C AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "AC",
+        "BD",
+        "C",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~4.704035812305",
+      "length_numeric": 4.704035812304871,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.00918877609741647",
+          "0.0873405576375928",
+          "0.903470666264991"
+        ],
+        [
+          "0.00554580890849632",
+          "0",
+          "0.0846163027617172",
+          "0.909837888329787"
+        ],
+        [
+          "0",
+          "0.0878543482621217",
+          "0",
+          "0.912145651737878"
+        ],
+        [
+          "0.649984014106735",
+          "0",
+          "0.350015985893265",
+          "0"
+        ],
+        [
+          "0.452649358755445",
+          "0.119573937597617",
+          "0",
+          "0.427776703646937"
+        ],
+        [
+          "0",
+          "0",
+          "0.367871760208857",
+          "0.632128239791143"
+        ],
+        [
+          "0.497840083170248",
+          "0.502159916829752",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.00918877609741647",
+          "0.0873405576375928",
+          "0.903470666264991"
+        ],
+        [
+          "0.00554580890849632",
+          "0",
+          "0.0846163027617172",
+          "0.909837888329787"
+        ],
+        [
+          "0",
+          "0.0878543482621217",
+          "0",
+          "0.912145651737878"
+        ],
+        [
+          "0.649984014106735",
+          "0",
+          "0.350015985893265",
+          "0"
+        ],
+        [
+          "0.452649358755445",
+          "0.119573937597617",
+          "0",
+          "0.427776703646937"
+        ],
+        [
+          "0",
+          "0",
+          "0.367871760208857",
+          "0.632128239791143"
+        ],
+        [
+          "0.497840083170248",
+          "0.502159916829752",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.903470666264991",
+          "0.912659442362407",
+          "0.990811223902583"
+        ],
+        [
+          "0.915383697238283",
+          "0.909837888329787",
+          "0.994454191091504"
+        ],
+        [
+          "0.912145651737878",
+          "1",
+          "0.912145651737878"
+        ],
+        [
+          "0.649984014106735",
+          "0",
+          "0.350015985893265"
+        ],
+        [
+          "0.880426062402383",
+          "0.547350641244555",
+          "0.427776703646937"
+        ],
+        [
+          "0.632128239791143",
+          "0.632128239791143",
+          "1"
+        ],
+        [
+          "0.497840083170248",
+          "0.502159916829752",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.9034706662649907,
+          0.9126594423624073,
+          0.9908112239025835
+        ],
+        [
+          0.915383697238283,
+          0.9098378883297866,
+          0.9944541910915038
+        ],
+        [
+          0.9121456517378783,
+          1.0,
+          0.9121456517378783
+        ],
+        [
+          0.649984014106735,
+          0.0,
+          0.350015985893265
+        ],
+        [
+          0.8804260624023825,
+          0.5473506412445549,
+          0.42777670364693743
+        ],
+        [
+          0.632128239791143,
+          0.632128239791143,
+          1.0
+        ],
+        [
+          0.4978400831702483,
+          0.5021599168297517,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.00554580890849632",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.77019691638738",
+        "0.643448018365378",
+        "0.667886250896024"
+      ],
+      "path_center_xyz": [
+        0.7701969163873803,
+        0.6434480183653777,
+        0.667886250896024
+      ],
+      "centroid_distance_squared_exact": "0.121769500838125",
+      "centroid_distance_numeric": 0.3489548693429072
+    },
+    {
+      "id": "s07_A_BC_A_BD_C_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A BC A BD C AB CD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "A",
+        "BD",
+        "C",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~4.712505445256",
+      "length_numeric": 4.712505445255795,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.0490719563332685",
+          "0.0190882590271418",
+          "0.93183978463959"
+        ],
+        [
+          "0.0304152090407959",
+          "0",
+          "0",
+          "0.969584790959204"
+        ],
+        [
+          "0",
+          "0.0193567322397703",
+          "0.0356973102165601",
+          "0.94494595754367"
+        ],
+        [
+          "0.63988243711174",
+          "0",
+          "0.36011756288826",
+          "0"
+        ],
+        [
+          "0.442384656514455",
+          "0.120695135604179",
+          "0",
+          "0.436920207881367"
+        ],
+        [
+          "0",
+          "0",
+          "0.364074875267894",
+          "0.635925124732106"
+        ],
+        [
+          "0.488473225858647",
+          "0.511526774141353",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.0490719563332685",
+          "0.0190882590271418",
+          "0.93183978463959"
+        ],
+        [
+          "0.0304152090407959",
+          "0",
+          "0",
+          "0.969584790959204"
+        ],
+        [
+          "0",
+          "0.0193567322397703",
+          "0.0356973102165601",
+          "0.94494595754367"
+        ],
+        [
+          "0.63988243711174",
+          "0",
+          "0.36011756288826",
+          "0"
+        ],
+        [
+          "0.442384656514455",
+          "0.120695135604179",
+          "0",
+          "0.436920207881367"
+        ],
+        [
+          "0",
+          "0",
+          "0.364074875267894",
+          "0.635925124732106"
+        ],
+        [
+          "0.488473225858647",
+          "0.511526774141353",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.93183978463959",
+          "0.980911740972858",
+          "0.950928043666731"
+        ],
+        [
+          "1",
+          "0.969584790959204",
+          "0.969584790959204"
+        ],
+        [
+          "0.94494595754367",
+          "0.96430268978344",
+          "0.98064326776023"
+        ],
+        [
+          "0.63988243711174",
+          "0",
+          "0.36011756288826"
+        ],
+        [
+          "0.879304864395821",
+          "0.557615343485545",
+          "0.436920207881367"
+        ],
+        [
+          "0.635925124732106",
+          "0.635925124732106",
+          "1"
+        ],
+        [
+          "0.488473225858647",
+          "0.511526774141353",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.9318397846395896,
+          0.9809117409728582,
+          0.9509280436667314
+        ],
+        [
+          1.0,
+          0.9695847909592041,
+          0.9695847909592041
+        ],
+        [
+          0.9449459575436696,
+          0.9643026897834399,
+          0.9806432677602297
+        ],
+        [
+          0.6398824371117401,
+          0.0,
+          0.3601175628882599
+        ],
+        [
+          0.8793048643958215,
+          0.5576153434855453,
+          0.43692020788136676
+        ],
+        [
+          0.635925124732106,
+          0.635925124732106,
+          1.0
+        ],
+        [
+          0.4884732258586473,
+          0.5115267741413527,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0190882590271418",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.788624484897368",
+        "0.659980923439215",
+        "0.67117055330797"
+      ],
+      "path_center_xyz": [
+        0.7886244848973678,
+        0.6599809234392151,
+        0.6711705533079703
+      ],
+      "centroid_distance_squared_exact": "0.138197347466492",
+      "centroid_distance_numeric": 0.37174903828590006
+    },
+    {
+      "id": "s07_A_BC_AD_B_CD_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A BC AD B CD AB CD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "AD",
+        "B",
+        "CD",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~5.535185951082",
+      "length_numeric": 5.535185951081632,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.438022856063421",
+          "0.12082815447311",
+          "0.441148989463469"
+        ],
+        [
+          "0.361354820049497",
+          "0",
+          "0",
+          "0.638645179950503"
+        ],
+        [
+          "0",
+          "0.361354820044991",
+          "0.638645179955009",
+          "0"
+        ],
+        [
+          "0.438022856060277",
+          "0",
+          "0.44114898946657",
+          "0.120828154473153"
+        ],
+        [
+          "0.636378808229017",
+          "0.363621191770983",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "0.363621191769688",
+          "0.636378808230312",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.438022856063421",
+          "0.12082815447311",
+          "0.441148989463469"
+        ],
+        [
+          "0.361354820049497",
+          "0",
+          "0",
+          "0.638645179950503"
+        ],
+        [
+          "0",
+          "0.361354820044991",
+          "0.638645179955009",
+          "0"
+        ],
+        [
+          "0.438022856060277",
+          "0",
+          "0.44114898946657",
+          "0.120828154473153"
+        ],
+        [
+          "0.636378808229017",
+          "0.363621191770983",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "0.363621191769688",
+          "0.636378808230312",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.441148989463469",
+          "0.87917184552689",
+          "0.561977143936579"
+        ],
+        [
+          "1",
+          "0.638645179950503",
+          "0.638645179950503"
+        ],
+        [
+          "0",
+          "0.361354820044991",
+          "0.638645179955009"
+        ],
+        [
+          "0.55885101053343",
+          "0.120828154473153",
+          "0.561977143939723"
+        ],
+        [
+          "0.636378808229017",
+          "0.363621191770983",
+          "0"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "1"
+        ],
+        [
+          "0.363621191769688",
+          "0.636378808230312",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4411489894634688,
+          0.8791718455268901,
+          0.5619771439365786
+        ],
+        [
+          1.0,
+          0.6386451799505029,
+          0.6386451799505029
+        ],
+        [
+          0.0,
+          0.3613548200449914,
+          0.6386451799550086
+        ],
+        [
+          0.5588510105334299,
+          0.1208281544731531,
+          0.5619771439397232
+        ],
+        [
+          0.6363788082290166,
+          0.3636211917709834,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.3636211917696879,
+          0.6363788082303121,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.12082815447311",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.499999999999372",
+        "0.499999999999548",
+        "0.485892092540259"
+      ],
+      "path_center_xyz": [
+        0.4999999999993719,
+        0.4999999999995476,
+        0.48589209254025906
+      ],
+      "centroid_distance_squared_exact": "0.000199033052892614",
+      "centroid_distance_numeric": 0.014107907459740943
+    },
+    {
+      "id": "s07_A_BC_D_AB_CD_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A BC D AB CD AB CD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "D",
+        "AB",
+        "CD",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "~5.591930519097",
+      "length_numeric": 5.591930519097445,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.551518110802213",
+          "0.128137682633014",
+          "0.320344206564773"
+        ],
+        [
+          "0.500000000016901",
+          "0",
+          "0",
+          "0.499999999983099"
+        ],
+        [
+          "0.320344206602863",
+          "0.128137682635948",
+          "0.55151811076119",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.687767059872146",
+          "0.312232940127854"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "0.312232940107946",
+          "0.687767059892054",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.551518110802213",
+          "0.128137682633014",
+          "0.320344206564773"
+        ],
+        [
+          "0.500000000016901",
+          "0",
+          "0",
+          "0.499999999983099"
+        ],
+        [
+          "0.320344206602863",
+          "0.128137682635948",
+          "0.55151811076119",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.687767059872146",
+          "0.312232940127854"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "0.312232940107946",
+          "0.687767059892054",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.320344206564773",
+          "0.871862317366986",
+          "0.448481889197787"
+        ],
+        [
+          "1",
+          "0.499999999983099",
+          "0.499999999983099"
+        ],
+        [
+          "0.320344206602863",
+          "0.128137682635948",
+          "0.55151811076119"
+        ],
+        [
+          "0.312232940127854",
+          "0.312232940127854",
+          "1"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "1"
+        ],
+        [
+          "0.312232940107946",
+          "0.687767059892054",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.32034420656477347,
+          0.8718623173669862,
+          0.4484818891977873
+        ],
+        [
+          1.0,
+          0.4999999999830994,
+          0.4999999999830994
+        ],
+        [
+          0.32034420660286267,
+          0.12813768263594771,
+          0.5515181107611896
+        ],
+        [
+          0.3122329401278542,
+          0.3122329401278542,
+          1.0
+        ],
+        [
+          0.5,
+          0.5,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.31223294010794644,
+          0.6877670598920536,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.128137682633014",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "0.466450613343348",
+        "0.500000000000849",
+        "0.499999999991725"
+      ],
+      "path_center_xyz": [
+        0.4664506133433481,
+        0.5000000000008488,
+        0.49999999999172523
+      ],
+      "centroid_distance_squared_exact": "0.00112556134503753",
+      "centroid_distance_numeric": 0.033549386656651914
+    },
+    {
+      "id": "s07_A_BC_D_AB_CD_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A BC D AB CD A BCD",
+      "stratum_word": [
+        "A",
+        "BC",
+        "D",
+        "AB",
+        "CD",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "~5.598706855608",
+      "length_numeric": 5.598706855607787,
+      "barycentric_denominator": "1",
+      "barycentric_points": [
+        [
+          "0",
+          "0.102918226294816",
+          "0.102918226294816",
+          "0.794163547410368"
+        ],
+        [
+          "0.182560551692867",
+          "0",
+          "0",
+          "0.817439448307133"
+        ],
+        [
+          "0.131322270038378",
+          "0.0983688666849124",
+          "0.770308863276709",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.819945690060505",
+          "0.180054309939495"
+        ],
+        [
+          "0.123738076736402",
+          "0.876261923263598",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0.853182778326463",
+          "0.0734086108367684",
+          "0.0734086108367684"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "0.102918226294816",
+          "0.102918226294816",
+          "0.794163547410368"
+        ],
+        [
+          "0.182560551692867",
+          "0",
+          "0",
+          "0.817439448307133"
+        ],
+        [
+          "0.131322270038378",
+          "0.0983688666849124",
+          "0.770308863276709",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0.819945690060505",
+          "0.180054309939495"
+        ],
+        [
+          "0.123738076736402",
+          "0.876261923263598",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0.853182778326463",
+          "0.0734086108367684",
+          "0.0734086108367684"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "0.794163547410368",
+          "0.897081773705184",
+          "0.897081773705184"
+        ],
+        [
+          "1",
+          "0.817439448307133",
+          "0.817439448307133"
+        ],
+        [
+          "0.131322270038378",
+          "0.0983688666849124",
+          "0.770308863276709"
+        ],
+        [
+          "0.180054309939495",
+          "0.180054309939495",
+          "1"
+        ],
+        [
+          "0.123738076736402",
+          "0.876261923263598",
+          "0"
+        ],
+        [
+          "0.0734086108367684",
+          "0.926591389163232",
+          "0.146817221673537"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.7941635474103677,
+          0.8970817737051838,
+          0.8970817737051838
+        ],
+        [
+          1.0,
+          0.8174394483071326,
+          0.8174394483071326
+        ],
+        [
+          0.13132227003837837,
+          0.0983688666849124,
+          0.7703088632767092
+        ],
+        [
+          0.18005430993949473,
+          0.18005430993949473,
+          1.0
+        ],
+        [
+          0.12373807673640158,
+          0.8762619232635984,
+          0.0
+        ],
+        [
+          0.07340861083676842,
+          0.9265913891632316,
+          0.14681722167353678
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "numeric",
+      "boundary_margin": "0.0734086108367684",
+      "coordinate_kind": "numeric",
+      "numeric_residual": "normal-cone checked to floating tolerance",
+      "provenance": "exhaustive_singular_normal_cone_numeric",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 24,
+      "path_center_xyz_exact": [
+        "0.471812402137344",
+        "0.542256815866222",
+        "0.518806758137509"
+      ],
+      "path_center_xyz": [
+        0.4718124021373444,
+        0.542256815866222,
+        0.518806758137509
+      ],
+      "centroid_distance_squared_exact": "0.00293387331206134",
+      "centroid_distance_numeric": 0.054165240810517386
+    },
+    {
+      "id": "s07_A_B_CD_AB_CD_AB_CD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B CD AB CD AB CD",
+      "stratum_word": [
+        "A",
+        "B",
+        "CD",
+        "AB",
+        "CD",
+        "AB",
+        "CD"
+      ],
+      "length_exact": "2 + 8*sqrt(2)/3",
+      "length_numeric": 5.771236166328253,
+      "barycentric_denominator": "12",
+      "barycentric_points": [
+        [
+          "0",
+          "8",
+          "2",
+          "2"
+        ],
+        [
+          "8",
+          "0",
+          "2",
+          "2"
+        ],
+        [
+          "9",
+          "3",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "6",
+          "6"
+        ],
+        [
+          "6",
+          "6",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "6",
+          "6"
+        ],
+        [
+          "3",
+          "9",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "2/3",
+          "1/6",
+          "1/6"
+        ],
+        [
+          "2/3",
+          "0",
+          "1/6",
+          "1/6"
+        ],
+        [
+          "3/4",
+          "1/4",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1/4",
+          "3/4",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "1/6",
+          "5/6",
+          "1/3"
+        ],
+        [
+          "5/6",
+          "1/6",
+          "1/3"
+        ],
+        [
+          "3/4",
+          "1/4",
+          "0"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "0"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "1/4",
+          "3/4",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.16666666666666666,
+          0.8333333333333334,
+          0.3333333333333333
+        ],
+        [
+          0.8333333333333334,
+          0.16666666666666666,
+          0.3333333333333333
+        ],
+        [
+          0.75,
+          0.25,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.5,
+          0.5,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.25,
+          0.75,
+          0.0
+        ]
+      ],
+      "height": "12",
+      "boundary_margin": "1/6",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 6,
+      "path_center_xyz_exact": [
+        "1/2",
+        "1/2",
+        "8/21"
+      ],
+      "path_center_xyz": [
+        0.5,
+        0.5,
+        0.38095238095238093
+      ],
+      "centroid_distance_squared_exact": "25/1764",
+      "centroid_distance_numeric": 0.11904761904761905
+    },
+    {
+      "id": "s07_A_B_CD_AB_CD_A_BCD",
+      "kind": "singular_normal_cone",
+      "singular": true,
+      "period": 7,
+      "word": "A B CD AB CD A BCD",
+      "stratum_word": [
+        "A",
+        "B",
+        "CD",
+        "AB",
+        "CD",
+        "A",
+        "BCD"
+      ],
+      "length_exact": "sqrt(246)/6 + sqrt(374)/6",
+      "length_numeric": 5.837244457861973,
+      "barycentric_denominator": "48720",
+      "barycentric_points": [
+        [
+          "0",
+          "2030",
+          "23345",
+          "23345"
+        ],
+        [
+          "3248",
+          "0",
+          "22736",
+          "22736"
+        ],
+        [
+          "25200",
+          "23520",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "24360",
+          "24360"
+        ],
+        [
+          "6960",
+          "41760",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "40600",
+          "4060",
+          "4060"
+        ],
+        [
+          "48720",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "barycentric_exact": [
+        [
+          "0",
+          "1/24",
+          "23/48",
+          "23/48"
+        ],
+        [
+          "1/15",
+          "0",
+          "7/15",
+          "7/15"
+        ],
+        [
+          "15/29",
+          "14/29",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1/2",
+          "1/2"
+        ],
+        [
+          "1/7",
+          "6/7",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "5/6",
+          "1/12",
+          "1/12"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz_exact": [
+        [
+          "23/48",
+          "25/48",
+          "23/24"
+        ],
+        [
+          "8/15",
+          "7/15",
+          "14/15"
+        ],
+        [
+          "15/29",
+          "14/29",
+          "0"
+        ],
+        [
+          "1/2",
+          "1/2",
+          "1"
+        ],
+        [
+          "1/7",
+          "6/7",
+          "0"
+        ],
+        [
+          "1/12",
+          "11/12",
+          "1/6"
+        ],
+        [
+          "1",
+          "0",
+          "0"
+        ]
+      ],
+      "points_xyz": [
+        [
+          0.4791666666666667,
+          0.5208333333333334,
+          0.9583333333333334
+        ],
+        [
+          0.5333333333333333,
+          0.4666666666666667,
+          0.9333333333333333
+        ],
+        [
+          0.5172413793103449,
+          0.4827586206896552,
+          0.0
+        ],
+        [
+          0.5,
+          0.5,
+          1.0
+        ],
+        [
+          0.14285714285714285,
+          0.8571428571428571,
+          0.0
+        ],
+        [
+          0.08333333333333333,
+          0.9166666666666666,
+          0.16666666666666666
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "height": "48720",
+      "boundary_margin": "1/24",
+      "coordinate_kind": "exact_rational",
+      "provenance": "exhaustive_singular_normal_cone",
+      "discovery_method": "canonical stratum-word convex search",
+      "copy_count": 12,
+      "path_center_xyz_exact": [
+        "158629/341040",
+        "182411/341040",
+        "367/840"
+      ],
+      "path_center_xyz": [
+        0.465133122214403,
+        0.534866877785597,
+        0.4369047619047619
+      ],
+      "centroid_distance_squared_exact": "41434227/6461571200",
+      "centroid_distance_numeric": 0.08007750872327572
     }
   ]
 }

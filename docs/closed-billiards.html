@@ -413,12 +413,33 @@
       </section>
 
       <article class="essay-article">
+        <section id="singular-algorithm">
+          <h2>How the singular inventory is found</h2>
+          <p>
+            The singular search enumerates primitive cyclic words in the fourteen
+            boundary strata: four faces, six edges, and four vertices. Consecutive
+            tokens are required to have disjoint active face sets, so the open segment
+            between two bounces lies inside the tetrahedron rather than along a face.
+          </p>
+          <p>
+            For each stratum word, the algorithm minimizes the polygonal length over
+            the product of the assigned closed strata. A relative-interior minimizer is
+            then checked against the normal-cone equation at every bounce and reduced
+            modulo cyclic shift, reversal, and tetrahedral relabeling. The published
+            singular file is exhaustive through period 7; it contains 15 exact rational
+            representatives and 24 numeric normal-cone representatives.
+          </p>
+          <p class="essay-inline-actions">
+            <a class="essay-button" href="data/tetra/singular_normal_cones.json">Singular data</a>
+          </p>
+        </section>
+
         <section id="examples">
           <h2>How it appears in the inventory</h2>
           <p>
-            The inventory display uses this active-face convention. Row ids such as
-            <code>s02_AD_BC</code> may still contain the older edge-by-vertex shorthand,
-            but the word column records the faces active at each bounce.
+            The inventory display uses this active-face convention. A word like
+            <code>A BC D BC</code> means a face hit, then an edge hit, then another
+            face hit, then the same edge stratum again.
           </p>
           <div class="example-table-wrap">
             <table class="example-table">
@@ -436,13 +457,13 @@
                   <td>The basic period-4 face orbit, unfoldable through reflected tetrahedra.</td>
                 </tr>
                 <tr>
-                  <td><code>s02_AD_BC</code></td>
-                  <td><code>BC AD</code></td>
+                  <td><code>s02_AB_CD</code></td>
+                  <td><code>AB CD</code></td>
                   <td>A symmetric edge-to-opposite-edge path with total length <code>2</code>.</td>
                 </tr>
                 <tr>
-                  <td><code>s04_AD_D_AD_A</code></td>
-                  <td><code>BC D BC A</code></td>
+                  <td><code>s04_A_BC_D_BC</code></td>
+                  <td><code>A BC D BC</code></td>
                   <td>A one-parameter normal-cone family whose length is constant.</td>
                 </tr>
               </tbody>

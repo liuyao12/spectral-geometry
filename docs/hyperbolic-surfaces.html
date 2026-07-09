@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compact Hyperbolic Surface Geodesics</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="hyperbolic-surfaces.css">
+  </head>
+  <body>
+    <main class="hyperbolic-app">
+      <aside class="control-rail">
+        <header class="brand-block">
+          <nav class="page-links" aria-label="project pages">
+            <a class="back-link" href="index.html">Spectral geometry</a>
+            <a class="back-link" href="tetra-billiards.html">Tetrahedron billiards</a>
+          </nav>
+          <h1>Compact hyperbolic surfaces</h1>
+          <p id="loadStatus">Loading local geodesic data...</p>
+        </header>
+
+        <label class="field">
+          <span>Surface</span>
+          <select id="surfaceSelect">
+            <option value="regular-octagon-genus-2">Regular octagon genus-2 surface</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Model</span>
+          <select id="modelSelect">
+            <option value="disk">Poincare disk</option>
+            <option value="halfplane">Upper half-plane</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Closed geodesic</span>
+          <select id="geodesicSelect"></select>
+        </label>
+
+        <div class="switch-stack" aria-label="layers">
+          <label><input id="tileToggle" type="checkbox" checked> Neighboring lifts</label>
+          <label><input id="labelToggle" type="checkbox" checked> Edge labels</label>
+          <label><input id="domainToggle" type="checkbox" checked> Fundamental segment</label>
+        </div>
+
+        <dl id="surfaceDetails" class="details"></dl>
+
+        <div class="legend" aria-label="edge pair legend">
+          <span><i class="swatch pair-a"></i>a edges</span>
+          <span><i class="swatch pair-b"></i>b edges</span>
+          <span><i class="swatch pair-c"></i>c edges</span>
+          <span><i class="swatch pair-d"></i>d edges</span>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="top-strip">
+          <div>
+            <h2 id="surfaceTitle">Regular octagon quotient</h2>
+            <p id="surfaceSubtitle"></p>
+          </div>
+          <a class="data-link" href="data/hyperbolic/bolza_octagon_geodesics.json">Source JSON</a>
+        </div>
+
+        <section class="scene-panel" aria-label="Hyperbolic surface visualization">
+          <canvas id="surfaceCanvas" aria-label="Closed geodesic on a compact hyperbolic surface"></canvas>
+          <div id="errorBox" class="error-box is-hidden"></div>
+        </section>
+
+        <div class="lower-layout">
+          <section class="list-panel">
+            <div class="panel-heading">
+              <h3>Closed geodesics</h3>
+              <span id="recordCount"></span>
+            </div>
+            <div class="geodesic-table-wrap">
+              <table class="geodesic-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Word</th>
+                    <th scope="col">Letters</th>
+                    <th scope="col">Length</th>
+                    <th scope="col">Trace</th>
+                  </tr>
+                </thead>
+                <tbody id="geodesicRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="details-panel">
+            <div class="panel-heading">
+              <h3>Selected geodesic</h3>
+            </div>
+            <dl id="geodesicDetails" class="details selected-details"></dl>
+            <pre id="selectedJson" class="json-view">{}</pre>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="hyperbolic-surfaces.js"></script>
+  </body>
+</html>
