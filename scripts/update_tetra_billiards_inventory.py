@@ -264,7 +264,7 @@ def main() -> None:
     parser.add_argument(
         "--out",
         type=Path,
-        default=REPO_ROOT / "site" / "data" / "tetra" / "billiards_inventory.json",
+        default=REPO_ROOT / "docs" / "data" / "tetra" / "billiards_inventory.json",
         help="Output JSON path for the GitHub Pages viewer.",
     )
     parser.add_argument(

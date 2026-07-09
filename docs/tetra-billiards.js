@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const DATA_URL = "data/tetra/billiards_inventory.json";
+const SINGULAR_DATA_URL = "data/tetra/singular_normal_cones.json";
 const VERTEX_NAMES = ["A", "B", "C", "D"];
 const FACES = {
   A: ["B", "C", "D"],
@@ -41,73 +42,127 @@ const FACE_CSS = {
   D: "#e15759",
   "?": "#777777"
 };
+const STRATUM_COLORS = {
+  edge: 0xff7a00,
+  vertex: 0x8b5cf6,
+  singular: 0xff7a00
+};
+const STRATUM_CSS = {
+  edge: "#ff7a00",
+  vertex: "#8b5cf6",
+  singular: "#ff7a00"
+};
 
 const els = {
   status: document.getElementById("inventoryStatus"),
   period: document.getElementById("periodSelect"),
+  kind: document.getElementById("kindSelect"),
   search: document.getElementById("wordSearch"),
   sort: document.getElementById("sortSelect"),
-  folded: document.getElementById("foldedBtn"),
-  unfolded: document.getElementById("unfoldedBtn"),
   summary: document.getElementById("summaryDetails"),
   title: document.getElementById("orbitTitle"),
   subtitle: document.getElementById("orbitSubtitle"),
   reset: document.getElementById("resetCamera"),
+  play: document.getElementById("playAnimation"),
   stage: document.getElementById("stage"),
-  canvas: document.getElementById("tetraCanvas"),
+  foldedCanvas: document.getElementById("foldedCanvas"),
+  unfoldedCanvas: document.getElementById("unfoldedCanvas"),
   empty: document.getElementById("stageEmpty"),
+  note: document.getElementById("stageNote"),
   rows: document.getElementById("orbitRows"),
   sortHeaders: [...document.querySelectorAll(".sort-header")],
   count: document.getElementById("recordCount"),
-  details: document.getElementById("orbitDetails")
+  details: document.getElementById("orbitDetails"),
+  points: document.getElementById("pointRows")
 };
 
 let inventory = null;
 let selectedId = null;
-let viewMode = "folded";
-let currentBounds = null;
 let sortKey = "period";
 let sortDirection = "asc";
-
-const renderer = new THREE.WebGLRenderer({ canvas: els.canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-renderer.setClearColor(0xffffff, 1);
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 2000);
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.screenSpacePanning = true;
-
-const root = new THREE.Group();
-scene.add(root);
+let selectedPointIndex = 0;
+let animationRunning = false;
+let animationProgress = 0;
+let lastAnimationTime = null;
+let currentPathPoints = { folded: [], unfolded: [] };
+const ANIMATION_SECONDS = 7.5;
 
 const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x15181d, transparent: true, opacity: 0.82 });
 const faintEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x6e747c, transparent: true, opacity: 0.28 });
 const cubeMaterial = new THREE.LineBasicMaterial({ color: 0x3f4c5a, transparent: true, opacity: 0.28 });
 const pathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c });
+const singularPathMaterial = new THREE.LineBasicMaterial({ color: 0xff7a00, linewidth: 2 });
 const unfoldedPathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c, linewidth: 2 });
 
-function animate() {
-  controls.update();
-  renderer.render(scene, camera);
+function createViewer(canvas, mode) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0xffffff, 1);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 2000);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.screenSpacePanning = true;
+
+  const root = new THREE.Group();
+  const overlay = new THREE.Group();
+  const movingMarker = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 24, 16),
+    new THREE.MeshBasicMaterial({ color: 0x111111 })
+  );
+  movingMarker.visible = false;
+  overlay.add(movingMarker);
+  scene.add(root, overlay);
+
+  return {
+    mode,
+    canvas,
+    renderer,
+    scene,
+    camera,
+    controls,
+    root,
+    overlay,
+    movingMarker,
+    bounds: null,
+    markerRadius: 0.035
+  };
+}
+
+const views = {
+  folded: createViewer(els.foldedCanvas, "folded"),
+  unfolded: createViewer(els.unfoldedCanvas, "unfolded")
+};
+
+function animate(time = 0) {
+  updateAnimation(time);
+  for (const view of Object.values(views)) {
+    view.controls.update();
+    view.renderer.render(view.scene, view.camera);
+  }
   requestAnimationFrame(animate);
 }
 animate();
 
-function resizeRenderer() {
-  const rect = els.stage.getBoundingClientRect();
-  const width = Math.max(320, Math.floor(rect.width));
-  const height = Math.max(300, Math.floor(rect.height));
-  renderer.setSize(width, height, false);
-  camera.aspect = width / height;
-  camera.updateProjectionMatrix();
+function resizeViewer(view) {
+  const rect = view.canvas.getBoundingClientRect();
+  const width = Math.max(260, Math.round(rect.width));
+  const height = Math.max(260, Math.round(rect.height || rect.width));
+  view.renderer.setSize(width, height, false);
+  view.camera.aspect = width / height;
+  view.camera.updateProjectionMatrix();
+  resetCamera(view);
 }
 
-new ResizeObserver(resizeRenderer).observe(els.stage);
-window.addEventListener("resize", resizeRenderer);
-resizeRenderer();
+for (const view of Object.values(views)) {
+  new ResizeObserver(() => resizeViewer(view)).observe(view.canvas);
+  resizeViewer(view);
+}
+window.addEventListener("resize", () => {
+  for (const view of Object.values(views)) resizeViewer(view);
+});
 
 function bigIntFrom(value) {
   return BigInt(String(value));
@@ -137,9 +192,215 @@ function compareIntegerStrings(a, b) {
 }
 
 function parseFractionApprox(text) {
+  if (text == null || text === "") return Number.POSITIVE_INFINITY;
   const parts = String(text).split("/");
   if (parts.length === 1) return Number(parts[0]);
   return Number(parts[0]) / Number(parts[1]);
+}
+
+function gcdBigInt(a, b) {
+  a = a < 0n ? -a : a;
+  b = b < 0n ? -b : b;
+  while (b) {
+    const next = a % b;
+    a = b;
+    b = next;
+  }
+  return a;
+}
+
+function fractionText(numerator, denominator) {
+  let a = bigIntFrom(numerator);
+  let b = bigIntFrom(denominator);
+  if (b < 0n) {
+    a = -a;
+    b = -b;
+  }
+  const g = gcdBigInt(a, b);
+  a /= g;
+  b /= g;
+  return b === 1n ? a.toString() : `${a}/${b}`;
+}
+
+function barycentricExact(row, denominator) {
+  return row.map(value => fractionText(value, denominator));
+}
+
+function pointExactFromBarycentric(row, denominator) {
+  const nums = row.map(bigIntFrom);
+  const x = nums[0] + nums[3];
+  const y = nums[1] + nums[3];
+  const z = nums[2] + nums[3];
+  return [x, y, z].map(value => fractionText(value, denominator));
+}
+
+function pointFloatFromBarycentric(row, denominator) {
+  const nums = row.map(value => ratio(value, denominator));
+  return [
+    nums[0] + nums[3],
+    nums[1] + nums[3],
+    nums[2] + nums[3]
+  ];
+}
+
+function faceFromBarycentric(row) {
+  const zeroIndex = row.findIndex(value => bigIntFrom(value) === 0n);
+  return zeroIndex >= 0 ? VERTEX_NAMES[zeroIndex] : "?";
+}
+
+function inferStratum(row) {
+  const zero = [];
+  const nonzero = [];
+  row.forEach((value, index) => {
+    if (bigIntFrom(value) === 0n) zero.push(VERTEX_NAMES[index]);
+    else nonzero.push(VERTEX_NAMES[index]);
+  });
+  if (zero.length === 1) return { label: zero[0], type: "face", face: zero[0] };
+  if (zero.length === 2) return { label: `(${nonzero.join("")})`, type: "edge", face: "edge" };
+  if (zero.length === 3) return { label: `[${nonzero[0] ?? "?"}]`, type: "vertex", face: "vertex" };
+  return { label: "?", type: "singular", face: "?" };
+}
+
+function stratumFromLabel(label, row) {
+  const text = String(label ?? "");
+  if (/^\([A-D]{2}\)$/.test(text)) return { label: text, type: "edge", face: "edge" };
+  if (/^\[[A-D]\]$/.test(text)) return { label: text, type: "vertex", face: "vertex" };
+  if (/^[A-D]$/.test(text)) return { label: text, type: "face", face: text };
+  return inferStratum(row);
+}
+
+function isSingular(orbit) {
+  return orbit.kind === "singular_normal_cone" || orbit.singular === true;
+}
+
+function canUnfold(orbit) {
+  return !isSingular(orbit) && /^[ABCD]+$/.test(orbit.word);
+}
+
+function pointStyle(orbit, index) {
+  if (isSingular(orbit)) {
+    const stratum = stratumFromLabel(orbit.stratum_word?.[index], orbit.barycentric_points[index]);
+    if (stratum.type === "face") {
+      return {
+        ...stratum,
+        color: FACE_COLORS[stratum.face] ?? FACE_COLORS["?"],
+        css: FACE_CSS[stratum.face] ?? FACE_CSS["?"]
+      };
+    }
+    return {
+      ...stratum,
+      color: STRATUM_COLORS[stratum.type] ?? STRATUM_COLORS.singular,
+      css: STRATUM_CSS[stratum.type] ?? STRATUM_CSS.singular
+    };
+  }
+  const face = orbit.faces?.[index] ?? faceFromBarycentric(orbit.barycentric_points[index]);
+  return {
+    label: face,
+    type: "face",
+    face,
+    color: FACE_COLORS[face] ?? FACE_COLORS["?"],
+    css: FACE_CSS[face] ?? FACE_CSS["?"]
+  };
+}
+
+function displayWord(orbit) {
+  if (isSingular(orbit) && Array.isArray(orbit.stratum_word)) return orbit.stratum_word.join(" ");
+  return orbit.word;
+}
+
+function kindLabel(orbit) {
+  return isSingular(orbit) ? "singular" : "ordinary";
+}
+
+const PERMUTATIONS_4 = (() => {
+  const out = [];
+  const rec = (pool, row) => {
+    if (row.length === 4) {
+      out.push(row);
+      return;
+    }
+    pool.forEach((value, index) => rec(pool.filter((_, j) => j !== index), [...row, value]));
+  };
+  rec([0, 1, 2, 3], []);
+  return out;
+})();
+const copyCountCache = new Map();
+
+function rowKey(row) {
+  return row.map(value => bigIntFrom(value).toString()).join(",");
+}
+
+function cyclicKeys(matrix) {
+  const rows = matrix.map(rowKey);
+  const keys = [];
+  for (let shift = 0; shift < rows.length; shift++) {
+    keys.push(rows.map((_, i) => rows[(i + shift) % rows.length]).join(";"));
+  }
+  const reversed = [...rows].reverse();
+  for (let shift = 0; shift < reversed.length; shift++) {
+    keys.push(reversed.map((_, i) => reversed[(i + shift) % reversed.length]).join(";"));
+  }
+  return keys;
+}
+
+function canonicalPathKey(matrix) {
+  return cyclicKeys(matrix).sort()[0];
+}
+
+function copyCountOf(orbit) {
+  if (copyCountCache.has(orbit.id)) return copyCountCache.get(orbit.id);
+  const seen = new Set();
+  for (const permutation of PERMUTATIONS_4) {
+    const matrix = orbit.barycentric_points.map(row => permutation.map(index => row[index]));
+    seen.add(canonicalPathKey(matrix));
+  }
+  const count = seen.size;
+  copyCountCache.set(orbit.id, count);
+  return count;
+}
+
+function degeneracyLabel(orbit) {
+  const familyDimension = Number(orbit.family_dimension ?? orbit.family?.dimension ?? 0);
+  if (familyDimension > 0) {
+    const familyCopyCount = Number(orbit.family_copy_count ?? orbit.family?.copy_count ?? copyCountOf(orbit));
+    return familyCopyCount === 1 ? `inf (${familyDimension}D)` : `${familyCopyCount} inf (${familyDimension}D)`;
+  }
+  return String(orbit.copyCounts ?? orbit.copy_count ?? copyCountOf(orbit));
+}
+
+function normalizeOrbit(raw, fallbackKind) {
+  const orbit = { ...raw };
+  orbit.kind = orbit.kind ?? fallbackKind;
+  orbit.word = String(orbit.word ?? orbit.id ?? "");
+  orbit.period = Number(orbit.period ?? orbit.word.length);
+  orbit.length_numeric = Number(orbit.length_numeric ?? orbit.length ?? 0);
+  orbit.barycentric_denominator = String(orbit.barycentric_denominator);
+  orbit.barycentric_points = orbit.barycentric_points.map(row => row.map(value => String(value)));
+  orbit.faces = orbit.faces ?? orbit.barycentric_points.map(faceFromBarycentric);
+  orbit.barycentric_exact = orbit.barycentric_exact ?? orbit.barycentric_points.map(row => barycentricExact(row, orbit.barycentric_denominator));
+  orbit.points_xyz_exact = orbit.points_xyz_exact ?? orbit.barycentric_points.map(row => pointExactFromBarycentric(row, orbit.barycentric_denominator));
+  orbit.points_xyz = orbit.points_xyz ?? orbit.barycentric_points.map(row => pointFloatFromBarycentric(row, orbit.barycentric_denominator));
+  orbit.axis_direction = orbit.axis_direction ?? [];
+  orbit.initial_direction = orbit.initial_direction ?? [];
+  orbit.height = String(orbit.height ?? orbit.barycentric_denominator);
+  if (!isSingular(orbit) && orbit.boundary_margin == null) {
+    const positive = orbit.barycentric_points.flat().map(bigIntFrom).filter(value => value > 0n);
+    orbit.boundary_margin = positive.length ? fractionText(positive.reduce((a, b) => a < b ? a : b), orbit.barycentric_denominator) : "";
+  }
+  orbit.boundary_margin = orbit.boundary_margin ?? "";
+  if (!Number.isFinite(orbit.centroid_distance_numeric)) {
+    const center = [0, 1, 2].map(axis => orbit.points_xyz.reduce((sum, point) => sum + point[axis], 0) / orbit.points_xyz.length);
+    orbit.path_center_xyz = orbit.path_center_xyz ?? center;
+    orbit.centroid_distance_numeric = Math.hypot(center[0] - 0.5, center[1] - 0.5, center[2] - 0.5);
+  }
+  orbit.search_text = `${orbit.id} ${orbit.word} ${displayWord(orbit)} ${orbit.stratum_word?.join(" ") ?? ""}`.toUpperCase();
+  return orbit;
+}
+
+function combinedPeriodCounts(orbits) {
+  const counts = {};
+  for (const orbit of orbits) counts[orbit.period] = (counts[orbit.period] ?? 0) + 1;
+  return Object.fromEntries(Object.entries(counts).sort((a, b) => Number(a[0]) - Number(b[0])));
 }
 
 function vertexMapFromInventory() {
@@ -157,9 +418,9 @@ function baryPoint(row, denominator, vertices) {
   return out;
 }
 
-function clearRoot() {
-  while (root.children.length) {
-    const child = root.children.pop();
+function clearRoot(view) {
+  while (view.root.children.length) {
+    const child = view.root.children.pop();
     child.traverse?.(node => {
       if (node.geometry) node.geometry.dispose();
     });
@@ -209,11 +470,26 @@ function addTetrahedron(group, vertices, opacity = 0.15, material = edgeMaterial
   addEdges(group, vertices, material);
 }
 
-function addPointMarker(group, point, face, radius) {
-  const material = new THREE.MeshBasicMaterial({ color: FACE_COLORS[face] ?? FACE_COLORS["?"] });
-  const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 18, 12), material);
+function markerGeometry(style, radius) {
+  if (style.type === "edge") return new THREE.BoxGeometry(radius * 1.55, radius * 1.55, radius * 1.55);
+  if (style.type === "vertex") return new THREE.OctahedronGeometry(radius * 1.4, 0);
+  return new THREE.SphereGeometry(radius, 18, 12);
+}
+
+function addPointMarker(group, point, style, selected) {
+  const radius = selected ? 0.043 : 0.024;
+  const material = new THREE.MeshBasicMaterial({ color: style.color });
+  const mesh = new THREE.Mesh(markerGeometry(style, radius), material);
   mesh.position.copy(point);
   group.add(mesh);
+  if (selected) {
+    const halo = new THREE.Mesh(
+      new THREE.SphereGeometry(radius * 1.45, 18, 12),
+      new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: true })
+    );
+    halo.position.copy(point);
+    group.add(halo);
+  }
 }
 
 function addPath(group, points, material = pathMaterial) {
@@ -258,17 +534,21 @@ function unfoldedChain(orbit) {
   return { copies, points };
 }
 
-function updateBoundsAndCamera(group) {
+function updateBoundsAndCamera(view) {
+  const group = view.root;
   const box = new THREE.Box3().setFromObject(group);
   if (box.isEmpty()) {
-    currentBounds = null;
+    view.bounds = null;
     return;
   }
-  currentBounds = box;
-  resetCamera();
+  view.bounds = box;
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  view.markerRadius = Math.max(size.x, size.y, size.z, 1) * 0.018;
+  resetCamera(view);
 }
 
-function fitDistanceForBox(box, direction, padding) {
+function fitDistanceForBox(camera, box, direction, padding) {
   const center = new THREE.Vector3();
   box.getCenter(center);
   const forward = direction.clone().multiplyScalar(-1).normalize();
@@ -294,8 +574,13 @@ function fitDistanceForBox(box, direction, padding) {
   return (Math.max(widthDistance, heightDistance) + halfDepth) * padding;
 }
 
-function resetCamera() {
-  if (!currentBounds) {
+function resetCamera(view = null) {
+  if (view == null) {
+    for (const item of Object.values(views)) resetCamera(item);
+    return;
+  }
+  const { camera, controls } = view;
+  if (!view.bounds) {
     camera.position.set(2.2, 2.4, 2.0);
     controls.target.set(0.5, 0.5, 0.5);
     controls.update();
@@ -303,15 +588,16 @@ function resetCamera() {
   }
   const center = new THREE.Vector3();
   const size = new THREE.Vector3();
-  currentBounds.getCenter(center);
-  currentBounds.getSize(size);
+  view.bounds.getCenter(center);
+  view.bounds.getSize(size);
   const maxSize = Math.max(size.x, size.y, size.z, 1);
-  const direction = viewMode === "unfolded"
-    ? new THREE.Vector3(0.72, -0.9, 0.46)
+  const direction = view.mode === "unfolded"
+    ? new THREE.Vector3(0.35, -0.9, 0.5)
     : new THREE.Vector3(1.35, 1.45, 1.2);
   direction.normalize();
-  const padding = viewMode === "unfolded" ? 1.08 : 1.12;
-  const fitDistance = Math.max(fitDistanceForBox(currentBounds, direction, padding), maxSize * 0.82);
+  const padding = view.mode === "unfolded" ? 0.92 : 0.88;
+  const minDistanceScale = view.mode === "unfolded" ? 0.7 : 0.62;
+  const fitDistance = Math.max(fitDistanceForBox(camera, view.bounds, direction, padding), maxSize * minDistanceScale);
   camera.position.copy(center).addScaledVector(direction, fitDistance);
   camera.near = Math.max(0.01, maxSize / 500);
   camera.far = Math.max(1000, maxSize * 10);
@@ -320,49 +606,173 @@ function resetCamera() {
   controls.update();
 }
 
-function drawFolded(orbit) {
-  const vertices = vertexMapFromInventory();
-  addUnitCubeWireframe(root);
-  addTetrahedron(root, vertices, 0.16, edgeMaterial);
-  const points = foldedPoints(orbit);
-  addPath(root, [...points, points[0]], pathMaterial);
-  points.forEach((point, i) => addPointMarker(root, point, orbit.faces[i] ?? "?", 0.022));
+function orientedChain(orbit) {
+  const chain = unfoldedChain(orbit);
+  if (chain.points.length < 2) return chain;
+  const direction = chain.points[chain.points.length - 1].clone().sub(chain.points[0]).normalize();
+  if (direction.lengthSq() < 0.0001) return chain;
+  const q = new THREE.Quaternion().setFromUnitVectors(direction, new THREE.Vector3(1, 0, 0));
+  return {
+    copies: chain.copies.map(copy => ({
+      ...copy,
+      vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, copy.vertices[name].clone().applyQuaternion(q)]))
+    })),
+    points: chain.points.map(point => point.clone().applyQuaternion(q))
+  };
 }
 
-function drawUnfolded(orbit) {
-  addUnitCubeWireframe(root);
-  const { copies, points } = unfoldedChain(orbit);
+function drawFolded(view, orbit) {
+  const vertices = vertexMapFromInventory();
+  addUnitCubeWireframe(view.root);
+  addTetrahedron(view.root, vertices, 0.16, edgeMaterial);
+  const points = foldedPoints(orbit);
+  const pathPoints = [...points, points[0]];
+  addPath(view.root, pathPoints, isSingular(orbit) ? singularPathMaterial : pathMaterial);
+  points.forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
+  return pathPoints;
+}
+
+function drawUnfolded(view, orbit) {
+  const { copies, points } = orientedChain(orbit);
   copies.forEach((copy, i) => {
-    addEdges(root, copy.vertices, faintEdgeMaterial);
-    if (i < copies.length - 1) addFace(root, copy.vertices, copy.hitFace, 0.11);
+    addEdges(view.root, copy.vertices, faintEdgeMaterial);
+    if (i < copies.length - 1) addFace(view.root, copy.vertices, copy.hitFace, 0.11);
   });
-  addPath(root, points, unfoldedPathMaterial);
-  points.slice(0, -1).forEach((point, i) => addPointMarker(root, point, orbit.faces[i] ?? "?", 0.028));
+  addPath(view.root, points, unfoldedPathMaterial);
+  points.slice(0, -1).forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
+  return points;
+}
+
+function polylineLengths(points) {
+  const lengths = [];
+  let total = 0;
+  for (let i = 0; i < points.length - 1; i++) {
+    total += points[i].distanceTo(points[i + 1]);
+    lengths.push(total);
+  }
+  return { lengths, total };
+}
+
+function pointAtProgress(points, progress) {
+  if (!points.length) return null;
+  if (points.length === 1) return points[0].clone();
+  const { lengths, total } = polylineLengths(points);
+  if (total <= 0) return points[0].clone();
+  const target = ((progress % 1) + 1) % 1 * total;
+  let previous = 0;
+  for (let i = 0; i < lengths.length; i++) {
+    const next = lengths[i];
+    if (target <= next || i === lengths.length - 1) {
+      const span = Math.max(next - previous, 1e-9);
+      const t = (target - previous) / span;
+      return points[i].clone().lerp(points[i + 1], t);
+    }
+    previous = next;
+  }
+  return points[points.length - 1].clone();
+}
+
+function progressAtPoint(points, pointIndex) {
+  if (!points.length || pointIndex <= 0) return 0;
+  const { lengths, total } = polylineLengths(points);
+  if (total <= 0) return 0;
+  return (lengths[Math.min(pointIndex - 1, lengths.length - 1)] ?? 0) / total;
+}
+
+function setAnimationMarker(view, points) {
+  const point = pointAtProgress(points, animationProgress);
+  view.movingMarker.visible = animationRunning && point != null;
+  if (!point) return;
+  view.movingMarker.position.copy(point);
+  view.movingMarker.scale.setScalar(view.markerRadius);
+}
+
+function updateAnimation(time) {
+  if (animationRunning) {
+    if (lastAnimationTime == null) lastAnimationTime = time;
+    const delta = Math.max(0, time - lastAnimationTime) / 1000;
+    animationProgress = (animationProgress + delta / ANIMATION_SECONDS) % 1;
+    lastAnimationTime = time;
+  }
+  setAnimationMarker(views.folded, currentPathPoints.folded);
+  setAnimationMarker(views.unfolded, currentPathPoints.unfolded);
+}
+
+function stopAnimation() {
+  animationRunning = false;
+  lastAnimationTime = null;
+  els.play.textContent = "Animate point";
+  els.play.classList.remove("is-running");
+  for (const view of Object.values(views)) view.movingMarker.visible = false;
+}
+
+function toggleAnimation() {
+  const orbit = selectedOrbit();
+  if (!orbit) return;
+  if (animationRunning) {
+    stopAnimation();
+    return;
+  }
+  animationProgress = progressAtPoint(currentPathPoints.folded, selectedPointIndex);
+  animationRunning = true;
+  lastAnimationTime = performance.now();
+  els.play.textContent = "Pause point";
+  els.play.classList.add("is-running");
+  updateAnimation(lastAnimationTime);
 }
 
 function selectedOrbit() {
   if (!inventory) return null;
-  return inventory.orbits.find(orbit => orbit.id === selectedId) ?? visibleOrbits()[0] ?? null;
+  const rows = visibleOrbits();
+  return rows.find(orbit => orbit.id === selectedId) ?? defaultOrbitFromRows(rows);
+}
+
+function defaultOrbitFromRows(rows) {
+  if (els.kind.value === "singular") return rows[0] ?? null;
+  return rows.find(orbit => !isSingular(orbit)) ?? rows[0] ?? null;
+}
+
+function selectDefaultVisibleOrbit() {
+  selectedId = defaultOrbitFromRows(visibleOrbits())?.id ?? null;
+  selectedPointIndex = 0;
 }
 
 function drawSelectedOrbit() {
-  clearRoot();
+  clearRoot(views.folded);
+  clearRoot(views.unfolded);
+  currentPathPoints = { folded: [], unfolded: [] };
   const orbit = selectedOrbit();
   if (!orbit) {
     els.empty.textContent = "No path matches the current filters.";
     els.empty.classList.remove("is-hidden");
+    els.note.classList.add("is-hidden");
     els.title.textContent = "Inventory";
     els.subtitle.textContent = "";
     els.details.innerHTML = "";
-    currentBounds = null;
+    els.points.innerHTML = "";
+    for (const view of Object.values(views)) {
+      view.bounds = null;
+      view.movingMarker.visible = false;
+    }
     resetCamera();
     return;
   }
   els.empty.classList.add("is-hidden");
+  els.note.classList.add("is-hidden");
   selectedId = orbit.id;
-  if (viewMode === "unfolded") drawUnfolded(orbit);
-  else drawFolded(orbit);
-  updateBoundsAndCamera(root);
+  selectedPointIndex = Math.min(selectedPointIndex, orbit.barycentric_points.length - 1);
+  currentPathPoints.folded = drawFolded(views.folded, orbit);
+  updateBoundsAndCamera(views.folded);
+  if (canUnfold(orbit)) {
+    currentPathPoints.unfolded = drawUnfolded(views.unfolded, orbit);
+    updateBoundsAndCamera(views.unfolded);
+  } else {
+    views.unfolded.bounds = null;
+    resetCamera(views.unfolded);
+    els.note.textContent = "Singular normal-cone representatives do not have a unique deterministic face-unfolding chain.";
+    els.note.classList.remove("is-hidden");
+  }
+  updateAnimation(performance.now());
   renderDetails(orbit);
   renderRows();
 }
@@ -372,6 +782,7 @@ function orbitLengthLabel(orbit) {
 }
 
 function provenanceLabel(orbit) {
+  if (isSingular(orbit)) return "notebook";
   if (orbit.provenance === "exploratory_exactified") return "explore";
   if (orbit.period > (inventory?.summary?.exhaustive_checked_through ?? 40)) return "extra";
   return "exhaustive";
@@ -387,22 +798,33 @@ function centroidDistanceSquaredLabel(orbit) {
   return orbit.centroid_distance_squared_exact ?? "";
 }
 
+function compareNumbers(a, b) {
+  if (a === b) return 0;
+  if (!Number.isFinite(a) && !Number.isFinite(b)) return 0;
+  if (!Number.isFinite(a)) return 1;
+  if (!Number.isFinite(b)) return -1;
+  return a - b;
+}
+
 function compareBySortKey(a, b) {
   if (sortKey === "length") return a.length_numeric - b.length_numeric || a.period - b.period;
-  if (sortKey === "center") return centroidDistanceValue(a) - centroidDistanceValue(b) || a.period - b.period;
+  if (sortKey === "center") return compareNumbers(centroidDistanceValue(a), centroidDistanceValue(b)) || a.period - b.period;
   if (sortKey === "height") return compareIntegerStrings(a.height, b.height) || a.period - b.period;
-  if (sortKey === "margin") return parseFractionApprox(a.boundary_margin) - parseFractionApprox(b.boundary_margin);
-  if (sortKey === "word") return a.word.localeCompare(b.word) || a.period - b.period;
-  return a.period - b.period || a.length_numeric - b.length_numeric || a.word.localeCompare(b.word);
+  if (sortKey === "margin") return compareNumbers(parseFractionApprox(a.boundary_margin), parseFractionApprox(b.boundary_margin));
+  if (sortKey === "word") return displayWord(a).localeCompare(displayWord(b)) || a.period - b.period;
+  return a.period - b.period || a.length_numeric - b.length_numeric || displayWord(a).localeCompare(displayWord(b));
 }
 
 function visibleOrbits() {
   if (!inventory) return [];
   const period = els.period.value;
+  const kind = els.kind.value;
   const query = els.search.value.trim().toUpperCase();
   let rows = inventory.orbits.filter(orbit => {
     if (period !== "all" && String(orbit.period) !== period) return false;
-    if (query && !`${orbit.id} ${orbit.word}`.toUpperCase().includes(query)) return false;
+    if (kind === "ordinary" && isSingular(orbit)) return false;
+    if (kind === "singular" && !isSingular(orbit)) return false;
+    if (query && !orbit.search_text.includes(query)) return false;
     return true;
   });
   rows = [...rows].sort((a, b) => {
@@ -432,30 +854,36 @@ function renderRows() {
   renderSortHeaders();
   for (const orbit of rows) {
     const row = document.createElement("tr");
-    row.className = `orbit-row${orbit.id === selectedId ? " is-selected" : ""}`;
+    row.className = `orbit-row${orbit.id === selectedId ? " is-selected" : ""}${isSingular(orbit) ? " is-singular" : ""}`;
     row.tabIndex = 0;
     row.setAttribute("role", "button");
     row.setAttribute("aria-label", `Select period ${orbit.period} path ${orbit.word}`);
     row.innerHTML = `
       <td class="period-cell"></td>
+      <td class="kind-cell"></td>
       <td class="word-cell mono"></td>
       <td class="numeric-cell"></td>
       <td class="exact-cell"></td>
       <td class="exact-cell"></td>
+      <td class="deg-cell"></td>
       <td class="numeric-cell"></td>
       <td class="numeric-cell"></td>
       <td class="source-cell"></td>
     `;
     row.children[0].textContent = `p${String(orbit.period).padStart(2, "0")}`;
-    row.children[1].textContent = orbit.word;
-    row.children[2].textContent = orbit.length_numeric.toFixed(10);
-    row.children[3].textContent = centroidDistanceSquaredLabel(orbit);
-    row.children[4].textContent = orbitLengthLabel(orbit);
-    row.children[5].textContent = orbit.height;
-    row.children[6].textContent = orbit.boundary_margin;
-    row.children[7].textContent = provenanceLabel(orbit);
+    row.children[1].textContent = kindLabel(orbit);
+    row.children[2].textContent = displayWord(orbit);
+    row.children[3].textContent = orbit.length_numeric.toFixed(10);
+    row.children[4].textContent = centroidDistanceSquaredLabel(orbit);
+    row.children[5].textContent = orbitLengthLabel(orbit);
+    row.children[6].textContent = degeneracyLabel(orbit);
+    row.children[7].textContent = orbit.height;
+    row.children[8].textContent = orbit.boundary_margin;
+    row.children[9].textContent = provenanceLabel(orbit);
     const selectRow = () => {
+      stopAnimation();
       selectedId = orbit.id;
+      selectedPointIndex = 0;
       drawSelectedOrbit();
     };
     row.addEventListener("click", selectRow);
@@ -478,23 +906,69 @@ function detailRow(term, value, className = "") {
   els.details.append(dt, dd);
 }
 
+function renderPointRows(orbit) {
+  els.points.innerHTML = "";
+  orbit.barycentric_points.forEach((row, index) => {
+    const style = pointStyle(orbit, index);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `point-row${index === selectedPointIndex ? " is-selected" : ""}`;
+    button.style.setProperty("--point-color", style.css);
+    button.setAttribute("aria-label", `Select point ${index} on ${style.label}`);
+
+    const number = document.createElement("span");
+    number.className = "point-index";
+    number.textContent = String(index).padStart(2, "0");
+
+    const label = document.createElement("span");
+    label.className = "point-label";
+    label.textContent = style.label;
+
+    const coords = document.createElement("span");
+    coords.className = "point-coords mono";
+    coords.textContent = `[${row.join(", ")}]`;
+
+    const xyz = document.createElement("span");
+    xyz.className = "point-xyz mono";
+    xyz.textContent = `(${orbit.points_xyz_exact[index].join(", ")})`;
+
+    button.append(number, label, coords, xyz);
+    button.addEventListener("click", () => {
+      stopAnimation();
+      selectedPointIndex = index;
+      drawSelectedOrbit();
+    });
+    els.points.appendChild(button);
+  });
+}
+
+function equivalenceLabel(orbit) {
+  if (isSingular(orbit)) return "normal-cone representative";
+  if (orbit.equivalence === "full") return "canonical full";
+  return orbit.equivalence ? `canonical ${orbit.equivalence}` : "canonical";
+}
+
 function renderDetails(orbit) {
-  els.title.textContent = `${orbit.word}`;
-  els.subtitle.textContent = `period ${orbit.period} | ${viewMode} view | ${orbit.id}`;
+  els.title.textContent = displayWord(orbit);
+  els.subtitle.textContent = `period ${orbit.period} | ${equivalenceLabel(orbit)} | ${orbit.id}`;
   els.details.innerHTML = "";
+  detailRow("Kind", isSingular(orbit) ? "singular normal-cone" : "ordinary");
+  detailRow("Equivalence", equivalenceLabel(orbit));
   detailRow("Length", `${orbit.length_exact} (${orbit.length_numeric.toFixed(10)})`);
   if (orbit.path_center_xyz_exact) detailRow("Center", orbit.path_center_xyz_exact.join(", "), "mono");
   if (orbit.centroid_distance_squared_exact) detailRow("Center d^2", orbit.centroid_distance_squared_exact, "mono");
   if (Number.isFinite(orbit.centroid_distance_numeric)) detailRow("Center dist", orbit.centroid_distance_numeric.toFixed(10));
+  detailRow("Degeneracy", degeneracyLabel(orbit));
   detailRow("Height", orbit.height);
-  detailRow("Margin", orbit.boundary_margin);
+  if (orbit.boundary_margin) detailRow("Margin", orbit.boundary_margin);
   detailRow("Source", provenanceLabel(orbit));
   if (orbit.discovery_method) detailRow("Found by", orbit.discovery_method);
-  detailRow("Axis", orbit.axis_direction.join(", "), "mono");
-  detailRow("Faces", orbit.faces.join(" "), "mono");
+  if (orbit.family_dimension) detailRow("Family", `${orbit.family_dimension}D representative`);
+  if (orbit.axis_direction.length) detailRow("Axis", orbit.axis_direction.join(", "), "mono");
+  if (orbit.faces.length && !isSingular(orbit)) detailRow("Faces", orbit.faces.join(" "), "mono");
+  if (isSingular(orbit) && orbit.stratum_word) detailRow("Strata", orbit.stratum_word.join(" "), "mono");
   detailRow("Denominator", orbit.barycentric_denominator, "mono");
-  const points = orbit.points_xyz_exact.map((point, i) => `${i}: ${orbit.faces[i]} (${point.join(", ")})`).join("\n");
-  detailRow("Points", points, "mono");
+  renderPointRows(orbit);
 }
 
 function renderSummary() {
@@ -502,16 +976,17 @@ function renderSummary() {
   const counts = Object.entries(summary.period_counts)
     .map(([period, count]) => `${period}:${count}`)
     .join("  ");
-  els.status.textContent = `${summary.total_orbits} ordinary orbit classes loaded`;
+  els.status.textContent = `${summary.ordinary_orbits} ordinary + ${summary.singular_orbits} singular paths loaded`;
   els.summary.innerHTML = "";
   const coverage = `Exhaustive through level ${summary.exhaustive_checked_through ?? 40}; ${summary.extra_verified_orbits ?? 0} exactified extra paths`;
   const rows = [
     ["Generated", inventory.generated_at],
     ["Coverage", coverage],
+    ["Catalogue", `${summary.total_orbits} paths (${summary.ordinary_orbits} ordinary, ${summary.singular_orbits} singular)`],
     ["Max period", String(summary.max_period)],
     ["Counts", counts],
-    ["Notebook", "Observable source linked in data"],
-    ["Data", DATA_URL]
+    ["Notebook", inventory.source_notebook ?? "Observable source linked in data"],
+    ["Data", `${DATA_URL}, ${SINGULAR_DATA_URL}`]
   ];
   for (const [term, value] of rows) {
     const dt = document.createElement("dt");
@@ -538,28 +1013,61 @@ function populatePeriods() {
 
 async function loadInventory() {
   try {
-    const response = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    inventory = await response.json();
+    const timestamp = Date.now();
+    const [ordinaryResponse, singularResponse] = await Promise.all([
+      fetch(`${DATA_URL}?t=${timestamp}`, { cache: "no-store" }),
+      fetch(`${SINGULAR_DATA_URL}?t=${timestamp}`, { cache: "no-store" })
+    ]);
+    if (!ordinaryResponse.ok) throw new Error(`${DATA_URL}: HTTP ${ordinaryResponse.status}`);
+    if (!singularResponse.ok) throw new Error(`${SINGULAR_DATA_URL}: HTTP ${singularResponse.status}`);
+    const ordinaryInventory = await ordinaryResponse.json();
+    const singularInventory = await singularResponse.json();
+    const ordinaryOrbits = ordinaryInventory.orbits.map(orbit => normalizeOrbit(orbit, "ordinary"));
+    const singularOrbits = singularInventory.orbits.map(orbit => normalizeOrbit({ ...orbit, singular: true }, "singular_normal_cone"));
+    const orbits = [...ordinaryOrbits, ...singularOrbits]
+      .sort((a, b) => a.period - b.period || a.length_numeric - b.length_numeric || displayWord(a).localeCompare(displayWord(b)));
+    inventory = {
+      ...ordinaryInventory,
+      ordinary_inventory: ordinaryInventory,
+      singular_inventory: singularInventory,
+      orbits,
+      summary: {
+        ...ordinaryInventory.summary,
+        ordinary_orbits: ordinaryOrbits.length,
+        singular_orbits: singularOrbits.length,
+        total_orbits: orbits.length,
+        max_period: Math.max(...orbits.map(orbit => orbit.period)),
+        period_counts: combinedPeriodCounts(orbits)
+      }
+    };
     populatePeriods();
     renderSummary();
-    selectedId = inventory.orbits[0]?.id ?? null;
+    selectDefaultVisibleOrbit();
+    stopAnimation();
     renderRows();
     drawSelectedOrbit();
   } catch (error) {
-    els.status.textContent = `Could not load ${DATA_URL}`;
+    els.status.textContent = "Could not load tetrahedron billiards data";
     els.empty.textContent = String(error);
     els.empty.classList.remove("is-hidden");
   }
 }
 
 els.period.addEventListener("change", () => {
-  selectedId = visibleOrbits()[0]?.id ?? null;
+  stopAnimation();
+  selectDefaultVisibleOrbit();
+  renderRows();
+  drawSelectedOrbit();
+});
+els.kind.addEventListener("change", () => {
+  stopAnimation();
+  selectDefaultVisibleOrbit();
   renderRows();
   drawSelectedOrbit();
 });
 els.search.addEventListener("input", () => {
-  selectedId = visibleOrbits()[0]?.id ?? null;
+  stopAnimation();
+  selectDefaultVisibleOrbit();
   renderRows();
   drawSelectedOrbit();
 });
@@ -580,18 +1088,7 @@ els.sortHeaders.forEach(button => {
     renderRows();
   });
 });
-els.folded.addEventListener("click", () => {
-  viewMode = "folded";
-  els.folded.classList.add("is-active");
-  els.unfolded.classList.remove("is-active");
-  drawSelectedOrbit();
-});
-els.unfolded.addEventListener("click", () => {
-  viewMode = "unfolded";
-  els.unfolded.classList.add("is-active");
-  els.folded.classList.remove("is-active");
-  drawSelectedOrbit();
-});
-els.reset.addEventListener("click", resetCamera);
+els.play.addEventListener("click", toggleAnimation);
+els.reset.addEventListener("click", () => resetCamera());
 
 loadInventory();

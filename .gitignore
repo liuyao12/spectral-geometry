@@ -1,2 +1,4 @@
 __pycache__/
 *.py[cod]
+data/*_checkpoint.json
+data/*_forbidden.json

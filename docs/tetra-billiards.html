@@ -27,6 +27,15 @@
         </label>
 
         <label class="field">
+          <span>Type</span>
+          <select id="kindSelect">
+            <option value="all">Ordinary and singular</option>
+            <option value="ordinary">Ordinary</option>
+            <option value="singular">Singular normal-cone</option>
+          </select>
+        </label>
+
+        <label class="field">
           <span>Search</span>
           <input id="wordSearch" type="search" autocomplete="off" placeholder="word or id">
         </label>
@@ -43,11 +52,6 @@
           </select>
         </label>
 
-        <div class="segmented" role="tablist" aria-label="view mode">
-          <button id="foldedBtn" class="is-active" type="button">Folded</button>
-          <button id="unfoldedBtn" type="button">Unfolded</button>
-        </div>
-
         <section class="summary-block">
           <dl id="summaryDetails"></dl>
         </section>
@@ -59,12 +63,31 @@
             <h2 id="orbitTitle">Inventory</h2>
             <p id="orbitSubtitle"></p>
           </div>
-          <button id="resetCamera" type="button">Reset View</button>
+          <div class="top-actions">
+            <button id="playAnimation" type="button">Animate point</button>
+            <button id="resetCamera" type="button">Reset View</button>
+          </div>
         </div>
 
         <div id="stage" class="stage">
-          <canvas id="tetraCanvas"></canvas>
+          <div class="visual-grid">
+            <section class="visual-panel" aria-labelledby="foldedViewTitle">
+              <div class="visual-heading">
+                <h3 id="foldedViewTitle">Folded billiard</h3>
+                <span>regular tetrahedron inside the cube</span>
+              </div>
+              <canvas id="foldedCanvas" aria-label="Folded billiard path in the tetrahedron"></canvas>
+            </section>
+            <section class="visual-panel" aria-labelledby="unfoldedViewTitle">
+              <div class="visual-heading">
+                <h3 id="unfoldedViewTitle">Unfolded chain</h3>
+                <span>static reflected tetrahedra and straight path</span>
+              </div>
+              <canvas id="unfoldedCanvas" aria-label="Unfolded chain of reflected tetrahedra"></canvas>
+            </section>
+          </div>
           <div id="stageEmpty" class="stage-empty is-hidden"></div>
+          <div id="stageNote" class="stage-note is-hidden"></div>
         </div>
 
         <div class="lower-layout">
@@ -80,8 +103,9 @@
                     <th scope="col">
                       <button class="sort-header" type="button" data-sort-key="period">Period</button>
                     </th>
+                    <th scope="col">Type</th>
                     <th scope="col">
-                      <button class="sort-header" type="button" data-sort-key="word">Word</button>
+                      <button class="sort-header" type="button" data-sort-key="word">Canonical word</button>
                     </th>
                     <th scope="col">
                       <button class="sort-header" type="button" data-sort-key="length">Euclidean</button>
@@ -90,6 +114,7 @@
                       <button class="sort-header" type="button" data-sort-key="center">Center d^2</button>
                     </th>
                     <th scope="col">Exact length</th>
+                    <th scope="col">Degeneracy</th>
                     <th scope="col">
                       <button class="sort-header" type="button" data-sort-key="height">Height</button>
                     </th>
@@ -107,6 +132,10 @@
               <h3>Selected path</h3>
             </div>
             <dl id="orbitDetails" class="orbit-details"></dl>
+            <div class="point-panel">
+              <div class="panel-subheading">Barycentric points</div>
+              <div id="pointRows" class="point-rows"></div>
+            </div>
           </section>
         </div>
       </section>

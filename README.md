@@ -24,15 +24,29 @@ https://liuyao12.github.io/spectral-geometry/closed-billiards.html
 To refresh the published ordinary billiard inventory after a search update, run:
 
 ```bash
+python3 -m pip install --user z3-solver
+python3 scripts/run_tetra_exhaustive_inventory.py --max-period 40
+```
+
+This writes a compact exact source such as
+`data/tetra_exhaustive_period40.json`, keeps a large resumable local checkpoint
+next to it, and rebuilds `docs/data/tetra/billiards_inventory.json`.
+
+To rebuild the static inventory directly from existing exact/exploratory
+sources:
+
+```bash
 python3 scripts/update_tetra_billiards_inventory.py \
-  --source /path/to/tetra_frontier_checkpoint_period60.json \
+  --source data/tetra_exhaustive_period40.json \
   --source data/tetra_exploratory_paths.json \
   --out docs/data/tetra/billiards_inventory.json
 ```
 
-The tetrahedron billiards table currently records ordinary paths checked
-exhaustively through level 40, plus exactified paths found by the exploratory
-shooting search.
+The generated tetrahedron billiards inventory currently records ordinary paths
+checked exhaustively through level 40, plus exactified paths found by the
+exploratory shooting search. The published page also loads a small companion
+file of singular normal-cone representatives imported from the Observable
+notebook visualization.
 
 To run another non-exhaustive shooting pass:
 
