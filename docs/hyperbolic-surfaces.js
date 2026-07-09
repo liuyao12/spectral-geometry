@@ -10,7 +10,13 @@ const state = {
   generatorMatrices: {},
   sideReentryMatrices: [],
   trace: null,
-  projection: null
+  projection: null,
+  sceneSize: null,
+  viewZoom: 1,
+  viewPan: { x: 0, y: 0 },
+  viewDragging: null,
+  wrapYaw: 0.74,
+  wrapPitch: 0.18
 };
 
 const el = {
@@ -26,6 +32,9 @@ const el = {
   surfaceTitle: document.querySelector("#surfaceTitle"),
   surfaceSubtitle: document.querySelector("#surfaceSubtitle"),
   canvas: document.querySelector("#surfaceCanvas"),
+  zoomIn: document.querySelector("#zoomIn"),
+  zoomOut: document.querySelector("#zoomOut"),
+  resetView: document.querySelector("#resetView"),
   errorBox: document.querySelector("#errorBox"),
   geodesicRows: document.querySelector("#geodesicRows"),
   recordCount: document.querySelector("#recordCount"),
@@ -95,6 +104,23 @@ function scale(a, k) {
   return c(a.x * k, a.y * k);
 }
 
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function lerpPoint(a, b, t) {
+  return c(lerp(a.x, b.x, t), lerp(a.y, b.y, t));
+}
+
+function smoothstep(t) {
+  const clamped = Math.max(0, Math.min(1, t));
+  return clamped * clamped * (3 - 2 * clamped);
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
 function norm2(a) {
   return a.x * a.x + a.y * a.y;
 }
@@ -117,6 +143,14 @@ function fromPair(pair) {
 
 function pairColor(index) {
   return pairColors[index % pairColors.length];
+}
+
+function rgba(hex, alpha) {
+  const value = hex.replace("#", "");
+  const red = parseInt(value.slice(0, 2), 16);
+  const green = parseInt(value.slice(2, 4), 16);
+  const blue = parseInt(value.slice(4, 6), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
 function fromComplexObject(value) {
@@ -239,7 +273,45 @@ function canvasSize() {
     el.canvas.height = height;
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { width: rect.width, height: rect.height };
+  state.sceneSize = { width: rect.width, height: rect.height };
+  return state.sceneSize;
+}
+
+function viewCenter() {
+  const size = state.sceneSize || { width: el.canvas.clientWidth || 1, height: el.canvas.clientHeight || 1 };
+  return c(size.width / 2, size.height / 2);
+}
+
+function applyViewTransform(point) {
+  const center = viewCenter();
+  return c(
+    center.x + (point.x - center.x) * state.viewZoom + state.viewPan.x,
+    center.y + (point.y - center.y) * state.viewZoom + state.viewPan.y
+  );
+}
+
+function resetViewState() {
+  state.viewZoom = 1;
+  state.viewPan = c(0, 0);
+  state.viewDragging = null;
+}
+
+function canvasPoint(event) {
+  const rect = el.canvas.getBoundingClientRect();
+  return c(event.clientX - rect.left, event.clientY - rect.top);
+}
+
+function zoomView(factor, anchor = viewCenter()) {
+  const previousZoom = state.viewZoom;
+  const nextZoom = clamp(previousZoom * factor, 0.45, 4.5);
+  const ratio = nextZoom / previousZoom;
+  const center = viewCenter();
+  state.viewPan = c(
+    anchor.x - center.x - ratio * (anchor.x - center.x - state.viewPan.x),
+    anchor.y - center.y - ratio * (anchor.y - center.y - state.viewPan.y)
+  );
+  state.viewZoom = nextZoom;
+  drawScene();
 }
 
 function selectedGeodesic() {
@@ -330,7 +402,7 @@ function prepareProjection(size) {
 }
 
 function project(point) {
-  return state.projection.project(point);
+  return applyViewTransform(state.projection.project(point));
 }
 
 function drawPolyline(points, options = {}) {
@@ -594,9 +666,10 @@ function buildQuotientTrace() {
 
 function drawDiskBoundary(size) {
   const radius = Math.min(size.width, size.height) * 0.44;
+  const center = applyViewTransform(c(size.width / 2, size.height / 2));
   ctx.save();
   ctx.beginPath();
-  ctx.arc(size.width / 2, size.height / 2, radius, 0, Math.PI * 2);
+  ctx.arc(center.x, center.y, radius * state.viewZoom, 0, Math.PI * 2);
   ctx.fillStyle = "#fcfefe";
   ctx.fill();
   ctx.strokeStyle = "#b9c5ca";
@@ -610,17 +683,110 @@ function drawHalfPlaneBoundary(size) {
   if (!hp) return;
   const left = project(c(-0.999, 0)).x;
   const right = project(c(0.999, 0)).x;
+  const axisY = applyViewTransform(c(0, hp.originY)).y;
   ctx.save();
   ctx.strokeStyle = "#aebbc3";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(Math.max(22, Math.min(left, right) - 80), hp.originY);
-  ctx.lineTo(Math.min(size.width - 22, Math.max(left, right) + 80), hp.originY);
+  ctx.moveTo(Math.max(22, Math.min(left, right) - 80 * state.viewZoom), axisY);
+  ctx.lineTo(Math.min(size.width - 22, Math.max(left, right) + 80 * state.viewZoom), axisY);
   ctx.stroke();
   ctx.fillStyle = "#64717d";
   ctx.font = "12px Inter, system-ui, sans-serif";
   ctx.textAlign = "right";
-  ctx.fillText("real axis", size.width - 26, hp.originY - 8);
+  ctx.fillText("real axis", size.width - 26, axisY - 8);
+  ctx.restore();
+}
+
+function surfaceMeshSpec(neighbor = false) {
+  const polygon = state.data.polygon;
+  const genus = state.data.surface.genus;
+  if (neighbor) {
+    return {
+      sectors: Math.min(28, Math.max(polygon.p, polygon.p * 2)),
+      rings: Math.min(6, Math.max(4, genus + 3))
+    };
+  }
+  return {
+    sectors: Math.min(56, Math.max(32, polygon.p * 3)),
+    rings: Math.min(10, Math.max(7, genus + 6))
+  };
+}
+
+function domainMeshPoints(spec) {
+  const points = [];
+  for (let ring = 0; ring <= spec.rings; ring += 1) {
+    const radial = ring / spec.rings;
+    const row = [];
+    for (let sector = 0; sector <= spec.sectors; sector += 1) {
+      const angle = (sector + 0.5) * Math.PI * 2 / spec.sectors;
+      const radius = boundaryRadiusAtAngle(angle) * radial;
+      row.push(c(radius * Math.cos(angle), radius * Math.sin(angle)));
+    }
+    points.push(row);
+  }
+  return points;
+}
+
+function projectedGeodesicEdge(a, b, matrix, sampleCount = 7) {
+  const start = applyMatrix(matrix, a);
+  const end = applyMatrix(matrix, b);
+  return geodesicSamples(start, end, sampleCount, 0)
+    .map(project)
+    .filter((point) => Number.isFinite(point.x) && Number.isFinite(point.y));
+}
+
+function drawProjectedTriangle(vertices, matrix, fill, stroke, width = 0.55) {
+  const edges = [
+    projectedGeodesicEdge(vertices[0], vertices[1], matrix),
+    projectedGeodesicEdge(vertices[1], vertices[2], matrix),
+    projectedGeodesicEdge(vertices[2], vertices[0], matrix)
+  ];
+  if (edges.some((edge) => edge.length < 2)) return;
+  ctx.beginPath();
+  edges.forEach((edge, edgeIndex) => {
+    edge.forEach((point, pointIndex) => {
+      if (edgeIndex === 0 && pointIndex === 0) ctx.moveTo(point.x, point.y);
+      else if (pointIndex > 0) ctx.lineTo(point.x, point.y);
+    });
+  });
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = width;
+  ctx.stroke();
+}
+
+function drawDomainMesh(matrix = identity, neighbor = false) {
+  const polygon = state.data.polygon;
+  const spec = surfaceMeshSpec(neighbor);
+  const points = domainMeshPoints(spec);
+  const stroke = neighbor ? "rgba(38, 47, 55, 0.11)" : "rgba(31, 41, 48, 0.20)";
+  const lineWidth = neighbor ? 0.42 : 0.58;
+  ctx.save();
+  ctx.lineJoin = "round";
+  for (let ring = 0; ring < spec.rings; ring += 1) {
+    for (let sector = 0; sector < spec.sectors; sector += 1) {
+      const sideIndex = Math.min(polygon.p - 1, Math.floor((sector + 0.5) * polygon.p / spec.sectors));
+      const color = pairColor(polygon.sides[sideIndex].pair_color_index);
+      const alpha = neighbor ? 0.035 : 0.10 + 0.07 * (ring / spec.rings);
+      drawProjectedTriangle(
+        [points[ring][sector], points[ring + 1][sector], points[ring + 1][sector + 1]],
+        matrix,
+        rgba(color, alpha),
+        stroke,
+        lineWidth
+      );
+      drawProjectedTriangle(
+        [points[ring][sector], points[ring + 1][sector + 1], points[ring][sector + 1]],
+        matrix,
+        rgba(color, alpha * 0.82),
+        stroke,
+        lineWidth
+      );
+    }
+  }
   ctx.restore();
 }
 
@@ -633,6 +799,7 @@ function drawTiles() {
       width: 1,
       fill: "rgba(11, 111, 112, 0.025)"
     });
+    drawDomainMesh(matrix, true);
   }
 }
 
@@ -640,9 +807,13 @@ function drawCentralPolygon() {
   const boundary = transformedBoundary(identity);
   drawPolyline(boundary, {
     close: true,
-    fill: "rgba(255,255,255,0.86)",
-    stroke: "rgba(32,36,42,0.30)",
-    width: 1
+    fill: "rgba(255,255,255,0.58)"
+  });
+  drawDomainMesh(identity, false);
+  drawPolyline(boundary, {
+    close: true,
+    stroke: "rgba(32,36,42,0.32)",
+    width: 1.1
   });
 
   state.data.polygon.sides.forEach((side) => {
@@ -688,14 +859,258 @@ function drawQuotientTrace() {
   }
 }
 
+function wrapLayout(size) {
+  const genus = state.data.surface.genus;
+  const width = Math.min(size.width - 64, Math.max(380, 145 * genus + 230));
+  const height = Math.min(size.height * 0.34, 210);
+  const depth = Math.min(width * 0.34, 280);
+  const center = c(size.width / 2, size.height / 2);
+  const holes = Array.from({ length: genus }, (_, index) => ({
+    u: (index + 0.5) / genus,
+    rx: Math.min(48, width / (genus * 4.2)),
+    ry: Math.min(44, height * 0.24)
+  }));
+  return { genus, width, height, depth, center, holes };
+}
+
+function wrapAngularDistance(a, b) {
+  return Math.atan2(Math.sin(a - b), Math.cos(a - b));
+}
+
+function projectWrapPoint(layout, point) {
+  const yaw = state.wrapYaw;
+  const pitch = state.wrapPitch;
+  const cosYaw = Math.cos(yaw);
+  const sinYaw = Math.sin(yaw);
+  const cosPitch = Math.cos(pitch);
+  const sinPitch = Math.sin(pitch);
+  const x1 = point.x * cosYaw - point.z * sinYaw;
+  const z1 = point.x * sinYaw + point.z * cosYaw;
+  const y2 = point.y * cosPitch - z1 * sinPitch;
+  const z2 = point.y * sinPitch + z1 * cosPitch;
+  const scaleFactor = 1 / (1 + z2 / 1200);
+  const screen = applyViewTransform(c(
+    layout.center.x + x1 * scaleFactor,
+    layout.center.y + y2 * scaleFactor
+  ));
+  return {
+    x: screen.x,
+    y: screen.y,
+    depth: z2,
+    scale: scaleFactor * state.viewZoom
+  };
+}
+
+function drawWrapSurfaceBase(size, opacity) {
+  if (opacity <= 0.01) return;
+  const layout = wrapLayout(size);
+  const center = applyViewTransform(c(layout.center.x, layout.center.y + layout.height * 0.42));
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.beginPath();
+  ctx.ellipse(center.x, center.y, layout.width * 0.43 * state.viewZoom, layout.height * 0.38 * state.viewZoom, 0, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(56, 76, 82, 0.10)";
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawWrapSurfaceHoles(size, opacity) {
+  if (opacity <= 0.01) return;
+  const layout = wrapLayout(size);
+  const holes = layout.holes.map((hole) => {
+    const center = wrapSurfaceScreenPoint(size, layout, hole.u, 0.5);
+    return { ...hole, center };
+  }).sort((a, b) => b.center.depth - a.center.depth);
+  ctx.save();
+  for (const hole of holes) {
+    const frontness = clamp(0.72 - hole.center.depth / (layout.depth * 1.55), 0.18, 1);
+    ctx.globalAlpha = opacity * frontness;
+    const rx = hole.rx * hole.center.scale * (0.86 + 0.10 * Math.cos(state.wrapYaw));
+    const ry = hole.ry * hole.center.scale;
+    ctx.beginPath();
+    ctx.ellipse(hole.center.x, hole.center.y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#f7f9fa";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(46, 58, 66, 0.50)";
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(hole.center.x, hole.center.y + ry * 0.16, rx * 0.72, ry * 0.43, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(46, 58, 66, 0.16)";
+    ctx.lineWidth = 1.1;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function boundaryRadiusAtAngle(angle) {
+  let lo = 0;
+  let hi = 0.999;
+  for (let step = 0; step < 34; step += 1) {
+    const mid = (lo + hi) / 2;
+    const point = c(mid * Math.cos(angle), mid * Math.sin(angle));
+    if (insidePolygon(point)) lo = mid;
+    else hi = mid;
+  }
+  return lo;
+}
+
+function wrapSurfaceScreenPoint(size, layout, u, v) {
+  const theta = u * Math.PI * 2;
+  const phi = v * Math.PI * 2;
+  const radial = Math.cos(phi);
+  const lobe = 1 + 0.08 * Math.cos(theta * layout.genus);
+  const majorX = layout.width * 0.30 * lobe;
+  const majorZ = layout.depth * 0.76;
+  const tubeX = layout.height * (0.35 + 0.035 * Math.sin(theta * layout.genus));
+  const tubeY = layout.height * 0.34;
+  const x = Math.sin(theta) * (majorX + tubeX * radial);
+  const z = Math.cos(theta) * (majorZ + tubeX * radial);
+  let y = Math.sin(phi) * tubeY;
+  for (const hole of layout.holes) {
+    const holeTheta = hole.u * Math.PI * 2;
+    const local = wrapAngularDistance(theta, holeTheta);
+    const influence = Math.exp(-(local * local) / 0.20);
+    y += Math.sin(phi) * influence * hole.ry * 0.18;
+  }
+  y += Math.sin(theta * layout.genus) * layout.height * 0.045 * (1 + radial * 0.2);
+  return projectWrapPoint(layout, { x, y, z });
+}
+
+function wrapMeshPoint(size, layout, sector, ring, sectors, rings) {
+  const u = sector / sectors;
+  const v = ring / rings;
+  return wrapSurfaceScreenPoint(size, layout, u, v);
+}
+
+function drawScreenTriangle(points, fill, stroke) {
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  ctx.lineTo(points[1].x, points[1].y);
+  ctx.lineTo(points[2].x, points[2].y);
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 0.7;
+  ctx.stroke();
+}
+
+function drawWrapMesh(size) {
+  const polygon = state.data.polygon;
+  const layout = wrapLayout(size);
+  const sectors = Math.max(32, polygon.p * 4);
+  const rings = 8;
+  const points = [];
+  for (let ring = 0; ring <= rings; ring += 1) {
+    const row = [];
+    for (let sector = 0; sector <= sectors; sector += 1) {
+      row.push(wrapMeshPoint(size, layout, sector, ring, sectors, rings));
+    }
+    points.push(row);
+  }
+
+  ctx.save();
+  ctx.lineJoin = "round";
+  const triangles = [];
+  for (let ring = 0; ring < rings; ring += 1) {
+    for (let sector = 0; sector < sectors; sector += 1) {
+      const sideIndex = Math.min(polygon.p - 1, Math.floor((sector + 0.5) * polygon.p / sectors));
+      const color = pairColor(polygon.sides[sideIndex].pair_color_index);
+      const alpha = 0.45 + 0.12 * (ring / rings);
+      const stroke = "rgba(38, 47, 55, 0.30)";
+      const first = [points[ring][sector], points[ring + 1][sector], points[ring + 1][sector + 1]];
+      const second = [points[ring][sector], points[ring + 1][sector + 1], points[ring][sector + 1]];
+      triangles.push({
+        points: first,
+        fill: rgba(color, alpha),
+        stroke,
+        depth: first.reduce((total, point) => total + (point.depth || 0), 0) / first.length
+      });
+      triangles.push({
+        points: second,
+        fill: rgba(color, alpha * 0.86),
+        stroke,
+        depth: second.reduce((total, point) => total + (point.depth || 0), 0) / second.length
+      });
+    }
+  }
+  triangles.sort((a, b) => b.depth - a.depth);
+  for (const triangle of triangles) {
+    drawScreenTriangle(triangle.points, triangle.fill, triangle.stroke);
+  }
+
+  ctx.strokeStyle = "rgba(21, 31, 38, 0.46)";
+  ctx.lineWidth = 1.15;
+  for (let ring = 1; ring < rings; ring += 1) {
+    ctx.beginPath();
+    for (let sector = 0; sector <= sectors; sector += 1) {
+      const point = points[ring][sector];
+      if (sector === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    }
+    ctx.stroke();
+  }
+
+  const stride = Math.max(1, Math.floor(sectors / polygon.p));
+  for (let sector = 0; sector < sectors; sector += stride) {
+    ctx.beginPath();
+    for (let ring = 0; ring <= rings; ring += 1) {
+      const point = points[ring][sector];
+      if (ring === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    }
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = "rgba(21, 31, 38, 0.30)";
+  ctx.lineWidth = 0.85;
+  for (let ring = 0; ring < rings; ring += 1) {
+    ctx.beginPath();
+    for (let sector = 0; sector < sectors; sector += 2) {
+      const a = points[ring][sector];
+      const b = points[ring + 1][sector + 1];
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+    }
+    ctx.stroke();
+  }
+
+  for (let sideIndex = 0; sideIndex < polygon.p; sideIndex += 1) {
+    const sector = Math.floor(sideIndex * sectors / polygon.p);
+    ctx.beginPath();
+    for (let ring = 0; ring <= rings; ring += 1) {
+      const point = points[ring][sector];
+      if (ring === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    }
+    ctx.strokeStyle = pairColor(polygon.sides[sideIndex].pair_color_index);
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawWrapScene(size) {
+  drawWrapSurfaceBase(size, 1);
+  drawWrapMesh(size);
+  drawWrapSurfaceHoles(size, 1);
+}
+
 function drawScene() {
   if (!state.data) return;
   const size = canvasSize();
-  prepareProjection(size);
   ctx.clearRect(0, 0, size.width, size.height);
   ctx.fillStyle = "#f7f9fa";
   ctx.fillRect(0, 0, size.width, size.height);
 
+  if (state.model === "wrap") {
+    drawWrapScene(size);
+    return;
+  }
+
+  prepareProjection(size);
   if (state.model === "disk") drawDiskBoundary(size);
   else drawHalfPlaneBoundary(size);
 
@@ -784,6 +1199,9 @@ function renderDetails() {
   const equivalentSummary = equivalentWords.length > 12 ? `${visibleEquivalentWords}, ...` : visibleEquivalentWords;
   const transitions = state.trace?.transitions || [];
   const itinerary = transitions.map((transition) => `${transition.exitLabel}->${transition.reentryLabel}`).join(", ");
+  const visiblePath = state.model === "wrap"
+    ? "topological wrap sketch"
+    : state.trace?.fallback ? "axis clip" : "folded quotient trace";
   setDetails(el.surfaceDetails, [
     ["quotient", `genus ${state.data.surface.genus}, compact`],
     ["area", `${fmt(polygon.area, 5)} = 4*pi*${state.data.surface.genus - 1}`],
@@ -791,7 +1209,7 @@ function renderDetails() {
     ["edge rule", "opposite sides"],
     ["orbits", String(state.data.geodesics.length)],
     ["search", `words up to ${state.data.enumeration.max_word_length} letters`],
-    ["visible path", state.trace?.fallback ? "axis clip" : "folded quotient trace"]
+    ["visible path", visiblePath]
   ]);
 
   el.surfaceTitle.textContent = state.data.surface.name;
@@ -828,10 +1246,52 @@ function render() {
   state.model = el.modelSelect.value;
   state.showTiles = el.tileToggle.checked;
   state.showDomainSegment = el.domainToggle.checked;
-  state.trace = buildQuotientTrace();
+  state.trace = state.model === "wrap" ? null : buildQuotientTrace();
   renderDetails();
   renderGeodesicRows();
   drawScene();
+}
+
+function requestStaticRedraw() {
+  drawScene();
+}
+
+function handleCanvasPointerDown(event) {
+  state.viewDragging = {
+    pointerId: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    pan: c(state.viewPan.x, state.viewPan.y)
+  };
+  el.canvas.setPointerCapture?.(event.pointerId);
+  el.canvas.classList.add("is-panning");
+  event.preventDefault();
+}
+
+function handleCanvasPointerMove(event) {
+  const drag = state.viewDragging;
+  if (!drag || drag.pointerId !== event.pointerId) return;
+  state.viewPan = c(
+    drag.pan.x + event.clientX - drag.x,
+    drag.pan.y + event.clientY - drag.y
+  );
+  event.preventDefault();
+  drawScene();
+}
+
+function handleCanvasPointerUp(event) {
+  const drag = state.viewDragging;
+  if (!drag || drag.pointerId !== event.pointerId) return;
+  state.viewDragging = null;
+  el.canvas.releasePointerCapture?.(event.pointerId);
+  el.canvas.classList.remove("is-panning");
+  event.preventDefault();
+}
+
+function handleCanvasWheel(event) {
+  event.preventDefault();
+  const factor = Math.exp(-event.deltaY * 0.0012);
+  zoomView(factor, canvasPoint(event));
 }
 
 function prepareGeometry() {
@@ -881,6 +1341,7 @@ async function loadSurface(surfaceId) {
   state.data = await res.json();
   state.selectedIndex = 0;
   state.trace = null;
+  resetViewState();
   prepareGeometry();
   populateGeodesicSelect();
   renderLegend();
@@ -895,17 +1356,31 @@ el.surfaceSelect.addEventListener("change", () => {
     el.errorBox.classList.remove("is-hidden");
   });
 });
-el.modelSelect.addEventListener("change", render);
+el.modelSelect.addEventListener("change", () => {
+  resetViewState();
+  render();
+});
 el.geodesicSelect.addEventListener("change", () => {
   state.selectedIndex = Number(el.geodesicSelect.value);
   render();
 });
 el.tileToggle.addEventListener("change", render);
 el.domainToggle.addEventListener("change", render);
-window.addEventListener("resize", drawScene);
+window.addEventListener("resize", requestStaticRedraw);
+el.zoomIn.addEventListener("click", () => zoomView(1.22));
+el.zoomOut.addEventListener("click", () => zoomView(1 / 1.22));
+el.resetView.addEventListener("click", () => {
+  resetViewState();
+  drawScene();
+});
+el.canvas.addEventListener("pointerdown", handleCanvasPointerDown);
+el.canvas.addEventListener("pointermove", handleCanvasPointerMove);
+el.canvas.addEventListener("pointerup", handleCanvasPointerUp);
+el.canvas.addEventListener("pointercancel", handleCanvasPointerUp);
+el.canvas.addEventListener("wheel", handleCanvasWheel, { passive: false });
 
 if ("ResizeObserver" in window) {
-  const resizeObserver = new ResizeObserver(drawScene);
+  const resizeObserver = new ResizeObserver(requestStaticRedraw);
   resizeObserver.observe(el.canvas);
 }
 

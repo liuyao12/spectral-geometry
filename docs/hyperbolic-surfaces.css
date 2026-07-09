@@ -214,6 +214,42 @@ select {
   width: 100%;
   height: min(68vh, 690px);
   min-height: 520px;
+  touch-action: none;
+  cursor: grab;
+}
+
+#surfaceCanvas.is-panning {
+  cursor: grabbing;
+}
+
+.scene-tools {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgba(216, 222, 227, 0.92);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 24px rgba(26, 34, 42, 0.08);
+}
+
+.scene-tools button {
+  min-width: 32px;
+  min-height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.scene-tools button:hover {
+  border-color: #aebbc3;
+  background: #f7f9fa;
 }
 
 .error-box {

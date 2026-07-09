@@ -93,6 +93,9 @@ let animationProgress = 0;
 let lastAnimationTime = null;
 let currentPathPoints = { folded: [], unfolded: [] };
 const ANIMATION_SECONDS = 7.5;
+const FLICK_RADIANS_PER_PIXEL = 0.004;
+const FLICK_DECAY_PER_SECOND = 2.6;
+const FLICK_STOP_SPEED = 0.018;
 
 const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x15181d, transparent: true, opacity: 0.82 });
 const unfoldedCopyEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x515963, transparent: true, opacity: 0.5 });
@@ -140,7 +143,16 @@ function createViewer(canvas, mode) {
     movingMarker,
     wrapMarker,
     bounds: null,
-    markerRadius: 0.035
+    markerRadius: 0.035,
+    spin: {
+      dragging: false,
+      pointerId: null,
+      lastX: 0,
+      lastY: 0,
+      lastTime: 0,
+      lastFrameTime: null,
+      velocity: new THREE.Vector2()
+    }
   };
 }
 
@@ -149,9 +161,78 @@ const views = {
   unfolded: createViewer(els.unfoldedCanvas, "unfolded")
 };
 
+function applyCameraSpin(view, yaw, pitch) {
+  const target = view.controls.target;
+  const offset = view.camera.position.clone().sub(target);
+  const up = view.camera.up.clone().normalize();
+  offset.applyAxisAngle(up, -yaw);
+
+  const right = new THREE.Vector3().crossVectors(up, offset).normalize();
+  if (right.lengthSq() > 0.0001) {
+    const nextOffset = offset.clone().applyAxisAngle(right, -pitch);
+    const tilt = Math.abs(nextOffset.clone().normalize().dot(up));
+    if (tilt < 0.96) offset.copy(nextOffset);
+  }
+
+  view.camera.position.copy(target).add(offset);
+  view.camera.lookAt(target);
+}
+
+function updateFlickSpin(view, time) {
+  if (view.mode !== "folded") return;
+  const spin = view.spin;
+  if (spin.lastFrameTime == null) {
+    spin.lastFrameTime = time;
+    return;
+  }
+  const delta = Math.min(Math.max((time - spin.lastFrameTime) / 1000, 0), 0.05);
+  spin.lastFrameTime = time;
+  if (spin.dragging || spin.velocity.length() < FLICK_STOP_SPEED) return;
+  applyCameraSpin(view, spin.velocity.x * delta, spin.velocity.y * delta);
+  spin.velocity.multiplyScalar(Math.exp(-FLICK_DECAY_PER_SECOND * delta));
+}
+
+function installFlickSpin(view) {
+  const spin = view.spin;
+  view.canvas.addEventListener("pointerdown", event => {
+    if (event.button != null && event.button !== 0) return;
+    spin.dragging = true;
+    spin.pointerId = event.pointerId;
+    spin.lastX = event.clientX;
+    spin.lastY = event.clientY;
+    spin.lastTime = event.timeStamp;
+    spin.velocity.set(0, 0);
+  }, { passive: true });
+
+  window.addEventListener("pointermove", event => {
+    if (!spin.dragging || event.pointerId !== spin.pointerId) return;
+    const elapsed = Math.max((event.timeStamp - spin.lastTime) / 1000, 1 / 120);
+    const dx = event.clientX - spin.lastX;
+    const dy = event.clientY - spin.lastY;
+    spin.velocity.set(
+      THREE.MathUtils.clamp((dx / elapsed) * FLICK_RADIANS_PER_PIXEL, -4.2, 4.2),
+      THREE.MathUtils.clamp((dy / elapsed) * FLICK_RADIANS_PER_PIXEL, -4.2, 4.2)
+    );
+    spin.lastX = event.clientX;
+    spin.lastY = event.clientY;
+    spin.lastTime = event.timeStamp;
+  }, { passive: true });
+
+  const endDrag = event => {
+    if (!spin.dragging || event.pointerId !== spin.pointerId) return;
+    spin.dragging = false;
+    spin.pointerId = null;
+  };
+  window.addEventListener("pointerup", endDrag, { passive: true });
+  window.addEventListener("pointercancel", endDrag, { passive: true });
+}
+
+installFlickSpin(views.folded);
+
 function animate(time = 0) {
   updateAnimation(time);
   for (const view of Object.values(views)) {
+    updateFlickSpin(view, time);
     view.controls.update();
     view.renderer.render(view.scene, view.camera);
   }
@@ -540,8 +621,9 @@ function addUnitCubeWireframe(group) {
   group.add(new THREE.LineSegments(geometry, cubeMaterial));
 }
 
-function addTetrahedron(group, vertices, opacity = 0.15, material = edgeMaterial) {
-  for (const face of VERTEX_NAMES) addFace(group, vertices, face, opacity);
+function addTetrahedron(group, vertices, opacity = 0.15, material = edgeMaterial, coloredFace = undefined) {
+  const faces = coloredFace === undefined ? VERTEX_NAMES : [coloredFace].filter(Boolean);
+  for (const face of faces) addFace(group, vertices, face, opacity);
   addEdges(group, vertices, material);
 }
 
@@ -605,19 +687,25 @@ function reflectionNormal(orbit, vertices, index) {
   return incoming.sub(outgoing);
 }
 
+function reflectionFaceForHit(orbit, index) {
+  const style = pointStyle(orbit, index);
+  return style.type === "face" && FACE_COLORS[style.face] ? style.face : null;
+}
+
 function unfoldedChain(orbit) {
   const n = orbit.barycentric_points.length;
   let vertices = vertexMapFromInventory();
   const copies = [];
   const points = [];
   const markerIndices = [];
-  const pushCopy = () => {
+  const pushCopy = reflectionFace => {
     copies.push({
-      vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]))
+      vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()])),
+      reflectionFace
     });
   };
 
-  pushCopy();
+  pushCopy(n > 0 ? reflectionFaceForHit(orbit, 0) : null);
   if (n === 0) return { copies, points, markerIndices };
 
   points.push(copyPoint(orbit, vertices, n - 1));
@@ -629,7 +717,7 @@ function unfoldedChain(orbit) {
     const point = copyPoint(orbit, vertices, i);
     const normal = reflectionNormal(orbit, vertices, i);
     vertices = reflectedVerticesAcrossPlane(vertices, point, normal);
-    pushCopy();
+    pushCopy(i + 1 < n ? reflectionFaceForHit(orbit, i + 1) : null);
     const nextIndex = (i + 1) % n;
     points.push(copyPoint(orbit, vertices, nextIndex));
     markerIndices.push(nextIndex);
@@ -740,7 +828,7 @@ function drawFolded(view, orbit) {
 function drawUnfolded(view, orbit) {
   const { copies, points, markerIndices } = orientedChain(orbit);
   copies.forEach(copy => {
-    addTetrahedron(view.root, copy.vertices, 0.07, unfoldedCopyEdgeMaterial);
+    addTetrahedron(view.root, copy.vertices, 0.18, unfoldedCopyEdgeMaterial, copy.reflectionFace);
   });
   if (points.length > 1) addPath(view.root, points, unfoldedPathMaterial);
   points.forEach((point, i) => {

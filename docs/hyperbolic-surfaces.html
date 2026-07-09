@@ -31,6 +31,7 @@
           <select id="modelSelect">
             <option value="disk">Poincare disk</option>
             <option value="halfplane">Upper half-plane</option>
+            <option value="wrap">Wrap-up sketch</option>
           </select>
         </label>
 
@@ -59,6 +60,11 @@
         </div>
 
         <section class="scene-panel" aria-label="Hyperbolic surface visualization">
+          <div class="scene-tools" aria-label="View controls">
+            <button id="zoomIn" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+            <button id="zoomOut" type="button" aria-label="Zoom out" title="Zoom out">-</button>
+            <button id="resetView" type="button">Reset</button>
+          </div>
           <canvas id="surfaceCanvas" aria-label="Closed geodesic on a compact hyperbolic surface"></canvas>
           <div id="errorBox" class="error-box is-hidden"></div>
         </section>
@@ -96,6 +102,6 @@
       </section>
     </main>
 
-    <script src="hyperbolic-surfaces.js"></script>
+    <script src="hyperbolic-surfaces.js?v=static-camera-6"></script>
   </body>
 </html>
