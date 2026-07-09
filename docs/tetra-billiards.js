@@ -100,7 +100,6 @@ const cubeMaterial = new THREE.LineBasicMaterial({ color: 0x3f4c5a, transparent:
 const pathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c });
 const singularPathMaterial = new THREE.LineBasicMaterial({ color: 0xff7a00, linewidth: 2 });
 const unfoldedPathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c, linewidth: 2 });
-const periodicPathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c, transparent: true, opacity: 0.38 });
 
 function createViewer(canvas, mode) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -743,11 +742,8 @@ function drawUnfolded(view, orbit) {
   copies.forEach(copy => {
     addTetrahedron(view.root, copy.vertices, 0.07, unfoldedCopyEdgeMaterial);
   });
-  if (points.length > 1) {
-    addPath(view.root, points.slice(0, -1), unfoldedPathMaterial);
-    addPath(view.root, points.slice(-2), periodicPathMaterial);
-  }
-  points.slice(0, -1).forEach((point, i) => {
+  if (points.length > 1) addPath(view.root, points, unfoldedPathMaterial);
+  points.forEach((point, i) => {
     addPointMarker(view.root, point, pointStyle(orbit, markerIndices[i]), markerIndices[i] === selectedPointIndex);
   });
   return points;
