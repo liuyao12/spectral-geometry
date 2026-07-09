@@ -95,7 +95,7 @@ let currentPathPoints = { folded: [], unfolded: [] };
 const ANIMATION_SECONDS = 7.5;
 
 const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x15181d, transparent: true, opacity: 0.82 });
-const faintEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x6e747c, transparent: true, opacity: 0.28 });
+const unfoldedCopyEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x515963, transparent: true, opacity: 0.5 });
 const cubeMaterial = new THREE.LineBasicMaterial({ color: 0x3f4c5a, transparent: true, opacity: 0.28 });
 const pathMaterial = new THREE.LineBasicMaterial({ color: 0xd0342c });
 const singularPathMaterial = new THREE.LineBasicMaterial({ color: 0xff7a00, linewidth: 2 });
@@ -321,10 +321,6 @@ function stratumFromLabel(label, row) {
 
 function isSingular(orbit) {
   return orbit.kind === "singular_normal_cone" || orbit.singular === true;
-}
-
-function canUnfold(orbit) {
-  return !isSingular(orbit) && /^[ABCD]+$/.test(orbit.word);
 }
 
 function pointStyle(orbit, index) {
@@ -569,15 +565,15 @@ function addPath(group, points, material = pathMaterial) {
   group.add(new THREE.Line(geometry, material));
 }
 
-function reflectPoint(point, faceVertices) {
-  const plane = new THREE.Plane().setFromCoplanarPoints(faceVertices[0], faceVertices[1], faceVertices[2]);
-  return point.clone().addScaledVector(plane.normal, -2 * plane.distanceToPoint(point));
-}
-
-function reflectedVertices(vertices, face) {
-  const faceVertices = FACES[face].map(name => vertices[name]);
+function reflectedVerticesAcrossPlane(vertices, point, normal) {
+  const unit = normal.clone();
+  if (unit.lengthSq() < 1e-18) return Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]));
+  unit.normalize();
   return Object.fromEntries(
-    VERTEX_NAMES.map(name => [name, reflectPoint(vertices[name], faceVertices)])
+    VERTEX_NAMES.map(name => {
+      const vertex = vertices[name];
+      return [name, vertex.clone().sub(unit.clone().multiplyScalar(2 * vertex.clone().sub(point).dot(unit)))];
+    })
   );
 }
 
@@ -585,29 +581,45 @@ function foldedPoints(orbit) {
   return orbit.points_xyz.map(point => new THREE.Vector3(point[0], point[1], point[2]));
 }
 
+function copyPoint(orbit, vertices, index) {
+  const n = orbit.barycentric_points.length;
+  return baryPoint(orbit.barycentric_points[((index % n) + n) % n], orbit.barycentric_denominator, vertices);
+}
+
+function reflectionNormal(orbit, vertices, index) {
+  const previous = copyPoint(orbit, vertices, index - 1);
+  const current = copyPoint(orbit, vertices, index);
+  const next = copyPoint(orbit, vertices, index + 1);
+  const incoming = current.clone().sub(previous);
+  const outgoing = next.clone().sub(current);
+  if (incoming.lengthSq() > 1e-18) incoming.normalize();
+  if (outgoing.lengthSq() > 1e-18) outgoing.normalize();
+  return incoming.sub(outgoing);
+}
+
 function unfoldedChain(orbit) {
   let vertices = vertexMapFromInventory();
   const copies = [];
   const points = [];
-  const word = orbit.word;
   for (let i = 0; i < orbit.barycentric_points.length; i++) {
     copies.push({
-      vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()])),
-      hitFace: word[i % word.length]
+      vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]))
     });
-    points.push(baryPoint(orbit.barycentric_points[i], orbit.barycentric_denominator, vertices));
-    vertices = reflectedVertices(vertices, word[i % word.length]);
+    const point = copyPoint(orbit, vertices, i);
+    const normal = reflectionNormal(orbit, vertices, i);
+    points.push(point);
+    vertices = reflectedVerticesAcrossPlane(vertices, point, normal);
   }
   copies.push({
-    vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()])),
-    hitFace: word[0]
+    vertices: Object.fromEntries(VERTEX_NAMES.map(name => [name, vertices[name].clone()]))
   });
-  points.push(baryPoint(orbit.barycentric_points[0], orbit.barycentric_denominator, vertices));
-  const nextVertices = reflectedVertices(vertices, word[0]);
+  const closingPoint = copyPoint(orbit, vertices, 0);
+  points.push(closingPoint);
+  const nextVertices = reflectedVerticesAcrossPlane(vertices, closingPoint, reflectionNormal(orbit, vertices, 0));
   const nextIndex = orbit.barycentric_points.length > 1 ? 1 : 0;
   const continuationPoints = [
-    points[points.length - 1],
-    baryPoint(orbit.barycentric_points[nextIndex], orbit.barycentric_denominator, nextVertices)
+    closingPoint,
+    copyPoint(orbit, nextVertices, nextIndex)
   ];
   return { copies, points, continuationPoints };
 }
@@ -713,26 +725,11 @@ function drawFolded(view, orbit) {
 
 function drawUnfolded(view, orbit) {
   const { copies, points, continuationPoints } = orientedChain(orbit);
-  copies.forEach((copy, i) => {
-    addEdges(view.root, copy.vertices, faintEdgeMaterial);
-    if (i < copies.length - 1) addFace(view.root, copy.vertices, copy.hitFace, 0.11);
+  copies.forEach(copy => {
+    addTetrahedron(view.root, copy.vertices, 0.07, unfoldedCopyEdgeMaterial);
   });
   addPath(view.root, points, unfoldedPathMaterial);
   addPath(view.root, continuationPoints, periodicPathMaterial);
-  points.slice(0, -1).forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
-  return points;
-}
-
-function drawStraightenedSingular(view, orbit) {
-  const folded = foldedPoints(orbit);
-  if (!folded.length) return [];
-  const points = [new THREE.Vector3(0, 0, 0)];
-  let offset = 0;
-  for (let i = 0; i < folded.length; i++) {
-    offset += folded[i].distanceTo(folded[(i + 1) % folded.length]);
-    points.push(new THREE.Vector3(offset, 0, 0));
-  }
-  addPath(view.root, points, singularPathMaterial);
   points.slice(0, -1).forEach((point, i) => addPointMarker(view.root, point, pointStyle(orbit, i), i === selectedPointIndex));
   return points;
 }
@@ -874,15 +871,8 @@ function drawSelectedOrbit() {
   selectedPointIndex = Math.min(selectedPointIndex, orbit.barycentric_points.length - 1);
   currentPathPoints.folded = drawFolded(views.folded, orbit);
   updateBoundsAndCamera(views.folded);
-  if (canUnfold(orbit)) {
-    currentPathPoints.unfolded = drawUnfolded(views.unfolded, orbit);
-    updateBoundsAndCamera(views.unfolded);
-  } else {
-    currentPathPoints.unfolded = drawStraightenedSingular(views.unfolded, orbit);
-    updateBoundsAndCamera(views.unfolded);
-    els.note.textContent = "Singular paths are shown with their segments straightened end-to-end; no unique reflected-tetrahedra chain is chosen.";
-    els.note.classList.remove("is-hidden");
-  }
+  currentPathPoints.unfolded = drawUnfolded(views.unfolded, orbit);
+  updateBoundsAndCamera(views.unfolded);
   updateAnimation(performance.now());
   renderDetails(orbit);
   renderRows();
