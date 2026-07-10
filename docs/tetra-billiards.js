@@ -65,7 +65,6 @@ const els = {
   period: document.getElementById("periodSelect"),
   kind: document.getElementById("kindSelect"),
   search: document.getElementById("wordSearch"),
-  sort: document.getElementById("sortSelect"),
   summary: document.getElementById("summaryDetails"),
   title: document.getElementById("orbitTitle"),
   subtitle: document.getElementById("orbitSubtitle"),
@@ -1037,14 +1036,20 @@ function visibleOrbits() {
 
 function renderSortHeaders() {
   for (const button of els.sortHeaders) {
+    const label = button.dataset.sortLabel ?? button.textContent.trim();
+    button.dataset.sortLabel = label;
     const active = button.dataset.sortKey === sortKey;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-sort", active ? (sortDirection === "asc" ? "ascending" : "descending") : "none");
-    button.textContent = button.textContent.replace(/\s+\^(asc|desc)$/, "");
-    if (active) button.textContent += sortDirection === "asc" ? " ^asc" : " ^desc";
-  }
-  if (els.sort.value !== sortKey && [...els.sort.options].some(option => option.value === sortKey)) {
-    els.sort.value = sortKey;
+    button.setAttribute("aria-label", active ? `${label}, sorted ${sortDirection === "asc" ? "ascending" : "descending"}` : `Sort by ${label}`);
+    button.replaceChildren(document.createTextNode(label));
+    if (active) {
+      const symbol = document.createElement("span");
+      symbol.className = "sort-symbol";
+      symbol.setAttribute("aria-hidden", "true");
+      symbol.textContent = sortDirection === "asc" ? " ↑" : " ↓";
+      button.appendChild(symbol);
+    }
   }
 }
 
@@ -1307,11 +1312,6 @@ els.search.addEventListener("input", () => {
   selectDefaultVisibleOrbit();
   renderRows();
   drawSelectedOrbit();
-});
-els.sort.addEventListener("change", () => {
-  sortKey = els.sort.value;
-  sortDirection = "asc";
-  renderRows();
 });
 els.sortHeaders.forEach(button => {
   button.addEventListener("click", () => {
