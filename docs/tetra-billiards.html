@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tetrahedron Billiards Inventory</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="tetra-billiards.css?v=20260709-flick-reflection-faces">
+    <link rel="stylesheet" href="tetra-billiards.css?v=20260710-header-sort">
   </head>
   <body>
     <main class="tetra-app">
@@ -40,18 +40,6 @@
         <label class="field">
           <span>Search</span>
           <input id="wordSearch" type="search" autocomplete="off" placeholder="word or id">
-        </label>
-
-        <label class="field">
-          <span>Sort</span>
-          <select id="sortSelect">
-            <option value="period">Period, length</option>
-            <option value="word">Word</option>
-            <option value="length">Euclidean length</option>
-            <option value="center">Center offset</option>
-            <option value="height">Height</option>
-            <option value="margin">Face margin</option>
-          </select>
         </label>
 
         <section class="summary-block">
@@ -119,7 +107,9 @@
                     <th scope="col">
                       <button class="sort-header" type="button" data-sort-key="height">Height</button>
                     </th>
-                    <th scope="col">Margin</th>
+                    <th scope="col">
+                      <button class="sort-header" type="button" data-sort-key="margin">Margin</button>
+                    </th>
                     <th scope="col">Source</th>
                   </tr>
                 </thead>
@@ -150,6 +140,6 @@
         }
       }
     </script>
-    <script type="module" src="tetra-billiards.js?v=20260709-flick-reflection-faces"></script>
+    <script type="module" src="tetra-billiards.js?v=20260710-header-sort"></script>
   </body>
 </html>
