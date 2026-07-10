@@ -149,6 +149,46 @@
             </dl>
           </div>
         </a>
+
+        <a class="project-card project-card-wide" href="hyperbolic-tiling.html">
+          <div class="project-visual tiling-preview" aria-hidden="true">
+            <svg viewBox="0 0 360 180" role="img">
+              <defs>
+                <clipPath id="tilingDiskClip">
+                  <circle cx="180" cy="90" r="73"></circle>
+                </clipPath>
+              </defs>
+              <circle class="tiling-boundary" cx="180" cy="90" r="73"></circle>
+              <g clip-path="url(#tilingDiskClip)">
+                <path class="tile-a" d="M180 90 L180 17 C202 43 220 53 253 58 Z"></path>
+                <path class="tile-b" d="M180 90 L253 58 C230 83 230 100 253 122 Z"></path>
+                <path class="tile-c" d="M180 90 L253 122 C219 127 201 138 180 163 Z"></path>
+                <path class="tile-a" d="M180 90 L180 163 C159 138 141 127 107 122 Z"></path>
+                <path class="tile-b" d="M180 90 L107 122 C130 100 130 83 107 58 Z"></path>
+                <path class="tile-c" d="M180 90 L107 58 C140 53 158 43 180 17 Z"></path>
+                <path class="tiling-arc" d="M118 45 C157 72 203 72 242 45"></path>
+                <path class="tiling-arc" d="M112 132 C151 107 207 108 248 132"></path>
+                <path class="tiling-arc" d="M121 32 C128 69 121 108 102 138"></path>
+                <path class="tiling-arc" d="M239 32 C232 69 239 108 258 138"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="project-copy">
+            <span class="project-kicker">Interactive study</span>
+            <h2>Edge of infinity</h2>
+            <p>
+              Roam an Escher-like reflection tiling in the Poincaré disk and
+              upper half-plane, with procedural detail all the way to the ideal
+              boundary.
+            </p>
+            <dl>
+              <dt>Geometry</dt>
+              <dd>regular hyperbolic {p, q} reflection groups</dd>
+              <dt>Gesture</dt>
+              <dd>scroll, drag, and switch models in place</dd>
+            </dl>
+          </div>
+        </a>
       </section>
     </main>
   </body>

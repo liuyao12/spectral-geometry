@@ -94,6 +94,13 @@ body {
   min-height: 300px;
 }
 
+.project-card-wide {
+  grid-column: span 2;
+  grid-template-columns: minmax(360px, 0.92fr) minmax(0, 1.08fr);
+  grid-template-rows: auto;
+  min-height: 250px;
+}
+
 .project-visual {
   display: grid;
   place-items: center;
@@ -104,6 +111,12 @@ body {
 .project-card-featured .project-visual {
   border-right: 1px solid var(--line);
   border-bottom: 0;
+}
+
+.project-card-wide .project-visual {
+  border-right: 1px solid var(--line);
+  border-bottom: 0;
+  background: #10292d;
 }
 
 .project-visual svg {
@@ -216,6 +229,36 @@ body {
   stroke-width: 2;
 }
 
+.tiling-preview .tiling-boundary {
+  fill: #f0dfb7;
+  stroke: #d7b867;
+  stroke-width: 2;
+}
+
+.tiling-preview .tile-a {
+  fill: #14565a;
+  stroke: #102f32;
+  stroke-width: 1.5;
+}
+
+.tiling-preview .tile-b {
+  fill: #b74d37;
+  stroke: #102f32;
+  stroke-width: 1.5;
+}
+
+.tiling-preview .tile-c {
+  fill: #d6a14f;
+  stroke: #102f32;
+  stroke-width: 1.5;
+}
+
+.tiling-preview .tiling-arc {
+  fill: none;
+  stroke: #f0dfb7;
+  stroke-width: 1.25;
+}
+
 .project-copy {
   min-width: 0;
   padding: 18px;
@@ -264,12 +307,23 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .project-card-wide {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+    grid-template-rows: 170px minmax(0, 1fr);
+  }
+
   .project-card-featured {
     grid-column: span 1;
     grid-template-rows: 170px minmax(0, 1fr);
   }
 
   .project-card-featured .project-visual {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .project-card-wide .project-visual {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
