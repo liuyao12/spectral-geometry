@@ -1,3 +1,8 @@
+const DEFAULT_WRAP_YAW = 0.74;
+const DEFAULT_WRAP_PITCH = 0.18;
+const WRAP_ROTATION_SPEED = 0.008;
+const WRAP_PITCH_LIMIT = 1.08;
+
 const state = {
   data: null,
   selectedIndex: 0,
@@ -15,8 +20,8 @@ const state = {
   viewZoom: 1,
   viewPan: { x: 0, y: 0 },
   viewDragging: null,
-  wrapYaw: 0.74,
-  wrapPitch: 0.18
+  wrapYaw: DEFAULT_WRAP_YAW,
+  wrapPitch: DEFAULT_WRAP_PITCH
 };
 
 const el = {
@@ -294,6 +299,8 @@ function resetViewState() {
   state.viewZoom = 1;
   state.viewPan = c(0, 0);
   state.viewDragging = null;
+  state.wrapYaw = DEFAULT_WRAP_YAW;
+  state.wrapPitch = DEFAULT_WRAP_PITCH;
 }
 
 function canvasPoint(event) {
@@ -1257,12 +1264,23 @@ function requestStaticRedraw() {
 }
 
 function handleCanvasPointerDown(event) {
-  state.viewDragging = {
-    pointerId: event.pointerId,
-    x: event.clientX,
-    y: event.clientY,
-    pan: c(state.viewPan.x, state.viewPan.y)
-  };
+  if (event.button != null && event.button !== 0) return;
+  state.viewDragging = state.model === "wrap"
+    ? {
+      mode: "rotate",
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      yaw: state.wrapYaw,
+      pitch: state.wrapPitch
+    }
+    : {
+      mode: "pan",
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      pan: c(state.viewPan.x, state.viewPan.y)
+    };
   el.canvas.setPointerCapture?.(event.pointerId);
   el.canvas.classList.add("is-panning");
   event.preventDefault();
@@ -1271,10 +1289,19 @@ function handleCanvasPointerDown(event) {
 function handleCanvasPointerMove(event) {
   const drag = state.viewDragging;
   if (!drag || drag.pointerId !== event.pointerId) return;
-  state.viewPan = c(
-    drag.pan.x + event.clientX - drag.x,
-    drag.pan.y + event.clientY - drag.y
-  );
+  if (drag.mode === "rotate") {
+    state.wrapYaw = drag.yaw + (event.clientX - drag.x) * WRAP_ROTATION_SPEED;
+    state.wrapPitch = clamp(
+      drag.pitch + (event.clientY - drag.y) * WRAP_ROTATION_SPEED,
+      -WRAP_PITCH_LIMIT,
+      WRAP_PITCH_LIMIT
+    );
+  } else {
+    state.viewPan = c(
+      drag.pan.x + event.clientX - drag.x,
+      drag.pan.y + event.clientY - drag.y
+    );
+  }
   event.preventDefault();
   drawScene();
 }
@@ -1291,7 +1318,8 @@ function handleCanvasPointerUp(event) {
 function handleCanvasWheel(event) {
   event.preventDefault();
   const factor = Math.exp(-event.deltaY * 0.0012);
-  zoomView(factor, canvasPoint(event));
+  const anchor = state.model === "wrap" ? viewCenter() : canvasPoint(event);
+  zoomView(factor, anchor);
 }
 
 function prepareGeometry() {
