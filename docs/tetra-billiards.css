@@ -357,6 +357,11 @@ dd {
   color: var(--accent);
 }
 
+.sort-symbol {
+  font-size: 11px;
+  font-weight: 850;
+}
+
 .orbit-row {
   cursor: pointer;
 }
