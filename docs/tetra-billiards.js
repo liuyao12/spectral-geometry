@@ -771,6 +771,10 @@ function resetCamera(view = null) {
     return;
   }
   const { camera, controls } = view;
+  view.spin.dragging = false;
+  view.spin.pointerId = null;
+  view.spin.velocity.set(0, 0);
+  view.spin.lastFrameTime = null;
   if (!view.bounds) {
     camera.position.set(2.2, 2.4, 2.0);
     controls.target.set(0.5, 0.5, 0.5);
