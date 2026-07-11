@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#eee9df">
-    <title>Edge of Infinity — Hyperbolic Tiling</title>
+    <title>After M.C. Escher — Edge of Infinity</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="hyperbolic-tiling.css">
   </head>
@@ -19,12 +19,12 @@
       <div class="header-copy">
         <div>
           <p class="eyebrow">A hyperbolic diversion</p>
-          <h1>Edge of infinity</h1>
+          <h1>After M.C. Escher: Edge of infinity</h1>
         </div>
         <p class="lede">
-          An interlocking wing-and-fin tessellation reflected through the
-          Poincaré disk. Move toward any ideal-boundary point; the pattern never
-          runs out of tiles.
+          An original interlocking tessellation of celestial guardians and
+          underworld chimeras. Move toward any ideal-boundary point; the pattern
+          never runs out of figures.
         </p>
       </div>
     </header>
@@ -49,9 +49,9 @@
           <label class="symmetry-field" for="symmetrySelect">
             <span>Symmetry</span>
             <select id="symmetrySelect">
+              <option value="6,4">{6, 4} hexagons</option>
               <option value="8,3">{8, 3} octagons</option>
               <option value="7,3">{7, 3} heptagons</option>
-              <option value="6,4">{6, 4} hexagons</option>
               <option value="5,4">{5, 4} pentagons</option>
               <option value="4,6">{4, 6} squares</option>
             </select>
@@ -66,7 +66,7 @@
         <div class="journey-status" aria-live="polite">
           <span id="scaleReadout">magnification ×1.0</span>
           <span class="status-rule" aria-hidden="true"></span>
-          <span id="crossingReadout">boundary fixed · {8, 3}</span>
+          <span id="crossingReadout">boundary fixed · {6, 4}</span>
         </div>
 
         <p class="interaction-hint">
@@ -88,12 +88,12 @@
           group generates the design at render time; it is not a scaled bitmap.
         </p>
         <p>
-          <strong>No final row.</strong> The apparent accumulation of tiles is the
-          ideal boundary—infinitely far away in the hyperbolic metric.
+          <strong>Original figures.</strong> The celestial and underworld motifs
+          are generated from independent procedural silhouettes.
         </p>
       </section>
     </main>
 
-    <script src="hyperbolic-tiling.js?v=2"></script>
+    <script src="hyperbolic-tiling.js?v=4"></script>
   </body>
 </html>

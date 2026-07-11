@@ -16,7 +16,7 @@ The compact hyperbolic surface mini-project is:
 
 https://liuyao12.github.io/spectral-geometry/hyperbolic-surfaces.html
 
-The interactive Poincaré disk and upper half-plane tiling study is:
+The interactive “After M.C. Escher” Poincaré disk and upper half-plane tiling study is:
 
 https://liuyao12.github.io/spectral-geometry/hyperbolic-tiling.html
 
