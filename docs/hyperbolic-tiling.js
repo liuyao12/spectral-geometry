@@ -81,24 +81,16 @@ const fragmentSource = `
     vec2 screenPixel = gl_FragCoord.xy;
     vec2 pixel = 0.5 * u_resolution +
       (screenPixel - 0.5 * u_resolution - u_viewPan) / u_viewZoom;
-    vec2 local;
-    float frameDistance;
+    float radius = min(u_resolution.x, u_resolution.y) * 0.455;
+    vec2 displayPoint = (pixel - 0.5 * u_resolution) / radius;
 
-    if (u_model < 0.5) {
-      float radius = min(u_resolution.x, u_resolution.y) * 0.455;
-      local = (pixel - 0.5 * u_resolution) / radius;
-      frameDistance = 1.0 - length(local);
-    } else {
-      float scale = min(u_resolution.x * 0.245, u_resolution.y * 0.275);
-      vec2 halfPlane = vec2(
-        (pixel.x - 0.5 * u_resolution.x) / scale,
-        (pixel.y - 0.075 * u_resolution.y) / scale
-      );
-      frameDistance = halfPlane.y;
-      vec2 numerator = halfPlane - vec2(0.0, 1.0);
-      vec2 denominator = halfPlane + vec2(0.0, 1.0);
-      local = cDiv(numerator, denominator);
-    }
+    // This continuous family of Mobius maps fixes displayPoint = -i. Its
+    // circular boundary grows upward from the unit disk and becomes the
+    // horizontal line Im(z) = -1 when u_model reaches one.
+    vec2 modelDenominator =
+      cMul(vec2(0.0, -u_model), displayPoint) + vec2(1.0 + u_model, 0.0);
+    vec2 local = cDiv(displayPoint, modelDenominator);
+    float frameDistance = 1.0 - length(local);
 
     vec3 outside = rgb(13.0, 31.0, 34.0);
     if (frameDistance < 0.0) {
@@ -247,7 +239,7 @@ const fragmentSource = `
     float texture = 0.018 * sin((motif.x * 47.0 + motif.y * 31.0 + sideCrossings * 2.0) * PI);
     color += texture * (0.35 + 0.65 * creatureMask);
 
-    float frameWidth = u_model < 0.5 ? fwidth(frameDistance) : fwidth(frameDistance) * 0.8;
+    float frameWidth = max(fwidth(frameDistance), 0.00001);
     float frameLine = 1.0 - smoothstep(frameWidth * 0.7, frameWidth * 2.2, frameDistance);
     color = mix(color, parchment, frameLine * 0.78);
 
@@ -259,6 +251,8 @@ const fragmentSource = `
 
 const state = {
   model: "disk",
+  modelMix: 0,
+  modelAnimation: null,
   p: 6,
   q: 4,
   orientation: 0,
@@ -560,7 +554,7 @@ function draw() {
   gl.uniform2f(state.uniforms.resolution, canvas.width, canvas.height);
   gl.uniform1f(state.uniforms.p, state.p);
   gl.uniform1f(state.uniforms.q, state.q);
-  gl.uniform1f(state.uniforms.model, state.model === "disk" ? 0 : 1);
+  gl.uniform1f(state.uniforms.model, state.modelMix);
   gl.uniform1f(state.uniforms.orientation, state.orientation);
   gl.uniform1f(state.uniforms.globalParity, state.globalParity);
   gl.uniform1f(state.uniforms.viewZoom, state.viewZoom);
@@ -601,13 +595,17 @@ function defaultZoomAnchor() {
 
 function zoomAnchorFromEvent(event) {
   const point = canvasPoint(event);
-  const center = {
-    x: point.width / 2 + state.viewPan.x,
-    y: point.height / 2 + state.viewPan.y
-  };
+  const baseRadius = Math.min(point.width, point.height) * 0.455;
+  const fixedBoundaryY = point.height / 2 + state.viewPan.y +
+    baseRadius * state.viewZoom;
 
-  if (state.model === "disk") {
-    const radius = Math.min(point.width, point.height) * 0.455 * state.viewZoom;
+  if (state.modelMix < 0.999) {
+    const inverseGap = 1 / (1 - state.modelMix);
+    const radius = baseRadius * state.viewZoom * inverseGap;
+    const center = {
+      x: point.width / 2 + state.viewPan.x,
+      y: fixedBoundaryY - radius
+    };
     const dx = point.x - center.x;
     const dy = point.y - center.y;
     const distance = Math.hypot(dx, dy);
@@ -622,12 +620,46 @@ function zoomAnchorFromEvent(event) {
     return point;
   }
 
-  const boundaryY = point.height / 2 + state.viewPan.y +
-    state.viewZoom * (point.height * 0.925 - point.height / 2);
-  if (Math.abs(point.y - boundaryY) <= 36) {
-    return { ...point, y: boundaryY };
+  if (Math.abs(point.y - fixedBoundaryY) <= 36) {
+    return { ...point, y: fixedBoundaryY };
   }
   return point;
+}
+
+function animateModel(model) {
+  const target = model === "disk" ? 0 : 1;
+  const start = state.modelMix;
+  state.model = model;
+
+  if (state.modelAnimation !== null) {
+    cancelAnimationFrame(state.modelAnimation);
+    state.modelAnimation = null;
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const distance = Math.abs(target - start);
+  if (reducedMotion || distance < 0.0001) {
+    state.modelMix = target;
+    draw();
+    return;
+  }
+
+  const startedAt = performance.now();
+  const duration = Math.max(280, 1050 * distance);
+  const step = (now) => {
+    const progress = Math.min(1, (now - startedAt) / duration);
+    const eased = progress * progress * (3 - 2 * progress);
+    state.modelMix = start + (target - start) * eased;
+    draw();
+
+    if (progress < 1) {
+      state.modelAnimation = requestAnimationFrame(step);
+    } else {
+      state.modelMix = target;
+      state.modelAnimation = null;
+    }
+  };
+  state.modelAnimation = requestAnimationFrame(step);
 }
 
 function zoomViewAt(factor, anchor = state.lastZoomAnchor || defaultZoomAnchor()) {
@@ -689,15 +721,13 @@ canvas.addEventListener("pointercancel", finishDrag);
 
 modelButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    state.model = button.dataset.model;
     modelButtons.forEach((candidate) => {
       const active = candidate === button;
       candidate.classList.toggle("is-active", active);
       candidate.setAttribute("aria-pressed", String(active));
     });
-    resetOpticalView();
+    animateModel(button.dataset.model);
     updateStatus();
-    draw();
   });
 });
 
