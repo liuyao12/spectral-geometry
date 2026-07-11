@@ -348,15 +348,27 @@ h1 {
     left: 10px;
     right: 10px;
     bottom: 52px;
+    flex-wrap: wrap;
     justify-content: space-between;
   }
 
   .symmetry-field {
-    flex: 1;
+    flex: 1 0 100%;
   }
 
   .symmetry-field select {
     width: 100%;
+    min-width: 0;
+  }
+
+  .button-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+  }
+
+  .view-tools button,
+  .view-tools .reset-button {
     min-width: 0;
   }
 

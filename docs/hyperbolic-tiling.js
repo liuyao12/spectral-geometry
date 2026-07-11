@@ -33,6 +33,8 @@ const fragmentSource = `
   uniform float u_model;
   uniform float u_orientation;
   uniform float u_globalParity;
+  uniform float u_viewZoom;
+  uniform vec2 u_viewPan;
   uniform vec2 u_a;
   uniform vec2 u_b;
   uniform vec2 u_c;
@@ -62,7 +64,9 @@ const fragmentSource = `
   }
 
   void main() {
-    vec2 pixel = gl_FragCoord.xy;
+    vec2 screenPixel = gl_FragCoord.xy;
+    vec2 pixel = 0.5 * u_resolution +
+      (screenPixel - 0.5 * u_resolution - u_viewPan) / u_viewZoom;
     vec2 local;
     float frameDistance;
 
@@ -196,7 +200,7 @@ const fragmentSource = `
     float frameLine = 1.0 - smoothstep(frameWidth * 0.7, frameWidth * 2.2, frameDistance);
     color = mix(color, parchment, frameLine * 0.78);
 
-    float vignette = smoothstep(1.18, 0.18, length((pixel - 0.5 * u_resolution) / u_resolution.y));
+    float vignette = smoothstep(1.18, 0.18, length((screenPixel - 0.5 * u_resolution) / u_resolution.y));
     color *= 0.82 + 0.18 * vignette;
     gl_FragColor = vec4(color, 1.0);
   }
@@ -214,9 +218,9 @@ const state = {
     c: { x: 0, y: 0 },
     d: { x: 1, y: 0 }
   },
-  edgeDepth: 0,
-  crossings: 0,
-  lastDirection: { x: 0.94, y: 0.34 },
+  viewZoom: 1,
+  viewPan: { x: 0, y: 0 },
+  lastZoomAnchor: null,
   drag: null,
   program: null,
   uniforms: null
@@ -306,7 +310,6 @@ function postReflectLine(angle) {
   };
   state.orientation = 1 - state.orientation;
   state.globalParity = 1 - state.globalParity;
-  state.crossings += 1;
   canonicalizeMatrix();
 }
 
@@ -326,7 +329,6 @@ function postReflectCircle(center) {
   state.matrix = matrixMultiply(reflection, conjugated);
   state.orientation = 1 - state.orientation;
   state.globalParity = 1 - state.globalParity;
-  state.crossings += 1;
   canonicalizeMatrix();
 }
 
@@ -385,16 +387,29 @@ function translateCamera(direction, distance) {
   state.matrix = matrixMultiply(state.matrix, localTransform);
   canonicalizeMatrix();
   recenterCamera();
-  state.edgeDepth = Math.max(0, state.edgeDepth + distance / Math.log(10));
   updateStatus();
   draw();
 }
 
+function formatMagnification(value) {
+  if (value < 1000) {
+    const digits = value < 10 ? 1 : 0;
+    return `×${value.toFixed(digits)}`;
+  }
+  const exponent = Math.floor(Math.log10(value));
+  const mantissa = value / 10 ** exponent;
+  return `×${mantissa.toFixed(1)}·10^${exponent}`;
+}
+
 function updateStatus() {
-  scaleReadout.innerHTML = `edge depth 10<sup>${state.edgeDepth.toFixed(1)}</sup>`;
-  crossingReadout.textContent = state.crossings === 0
-    ? "fundamental tile"
-    : `${state.crossings.toLocaleString()} mirror ${state.crossings === 1 ? "crossing" : "crossings"}`;
+  scaleReadout.textContent = `magnification ${formatMagnification(state.viewZoom)}`;
+  crossingReadout.textContent = `boundary fixed · {${state.p}, ${state.q}}`;
+}
+
+function resetOpticalView() {
+  state.viewZoom = 1;
+  state.viewPan = { x: 0, y: 0 };
+  state.lastZoomAnchor = null;
 }
 
 function resetCamera() {
@@ -406,9 +421,7 @@ function resetCamera() {
     c: complex(0),
     d: complex(1)
   };
-  state.edgeDepth = 0;
-  state.crossings = 0;
-  state.lastDirection = complex(0.94, 0.34);
+  resetOpticalView();
   updateStatus();
   draw();
 }
@@ -464,6 +477,8 @@ function initializeWebGL() {
     model: gl.getUniformLocation(program, "u_model"),
     orientation: gl.getUniformLocation(program, "u_orientation"),
     globalParity: gl.getUniformLocation(program, "u_globalParity"),
+    viewZoom: gl.getUniformLocation(program, "u_viewZoom"),
+    viewPan: gl.getUniformLocation(program, "u_viewPan"),
     a: gl.getUniformLocation(program, "u_a"),
     b: gl.getUniformLocation(program, "u_b"),
     c: gl.getUniformLocation(program, "u_c"),
@@ -497,6 +512,14 @@ function draw() {
   gl.uniform1f(state.uniforms.model, state.model === "disk" ? 0 : 1);
   gl.uniform1f(state.uniforms.orientation, state.orientation);
   gl.uniform1f(state.uniforms.globalParity, state.globalParity);
+  gl.uniform1f(state.uniforms.viewZoom, state.viewZoom);
+  const rect = canvas.getBoundingClientRect();
+  const pixelRatio = rect.width > 0 ? canvas.width / rect.width : 1;
+  gl.uniform2f(
+    state.uniforms.viewPan,
+    state.viewPan.x * pixelRatio,
+    -state.viewPan.y * pixelRatio
+  );
   sendComplex(state.uniforms.a, state.matrix.a);
   sendComplex(state.uniforms.b, state.matrix.b);
   sendComplex(state.uniforms.c, state.matrix.c);
@@ -514,46 +537,81 @@ function canvasPoint(event) {
   };
 }
 
-function diskDirectionFromEvent(event) {
+function defaultZoomAnchor() {
+  const rect = canvas.getBoundingClientRect();
+  const radius = Math.min(rect.width, rect.height) * 0.455;
+  return {
+    x: rect.width / 2 + radius,
+    y: rect.height / 2,
+    width: rect.width,
+    height: rect.height
+  };
+}
+
+function zoomAnchorFromEvent(event) {
   const point = canvasPoint(event);
-  let diskPoint;
+  const center = {
+    x: point.width / 2 + state.viewPan.x,
+    y: point.height / 2 + state.viewPan.y
+  };
 
   if (state.model === "disk") {
-    const radius = Math.min(point.width, point.height) * 0.455;
-    diskPoint = complex(
-      (point.x - point.width / 2) / radius,
-      (point.height / 2 - point.y) / radius
-    );
-  } else {
-    const scaleValue = Math.min(point.width * 0.245, point.height * 0.275);
-    const halfPlane = complex(
-      (point.x - point.width / 2) / scaleValue,
-      (point.height * 0.925 - point.y) / scaleValue
-    );
-    diskPoint = divide(sub(halfPlane, complex(0, 1)), add(halfPlane, complex(0, 1)));
+    const radius = Math.min(point.width, point.height) * 0.455 * state.viewZoom;
+    const dx = point.x - center.x;
+    const dy = point.y - center.y;
+    const distance = Math.hypot(dx, dy);
+    const snapDistance = Math.max(18, Math.min(72, radius * 0.08));
+    if (distance > 1e-6 && Math.abs(distance - radius) <= snapDistance) {
+      return {
+        ...point,
+        x: center.x + dx * radius / distance,
+        y: center.y + dy * radius / distance
+      };
+    }
+    return point;
   }
 
-  const length = magnitude(diskPoint);
-  if (length < 0.06) return state.lastDirection;
-  const direction = scale(diskPoint, 1 / length);
-  state.lastDirection = direction;
-  return direction;
+  const boundaryY = point.height / 2 + state.viewPan.y +
+    state.viewZoom * (point.height * 0.925 - point.height / 2);
+  if (Math.abs(point.y - boundaryY) <= 36) {
+    return { ...point, y: boundaryY };
+  }
+  return point;
+}
+
+function zoomViewAt(factor, anchor = state.lastZoomAnchor || defaultZoomAnchor()) {
+  const previousZoom = state.viewZoom;
+  const nextZoom = Math.max(0.55, Math.min(1e6, previousZoom * factor));
+  const appliedFactor = nextZoom / previousZoom;
+  const centerX = anchor.width / 2;
+  const centerY = anchor.height / 2;
+  state.viewPan = {
+    x: anchor.x - centerX - appliedFactor * (anchor.x - centerX - state.viewPan.x),
+    y: anchor.y - centerY - appliedFactor * (anchor.y - centerY - state.viewPan.y)
+  };
+  state.viewZoom = nextZoom;
+  state.lastZoomAnchor = anchor;
+  updateStatus();
+  draw();
 }
 
 canvas.addEventListener("wheel", (event) => {
   event.preventDefault();
-  const direction = diskDirectionFromEvent(event);
-  const distance = Math.max(-0.72, Math.min(0.72, -event.deltaY * 0.0018));
-  translateCamera(direction, distance);
+  const factor = Math.max(0.55, Math.min(1.85, Math.exp(-event.deltaY * 0.0018)));
+  zoomViewAt(factor, zoomAnchorFromEvent(event));
 }, { passive: false });
 
 canvas.addEventListener("dblclick", (event) => {
-  translateCamera(diskDirectionFromEvent(event), 0.9);
+  zoomViewAt(3, zoomAnchorFromEvent(event));
 });
 
 canvas.addEventListener("pointerdown", (event) => {
   canvas.setPointerCapture(event.pointerId);
-  state.drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  state.drag = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY
+  };
   canvas.classList.add("is-dragging");
 });
 
@@ -586,6 +644,8 @@ modelButtons.forEach((button) => {
       candidate.classList.toggle("is-active", active);
       candidate.setAttribute("aria-pressed", String(active));
     });
+    resetOpticalView();
+    updateStatus();
     draw();
   });
 });
@@ -597,8 +657,8 @@ symmetrySelect.addEventListener("change", () => {
   resetCamera();
 });
 
-zoomInButton.addEventListener("click", () => translateCamera(state.lastDirection, 0.62));
-zoomOutButton.addEventListener("click", () => translateCamera(state.lastDirection, -0.62));
+zoomInButton.addEventListener("click", () => zoomViewAt(1.8));
+zoomOutButton.addEventListener("click", () => zoomViewAt(1 / 1.8));
 resetButton.addEventListener("click", resetCamera);
 
 const resizeObserver = new ResizeObserver(draw);
