@@ -33,7 +33,7 @@
       <section class="tiling-stage" aria-label="Interactive hyperbolic tiling">
         <canvas
           id="tilingCanvas"
-          aria-label="An infinitely repeating hyperbolic tiling. Scroll toward the boundary to travel deeper into the pattern."
+          aria-label="An infinitely repeating hyperbolic tiling. Scroll on a boundary point to enlarge the disk around that point; drag to move the interior while the boundary stays fixed."
         ></canvas>
 
         <div class="model-switch" role="group" aria-label="Projection model">
@@ -57,20 +57,20 @@
             </select>
           </label>
           <div class="button-row">
-            <button id="zoomOut" type="button" aria-label="Move away from the selected boundary direction">−</button>
+            <button id="zoomOut" type="button" aria-label="Zoom out">−</button>
             <button id="resetView" class="reset-button" type="button">Reset</button>
-            <button id="zoomIn" type="button" aria-label="Move toward the selected boundary direction">+</button>
+            <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
           </div>
         </div>
 
         <div class="journey-status" aria-live="polite">
-          <span id="scaleReadout">edge depth 10<sup>0.0</sup></span>
+          <span id="scaleReadout">magnification ×1.0</span>
           <span class="status-rule" aria-hidden="true"></span>
-          <span id="crossingReadout">fundamental tile</span>
+          <span id="crossingReadout">boundary fixed · {8, 3}</span>
         </div>
 
         <p class="interaction-hint">
-          Scroll toward a boundary point · drag to roam · double-click to dive
+          Scroll to zoom at the pointer · drag to shift the interior
         </p>
 
         <div id="webglError" class="error-message" hidden>
@@ -94,6 +94,6 @@
       </section>
     </main>
 
-    <script src="hyperbolic-tiling.js?v=1"></script>
+    <script src="hyperbolic-tiling.js?v=2"></script>
   </body>
 </html>
