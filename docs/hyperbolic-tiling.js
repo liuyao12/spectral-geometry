@@ -63,6 +63,20 @@ const fragmentSource = `
     return length(d) - 1.0;
   }
 
+  float rotatedEllipse(vec2 p, vec2 center, vec2 radii, float rotation) {
+    vec2 q = p - center;
+    float cs = cos(rotation);
+    float sn = sin(rotation);
+    q = vec2(cs * q.x + sn * q.y, -sn * q.x + cs * q.y);
+    return length(q / radii) - 1.0;
+  }
+
+  float capsule(vec2 p, vec2 start, vec2 end, float radius) {
+    vec2 segment = end - start;
+    float t = clamp(dot(p - start, segment) / max(dot(segment, segment), 1.0e-8), 0.0, 1.0);
+    return length(p - start - segment * t) - radius;
+  }
+
   void main() {
     vec2 screenPixel = gl_FragCoord.xy;
     vec2 pixel = 0.5 * u_resolution +
@@ -153,33 +167,70 @@ const fragmentSource = `
     vec3 parchment = rgb(239.0, 224.0, 191.0);
     vec3 ink = rgb(12.0, 35.0, 37.0);
 
-    vec3 base = parity < 0.5 ? ochre : teal;
-    vec3 creature = parity < 0.5 ? deepTeal : coral;
-    vec3 highlight = parity < 0.5 ? parchment : ochre;
+    float celestialType = parity < 0.5 ? 1.0 : 0.0;
+    vec3 base = mix(ochre, teal, celestialType);
+    vec3 creature = mix(deepTeal, parchment, celestialType);
+    vec3 highlight = mix(coral, ochre, celestialType);
 
-    float body = ellipse(motif, vec2(0.52, 0.54), vec2(0.43, 0.24));
-    float wingA = ellipse(motif, vec2(0.67, 0.57), vec2(0.22, 0.38));
-    float wingB = ellipse(motif, vec2(0.34, 0.53), vec2(0.16, 0.31));
-    float hookedHead = ellipse(motif, vec2(0.23, 0.35), vec2(0.17, 0.14));
-    float tailCut = abs(motif.x - (0.62 + 0.23 * motif.y)) - (0.17 - 0.08 * motif.y);
-    float bodyMask = smoothstep(0.025, -0.018, min(body, min(wingA + 0.12, hookedHead + 0.04)));
-    bodyMask = max(bodyMask, smoothstep(0.02, -0.02, wingB + 0.12));
-    bodyMask *= smoothstep(-0.02, 0.035, tailCut);
-    vec3 color = mix(base, creature, bodyMask);
+    float celestialHead = 1.0 - smoothstep(-0.04, 0.08,
+      ellipse(motif, vec2(0.25, 0.31), vec2(0.105, 0.095)));
+    float celestialBody = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.40, 0.55), vec2(0.145, 0.29), -0.12));
+    float celestialRobe = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.43, 0.73), vec2(0.22, 0.22), 0.10));
+    float celestialWingA = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.67, 0.48), vec2(0.34, 0.115), -0.28));
+    float celestialWingB = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.67, 0.65), vec2(0.31, 0.105), 0.18));
+    float celestialMask = max(max(celestialHead, celestialBody),
+      max(celestialRobe, max(celestialWingA, celestialWingB)));
 
-    float plume = abs(motif.x - (0.49 + 0.13 * sin(5.4 * motif.y + 0.4))) - 0.016;
-    float feather1 = abs(motif.y - (0.45 + 0.11 * sin(6.2 * motif.x))) - 0.012;
-    float feather2 = abs(motif.y - (0.63 + 0.08 * sin(7.0 * motif.x + 0.7))) - 0.010;
-    float featherWidth = max(fwidth(plume), 0.005);
-    float featherLines = 1.0 - smoothstep(0.0, featherWidth * 1.5, min(plume, min(feather1, feather2)));
-    featherLines *= bodyMask;
-    color = mix(color, highlight, featherLines * 0.78);
+    float demonHead = 1.0 - smoothstep(-0.04, 0.08,
+      ellipse(motif, vec2(0.29, 0.36), vec2(0.14, 0.125)));
+    float demonBody = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.49, 0.58), vec2(0.24, 0.25), -0.08));
+    float demonWingA = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.70, 0.47), vec2(0.31, 0.13), 0.32));
+    float demonWingB = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.70, 0.69), vec2(0.30, 0.12), -0.24));
+    float demonHornA = 1.0 - smoothstep(-0.010, 0.018,
+      capsule(motif, vec2(0.23, 0.29), vec2(0.12, 0.13), 0.032));
+    float demonHornB = 1.0 - smoothstep(-0.010, 0.018,
+      capsule(motif, vec2(0.33, 0.29), vec2(0.41, 0.13), 0.030));
+    float demonTailA = 1.0 - smoothstep(-0.010, 0.018,
+      capsule(motif, vec2(0.54, 0.72), vec2(0.76, 0.82), 0.025));
+    float demonTailB = 1.0 - smoothstep(-0.010, 0.018,
+      capsule(motif, vec2(0.76, 0.82), vec2(0.87, 0.72), 0.020));
+    float demonMask = max(max(demonHead, demonBody), max(max(demonWingA, demonWingB),
+      max(max(demonHornA, demonHornB), max(demonTailA, demonTailB))));
 
-    float eye = ellipse(motif, vec2(0.205, 0.335), vec2(0.032, 0.025));
-    float eyeMask = smoothstep(0.18, -0.08, eye) * bodyMask;
-    color = mix(color, parchment, eyeMask);
-    float pupil = ellipse(motif, vec2(0.205, 0.335), vec2(0.012, 0.012));
-    color = mix(color, ink, smoothstep(0.18, -0.05, pupil));
+    float creatureMask = mix(demonMask, celestialMask, celestialType);
+    vec3 color = mix(base, creature, creatureMask);
+
+    float celestialFeatherA = abs(motif.y - (0.43 + 0.17 * motif.x + 0.025 * sin(13.0 * motif.x))) - 0.010;
+    float celestialFeatherB = abs(motif.y - (0.54 + 0.13 * motif.x + 0.020 * sin(11.0 * motif.x))) - 0.010;
+    float celestialFeatherC = abs(motif.y - (0.70 - 0.10 * motif.x + 0.018 * sin(12.0 * motif.x))) - 0.010;
+    float demonRibA = abs(motif.y - (0.40 + 0.23 * motif.x)) - 0.010;
+    float demonRibB = abs(motif.y - (0.74 - 0.17 * motif.x)) - 0.010;
+    float demonRibC = abs(motif.x - (0.56 + 0.08 * sin(8.0 * motif.y))) - 0.012;
+    float celestialDetail = min(celestialFeatherA, min(celestialFeatherB, celestialFeatherC));
+    float demonDetail = min(demonRibA, min(demonRibB, demonRibC));
+    float detailDistance = mix(demonDetail, celestialDetail, celestialType);
+    float detailWidth = max(fwidth(detailDistance), 0.004);
+    float detailLines = (1.0 - smoothstep(0.0, detailWidth * 1.7, detailDistance)) * creatureMask;
+    color = mix(color, highlight, detailLines * 0.82);
+
+    float haloRing = abs(ellipse(motif, vec2(0.25, 0.205), vec2(0.12, 0.042)));
+    float haloWidth = max(fwidth(haloRing), 0.015);
+    float haloMask = (1.0 - smoothstep(0.02, 0.02 + haloWidth * 1.8, haloRing)) * celestialType;
+    color = mix(color, ochre, haloMask);
+
+    float celestialEye = ellipse(motif, vec2(0.225, 0.31), vec2(0.016, 0.014));
+    float demonEyeA = ellipse(motif, vec2(0.255, 0.35), vec2(0.020, 0.016));
+    float demonEyeB = ellipse(motif, vec2(0.315, 0.35), vec2(0.020, 0.016));
+    float eyeDistance = mix(min(demonEyeA, demonEyeB), celestialEye, celestialType);
+    float eyeMask = (1.0 - smoothstep(-0.10, 0.20, eyeDistance)) * creatureMask;
+    color = mix(color, celestialType > 0.5 ? ink : coral, eyeMask);
 
     float rayEdgeA = abs(point.y);
     float rayEdgeB = abs(cosAngle * point.y - sinAngle * point.x);
@@ -188,13 +239,13 @@ const fragmentSource = `
     float edgeWidth = max(fwidth(geometricEdge), 0.00015);
     float edgeLine = 1.0 - smoothstep(edgeWidth * 0.55, edgeWidth * 1.7, geometricEdge);
 
-    float bodyOutline = abs(body);
-    float outlineWidth = max(fwidth(bodyOutline), 0.006);
-    float motifOutline = (1.0 - smoothstep(0.0, outlineWidth * 1.6, bodyOutline)) * 0.72;
-    color = mix(color, ink, max(edgeLine * 0.9, motifOutline * bodyMask));
+    float maskEdge = abs(creatureMask - 0.5);
+    float outlineWidth = max(fwidth(maskEdge), 0.025);
+    float motifOutline = 1.0 - smoothstep(0.08, 0.08 + outlineWidth * 1.7, maskEdge);
+    color = mix(color, ink, max(edgeLine * 0.9, motifOutline * 0.75));
 
     float texture = 0.018 * sin((motif.x * 47.0 + motif.y * 31.0 + sideCrossings * 2.0) * PI);
-    color += texture * (0.35 + 0.65 * bodyMask);
+    color += texture * (0.35 + 0.65 * creatureMask);
 
     float frameWidth = u_model < 0.5 ? fwidth(frameDistance) : fwidth(frameDistance) * 0.8;
     float frameLine = 1.0 - smoothstep(frameWidth * 0.7, frameWidth * 2.2, frameDistance);
@@ -208,8 +259,8 @@ const fragmentSource = `
 
 const state = {
   model: "disk",
-  p: 8,
-  q: 3,
+  p: 6,
+  q: 4,
   orientation: 0,
   globalParity: 0,
   matrix: {
