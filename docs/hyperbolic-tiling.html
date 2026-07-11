@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#eee9df">
+    <title>Edge of Infinity — Hyperbolic Tiling</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="hyperbolic-tiling.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <nav class="page-nav" aria-label="project pages">
+        <a href="index.html">Spectral geometry</a>
+        <span aria-hidden="true">/</span>
+        <a href="hyperbolic-surfaces.html">Compact surfaces</a>
+      </nav>
+
+      <div class="header-copy">
+        <div>
+          <p class="eyebrow">A hyperbolic diversion</p>
+          <h1>Edge of infinity</h1>
+        </div>
+        <p class="lede">
+          An interlocking wing-and-fin tessellation reflected through the
+          Poincaré disk. Move toward any ideal-boundary point; the pattern never
+          runs out of tiles.
+        </p>
+      </div>
+    </header>
+
+    <main class="tiling-main">
+      <section class="tiling-stage" aria-label="Interactive hyperbolic tiling">
+        <canvas
+          id="tilingCanvas"
+          aria-label="An infinitely repeating hyperbolic tiling. Scroll toward the boundary to travel deeper into the pattern."
+        ></canvas>
+
+        <div class="model-switch" role="group" aria-label="Projection model">
+          <button class="model-button is-active" type="button" data-model="disk" aria-pressed="true">
+            Poincaré disk
+          </button>
+          <button class="model-button" type="button" data-model="halfplane" aria-pressed="false">
+            Half-plane
+          </button>
+        </div>
+
+        <div class="view-tools" aria-label="View controls">
+          <label class="symmetry-field" for="symmetrySelect">
+            <span>Symmetry</span>
+            <select id="symmetrySelect">
+              <option value="8,3">{8, 3} octagons</option>
+              <option value="7,3">{7, 3} heptagons</option>
+              <option value="6,4">{6, 4} hexagons</option>
+              <option value="5,4">{5, 4} pentagons</option>
+              <option value="4,6">{4, 6} squares</option>
+            </select>
+          </label>
+          <div class="button-row">
+            <button id="zoomOut" type="button" aria-label="Move away from the selected boundary direction">−</button>
+            <button id="resetView" class="reset-button" type="button">Reset</button>
+            <button id="zoomIn" type="button" aria-label="Move toward the selected boundary direction">+</button>
+          </div>
+        </div>
+
+        <div class="journey-status" aria-live="polite">
+          <span id="scaleReadout">edge depth 10<sup>0.0</sup></span>
+          <span class="status-rule" aria-hidden="true"></span>
+          <span id="crossingReadout">fundamental tile</span>
+        </div>
+
+        <p class="interaction-hint">
+          Scroll toward a boundary point · drag to roam · double-click to dive
+        </p>
+
+        <div id="webglError" class="error-message" hidden>
+          This visualization needs WebGL, which is not available in this browser.
+        </div>
+      </section>
+
+      <section class="model-note" aria-label="About the models">
+        <p>
+          <strong>Same geometry, two windows.</strong> The Cayley transform carries
+          every arc and motif between the disk and half-plane views.
+        </p>
+        <p>
+          <strong>True hyperbolic repetition.</strong> A <i>{p, q}</i> reflection
+          group generates the design at render time; it is not a scaled bitmap.
+        </p>
+        <p>
+          <strong>No final row.</strong> The apparent accumulation of tiles is the
+          ideal boundary—infinitely far away in the hyperbolic metric.
+        </p>
+      </section>
+    </main>
+
+    <script src="hyperbolic-tiling.js?v=1"></script>
+  </body>
+</html>
