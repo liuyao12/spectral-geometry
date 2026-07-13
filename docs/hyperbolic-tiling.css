@@ -183,7 +183,8 @@ h1 {
   backdrop-filter: blur(12px);
 }
 
-.symmetry-field {
+.control-field,
+.edge-field {
   display: grid;
   gap: 4px;
   color: #b8c5c2;
@@ -193,7 +194,7 @@ h1 {
   text-transform: uppercase;
 }
 
-.symmetry-field select {
+.control-field select {
   min-width: 150px;
   min-height: 34px;
   border: 1px solid rgba(238, 233, 223, 0.3);
@@ -205,6 +206,30 @@ h1 {
   font-weight: 700;
   letter-spacing: 0;
   text-transform: none;
+}
+
+.edge-field {
+  min-width: 128px;
+}
+
+.edge-field span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.edge-field output {
+  color: #f2eee5;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.edge-field input {
+  width: 128px;
+  height: 34px;
+  margin: 0;
+  accent-color: #ead8ca;
+  cursor: pointer;
 }
 
 .button-row {
@@ -352,11 +377,13 @@ h1 {
     justify-content: space-between;
   }
 
-  .symmetry-field {
+  .control-field,
+  .edge-field {
     flex: 1 0 100%;
   }
 
-  .symmetry-field select {
+  .control-field select,
+  .edge-field input {
     width: 100%;
     min-width: 0;
   }

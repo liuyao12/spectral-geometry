@@ -1,5 +1,8 @@
 const canvas = document.querySelector("#tilingCanvas");
+const designSelect = document.querySelector("#designSelect");
 const symmetrySelect = document.querySelector("#symmetrySelect");
+const edgePlayInput = document.querySelector("#edgePlay");
+const edgeReadout = document.querySelector("#edgeReadout");
 const modelButtons = Array.from(document.querySelectorAll("[data-model]"));
 const zoomInButton = document.querySelector("#zoomIn");
 const zoomOutButton = document.querySelector("#zoomOut");
@@ -30,6 +33,8 @@ const fragmentSource = `
   uniform vec2 u_resolution;
   uniform float u_p;
   uniform float u_q;
+  uniform float u_design;
+  uniform float u_edgePlay;
   uniform float u_model;
   uniform float u_orientation;
   uniform float u_globalParity;
@@ -152,6 +157,64 @@ const fragmentSource = `
     float radialEdge = sideCenter * cos(theta) - sqrt(rootTerm);
     vec2 motif = vec2(theta / angle, length(point) / max(radialEdge, 0.0001));
 
+    // Each mirror of the fundamental triangle gets the same symmetric wave.
+    // Reflection reverses the signed normal, so every edited edge is also the
+    // exact partner of its neighbour: the curves cannot leave gaps or overlap.
+    float insideA = point.y;
+    float insideB = sinAngle * point.x - cosAngle * point.y;
+    float insideC = (dot(point - sideOrigin, point - sideOrigin) - sideRadius2) * 0.35;
+    float edgeParameterA = clamp(point.x / max(vertexRadius, 0.0001), 0.0, 1.0);
+    float edgeParameterB = clamp(
+      dot(point, vec2(cosAngle, sinAngle)) / max(vertexRadius, 0.0001), 0.0, 1.0
+    );
+    float edgeParameterC = clamp(theta / angle, 0.0, 1.0);
+
+    float styleA = 0.9;
+    float styleB = -0.45;
+    float styleC = 0.2;
+    if (u_design > 0.5 && u_design < 1.5) {
+      styleA = -0.85;
+      styleB = 0.75;
+      styleC = -0.35;
+    } else if (u_design > 1.5 && u_design < 2.5) {
+      styleA = 0.25;
+      styleB = -0.9;
+      styleC = 0.95;
+    } else if (u_design > 2.5) {
+      styleA = 0.95;
+      styleB = 0.35;
+      styleC = -0.85;
+    }
+
+    float edgeAmplitude = u_edgePlay * 0.048;
+    float waveA = edgeAmplitude * (
+      0.72 * sin(PI * edgeParameterA) + 0.28 * styleA * sin(3.0 * PI * edgeParameterA)
+    );
+    float waveB = edgeAmplitude * (
+      0.72 * sin(PI * edgeParameterB) + 0.28 * styleB * sin(3.0 * PI * edgeParameterB)
+    );
+    float waveC = edgeAmplitude * (
+      0.72 * sin(PI * edgeParameterC) + 0.28 * styleC * sin(3.0 * PI * edgeParameterC)
+    );
+
+    float paritySign = parity < 0.5 ? 1.0 : -1.0;
+    float signedA = paritySign * insideA;
+    float signedB = paritySign * insideB;
+    float signedC = paritySign * insideC;
+    float boundaryA = abs(signedA - waveA);
+    float boundaryB = abs(signedB - waveB);
+    float boundaryC = abs(signedC - waveC);
+    float deformedEdge = boundaryA;
+    float ownership = 1.0 - step(waveA, signedA);
+    if (boundaryB < deformedEdge) {
+      deformedEdge = boundaryB;
+      ownership = 1.0 - step(waveB, signedB);
+    }
+    if (boundaryC < deformedEdge) {
+      deformedEdge = boundaryC;
+      ownership = 1.0 - step(waveC, signedC);
+    }
+
     vec3 teal = rgb(20.0, 79.0, 82.0);
     vec3 deepTeal = rgb(10.0, 42.0, 45.0);
     vec3 ochre = rgb(210.0, 157.0, 78.0);
@@ -159,7 +222,30 @@ const fragmentSource = `
     vec3 parchment = rgb(239.0, 224.0, 191.0);
     vec3 ink = rgb(12.0, 35.0, 37.0);
 
-    float celestialType = parity < 0.5 ? 1.0 : 0.0;
+    if (u_design > 0.5 && u_design < 1.5) {
+      teal = rgb(17.0, 91.0, 103.0);
+      deepTeal = rgb(7.0, 48.0, 60.0);
+      ochre = rgb(224.0, 119.0, 72.0);
+      coral = rgb(244.0, 188.0, 96.0);
+      parchment = rgb(238.0, 228.0, 199.0);
+      ink = rgb(7.0, 34.0, 43.0);
+    } else if (u_design > 1.5 && u_design < 2.5) {
+      teal = rgb(61.0, 47.0, 89.0);
+      deepTeal = rgb(26.0, 24.0, 50.0);
+      ochre = rgb(184.0, 137.0, 68.0);
+      coral = rgb(190.0, 80.0, 92.0);
+      parchment = rgb(236.0, 218.0, 171.0);
+      ink = rgb(23.0, 20.0, 38.0);
+    } else if (u_design > 2.5) {
+      teal = rgb(31.0, 96.0, 72.0);
+      deepTeal = rgb(13.0, 51.0, 42.0);
+      ochre = rgb(198.0, 133.0, 61.0);
+      coral = rgb(172.0, 67.0, 46.0);
+      parchment = rgb(234.0, 220.0, 174.0);
+      ink = rgb(15.0, 41.0, 34.0);
+    }
+
+    float celestialType = 1.0 - ownership;
     vec3 base = mix(ochre, teal, celestialType);
     vec3 creature = mix(deepTeal, parchment, celestialType);
     vec3 highlight = mix(coral, ochre, celestialType);
@@ -196,7 +282,56 @@ const fragmentSource = `
     float demonMask = max(max(demonHead, demonBody), max(max(demonWingA, demonWingB),
       max(max(demonHornA, demonHornB), max(demonTailA, demonTailB))));
 
+    float koiHead = 1.0 - smoothstep(-0.04, 0.08,
+      ellipse(motif, vec2(0.24, 0.43), vec2(0.15, 0.13)));
+    float koiBody = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.49, 0.55), vec2(0.34, 0.16), 0.16));
+    float koiTailA = 1.0 - smoothstep(-0.03, 0.07,
+      rotatedEllipse(motif, vec2(0.78, 0.48), vec2(0.23, 0.09), 0.55));
+    float koiTailB = 1.0 - smoothstep(-0.03, 0.07,
+      rotatedEllipse(motif, vec2(0.80, 0.66), vec2(0.23, 0.09), -0.48));
+    float koiFin = 1.0 - smoothstep(-0.03, 0.07,
+      rotatedEllipse(motif, vec2(0.50, 0.69), vec2(0.18, 0.07), -0.35));
+    float koiMask = max(max(koiHead, koiBody), max(koiFin, max(koiTailA, koiTailB)));
+
+    float mothBody = 1.0 - smoothstep(-0.025, 0.05,
+      capsule(motif, vec2(0.34, 0.27), vec2(0.48, 0.75), 0.065));
+    float mothWingA = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.61, 0.43), vec2(0.31, 0.16), -0.43));
+    float mothWingB = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.66, 0.67), vec2(0.29, 0.14), 0.36));
+    float mothHead = 1.0 - smoothstep(-0.03, 0.06,
+      ellipse(motif, vec2(0.31, 0.23), vec2(0.09, 0.08)));
+    float mothAntennaA = 1.0 - smoothstep(-0.008, 0.018,
+      capsule(motif, vec2(0.28, 0.18), vec2(0.18, 0.08), 0.018));
+    float mothAntennaB = 1.0 - smoothstep(-0.008, 0.018,
+      capsule(motif, vec2(0.34, 0.18), vec2(0.42, 0.07), 0.018));
+    float mothMask = max(max(mothBody, mothHead),
+      max(max(mothWingA, mothWingB), max(mothAntennaA, mothAntennaB)));
+
+    float salamanderHead = 1.0 - smoothstep(-0.035, 0.07,
+      ellipse(motif, vec2(0.23, 0.34), vec2(0.14, 0.12)));
+    float salamanderBody = 1.0 - smoothstep(-0.04, 0.08,
+      rotatedEllipse(motif, vec2(0.47, 0.55), vec2(0.30, 0.13), 0.38));
+    float salamanderTailA = 1.0 - smoothstep(-0.015, 0.035,
+      capsule(motif, vec2(0.64, 0.67), vec2(0.82, 0.80), 0.055));
+    float salamanderTailB = 1.0 - smoothstep(-0.012, 0.03,
+      capsule(motif, vec2(0.82, 0.80), vec2(0.92, 0.72), 0.035));
+    float salamanderLegA = 1.0 - smoothstep(-0.01, 0.025,
+      capsule(motif, vec2(0.38, 0.49), vec2(0.22, 0.61), 0.032));
+    float salamanderLegB = 1.0 - smoothstep(-0.01, 0.025,
+      capsule(motif, vec2(0.52, 0.61), vec2(0.39, 0.78), 0.032));
+    float salamanderMask = max(max(salamanderHead, salamanderBody),
+      max(max(salamanderTailA, salamanderTailB), max(salamanderLegA, salamanderLegB)));
+
     float creatureMask = mix(demonMask, celestialMask, celestialType);
+    if (u_design > 0.5 && u_design < 1.5) {
+      creatureMask = koiMask;
+    } else if (u_design > 1.5 && u_design < 2.5) {
+      creatureMask = mothMask;
+    } else if (u_design > 2.5) {
+      creatureMask = salamanderMask;
+    }
     vec3 color = mix(base, creature, creatureMask);
 
     float celestialFeatherA = abs(motif.y - (0.43 + 0.17 * motif.x + 0.025 * sin(13.0 * motif.x))) - 0.010;
@@ -208,28 +343,67 @@ const fragmentSource = `
     float celestialDetail = min(celestialFeatherA, min(celestialFeatherB, celestialFeatherC));
     float demonDetail = min(demonRibA, min(demonRibB, demonRibC));
     float detailDistance = mix(demonDetail, celestialDetail, celestialType);
+    if (u_design > 0.5 && u_design < 1.5) {
+      float koiSpine = abs(motif.y - (0.48 + 0.15 * motif.x + 0.025 * sin(12.0 * motif.x))) - 0.010;
+      float koiStripeA = abs(motif.x - 0.41) - 0.013;
+      float koiStripeB = abs(motif.x - 0.58) - 0.013;
+      detailDistance = min(koiSpine, min(koiStripeA, koiStripeB));
+    } else if (u_design > 1.5 && u_design < 2.5) {
+      float mothVeinA = abs(motif.y - (0.31 + 0.35 * motif.x)) - 0.010;
+      float mothVeinB = abs(motif.y - (0.76 - 0.18 * motif.x)) - 0.010;
+      float mothVeinC = abs(motif.x - (0.55 + 0.04 * sin(11.0 * motif.y))) - 0.010;
+      detailDistance = min(mothVeinA, min(mothVeinB, mothVeinC));
+    } else if (u_design > 2.5) {
+      float salamanderSpine = abs(motif.y - (0.27 + 0.66 * motif.x - 0.18 * motif.x * motif.x)) - 0.011;
+      float salamanderSpotA = abs(ellipse(motif, vec2(0.38, 0.48), vec2(0.045, 0.035)));
+      float salamanderSpotB = abs(ellipse(motif, vec2(0.53, 0.59), vec2(0.040, 0.032)));
+      detailDistance = min(salamanderSpine, min(salamanderSpotA, salamanderSpotB));
+    }
     float detailWidth = max(fwidth(detailDistance), 0.004);
     float detailLines = (1.0 - smoothstep(0.0, detailWidth * 1.7, detailDistance)) * creatureMask;
     color = mix(color, highlight, detailLines * 0.82);
 
-    float haloRing = abs(ellipse(motif, vec2(0.25, 0.205), vec2(0.12, 0.042)));
-    float haloWidth = max(fwidth(haloRing), 0.015);
-    float haloMask = (1.0 - smoothstep(0.02, 0.02 + haloWidth * 1.8, haloRing)) * celestialType;
-    color = mix(color, ochre, haloMask);
+    float ornamentDistance = abs(ellipse(motif, vec2(0.25, 0.205), vec2(0.12, 0.042)));
+    float ornamentPresence = celestialType;
+    float eyeDistance = mix(
+      min(ellipse(motif, vec2(0.255, 0.35), vec2(0.020, 0.016)),
+        ellipse(motif, vec2(0.315, 0.35), vec2(0.020, 0.016))),
+      ellipse(motif, vec2(0.225, 0.31), vec2(0.016, 0.014)),
+      celestialType
+    );
+    if (u_design > 0.5 && u_design < 1.5) {
+      ornamentDistance = abs(ellipse(motif, vec2(0.54, 0.54), vec2(0.115, 0.075)));
+      ornamentPresence = creatureMask;
+      eyeDistance = ellipse(motif, vec2(0.185, 0.40), vec2(0.018, 0.015));
+    } else if (u_design > 1.5 && u_design < 2.5) {
+      ornamentDistance = abs(ellipse(motif, vec2(0.65, 0.48), vec2(0.095, 0.075)));
+      ornamentPresence = creatureMask;
+      eyeDistance = min(
+        ellipse(motif, vec2(0.285, 0.22), vec2(0.014, 0.012)),
+        ellipse(motif, vec2(0.335, 0.22), vec2(0.014, 0.012))
+      );
+    } else if (u_design > 2.5) {
+      ornamentDistance = min(
+        abs(ellipse(motif, vec2(0.38, 0.48), vec2(0.045, 0.035))),
+        abs(ellipse(motif, vec2(0.53, 0.59), vec2(0.040, 0.032)))
+      );
+      ornamentPresence = creatureMask;
+      eyeDistance = min(
+        ellipse(motif, vec2(0.20, 0.32), vec2(0.016, 0.014)),
+        ellipse(motif, vec2(0.25, 0.35), vec2(0.016, 0.014))
+      );
+    }
+    float ornamentWidth = max(fwidth(ornamentDistance), 0.015);
+    float ornamentMask = (1.0 - smoothstep(
+      0.02, 0.02 + ornamentWidth * 1.8, ornamentDistance
+    )) * ornamentPresence;
+    color = mix(color, ochre, ornamentMask);
 
-    float celestialEye = ellipse(motif, vec2(0.225, 0.31), vec2(0.016, 0.014));
-    float demonEyeA = ellipse(motif, vec2(0.255, 0.35), vec2(0.020, 0.016));
-    float demonEyeB = ellipse(motif, vec2(0.315, 0.35), vec2(0.020, 0.016));
-    float eyeDistance = mix(min(demonEyeA, demonEyeB), celestialEye, celestialType);
     float eyeMask = (1.0 - smoothstep(-0.10, 0.20, eyeDistance)) * creatureMask;
     color = mix(color, celestialType > 0.5 ? ink : coral, eyeMask);
 
-    float rayEdgeA = abs(point.y);
-    float rayEdgeB = abs(cosAngle * point.y - sinAngle * point.x);
-    float circleEdge = abs(dot(point - sideOrigin, point - sideOrigin) - sideRadius2);
-    float geometricEdge = min(rayEdgeA, min(rayEdgeB, circleEdge * 0.35));
-    float edgeWidth = max(fwidth(geometricEdge), 0.00015);
-    float edgeLine = 1.0 - smoothstep(edgeWidth * 0.55, edgeWidth * 1.7, geometricEdge);
+    float edgeWidth = max(fwidth(deformedEdge), 0.00015);
+    float edgeLine = 1.0 - smoothstep(edgeWidth * 0.55, edgeWidth * 1.7, deformedEdge);
 
     float maskEdge = abs(creatureMask - 0.5);
     float outlineWidth = max(fwidth(maskEdge), 0.025);
@@ -253,6 +427,8 @@ const state = {
   model: "disk",
   modelMix: 0,
   modelAnimation: null,
+  design: 0,
+  edgePlay: 0.58,
   p: 6,
   q: 4,
   orientation: 0,
@@ -519,6 +695,8 @@ function initializeWebGL() {
     resolution: gl.getUniformLocation(program, "u_resolution"),
     p: gl.getUniformLocation(program, "u_p"),
     q: gl.getUniformLocation(program, "u_q"),
+    design: gl.getUniformLocation(program, "u_design"),
+    edgePlay: gl.getUniformLocation(program, "u_edgePlay"),
     model: gl.getUniformLocation(program, "u_model"),
     orientation: gl.getUniformLocation(program, "u_orientation"),
     globalParity: gl.getUniformLocation(program, "u_globalParity"),
@@ -554,6 +732,8 @@ function draw() {
   gl.uniform2f(state.uniforms.resolution, canvas.width, canvas.height);
   gl.uniform1f(state.uniforms.p, state.p);
   gl.uniform1f(state.uniforms.q, state.q);
+  gl.uniform1f(state.uniforms.design, state.design);
+  gl.uniform1f(state.uniforms.edgePlay, state.edgePlay);
   gl.uniform1f(state.uniforms.model, state.modelMix);
   gl.uniform1f(state.uniforms.orientation, state.orientation);
   gl.uniform1f(state.uniforms.globalParity, state.globalParity);
@@ -736,6 +916,17 @@ symmetrySelect.addEventListener("change", () => {
   state.p = p;
   state.q = q;
   resetCamera();
+});
+
+designSelect.addEventListener("change", () => {
+  state.design = Number(designSelect.value);
+  draw();
+});
+
+edgePlayInput.addEventListener("input", () => {
+  state.edgePlay = Number(edgePlayInput.value) / 100;
+  edgeReadout.textContent = `${edgePlayInput.value}%`;
+  draw();
 });
 
 zoomInButton.addEventListener("click", () => zoomViewAt(1.8));

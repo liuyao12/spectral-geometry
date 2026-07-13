@@ -22,9 +22,9 @@
           <h1>After M.C. Escher: Edge of infinity</h1>
         </div>
         <p class="lede">
-          An original interlocking tessellation of celestial guardians and
-          underworld chimeras. Move toward any ideal-boundary point; the pattern
-          never runs out of figures.
+          An original interlocking menagerie of chimeras, koi, moths, and
+          salamanders. Bend their shared edges, then move toward any
+          ideal-boundary point; the pattern never runs out of figures.
         </p>
       </div>
     </header>
@@ -46,7 +46,16 @@
         </div>
 
         <div class="view-tools" aria-label="View controls">
-          <label class="symmetry-field" for="symmetrySelect">
+          <label class="control-field" for="designSelect">
+            <span>Design</span>
+            <select id="designSelect">
+              <option value="0">Celestial chimeras</option>
+              <option value="1">Koi currents</option>
+              <option value="2">Nocturnal moths</option>
+              <option value="3">Salamander garden</option>
+            </select>
+          </label>
+          <label class="control-field" for="symmetrySelect">
             <span>Symmetry</span>
             <select id="symmetrySelect">
               <option value="6,4">{6, 4} hexagons</option>
@@ -55,6 +64,10 @@
               <option value="5,4">{5, 4} pentagons</option>
               <option value="4,6">{4, 6} squares</option>
             </select>
+          </label>
+          <label class="edge-field" for="edgePlay">
+            <span>Edge play <output id="edgeReadout" for="edgePlay">58%</output></span>
+            <input id="edgePlay" type="range" min="0" max="100" value="58" />
           </label>
           <div class="button-row">
             <button id="zoomOut" type="button" aria-label="Zoom out">−</button>
@@ -88,12 +101,12 @@
           group generates the design at render time; it is not a scaled bitmap.
         </p>
         <p>
-          <strong>Original figures.</strong> The celestial and underworld motifs
-          are generated from independent procedural silhouettes.
+          <strong>Original figures.</strong> Four procedural creature families
+          share reflection-paired edges that remain matched as they bend.
         </p>
       </section>
     </main>
 
-    <script src="hyperbolic-tiling.js?v=4"></script>
+    <script src="hyperbolic-tiling.js?v=5"></script>
   </body>
 </html>
