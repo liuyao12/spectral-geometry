@@ -23,7 +23,8 @@ body {
 }
 
 button,
-select {
+select,
+input {
   font: inherit;
 }
 
@@ -183,7 +184,8 @@ h1 {
   backdrop-filter: blur(12px);
 }
 
-.symmetry-field {
+.control-field,
+.edge-field {
   display: grid;
   gap: 4px;
   color: #b8c5c2;
@@ -193,7 +195,7 @@ h1 {
   text-transform: uppercase;
 }
 
-.symmetry-field select {
+.control-field select {
   min-width: 150px;
   min-height: 34px;
   border: 1px solid rgba(238, 233, 223, 0.3);
@@ -205,6 +207,30 @@ h1 {
   font-weight: 700;
   letter-spacing: 0;
   text-transform: none;
+}
+
+.edge-field {
+  min-width: 128px;
+}
+
+.edge-field span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.edge-field output {
+  color: #f2eee5;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.edge-field input {
+  width: 128px;
+  height: 34px;
+  margin: 0;
+  accent-color: #ead8ca;
+  cursor: pointer;
 }
 
 .button-row {
@@ -273,6 +299,344 @@ h1 {
   text-align: center;
 }
 
+.design-studio {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.design-studio > summary {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.design-studio > summary::-webkit-details-marker {
+  display: none;
+}
+
+.design-studio > summary span:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.design-studio > summary strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.design-studio > summary small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.studio-summary-action {
+  flex: 0 0 auto;
+  border-bottom: 1px solid currentColor;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.design-studio[open] .studio-summary-action::after {
+  content: " · close";
+  color: var(--muted);
+}
+
+.studio-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) minmax(420px, 1.15fr);
+  gap: 34px;
+  border-top: 1px solid var(--line);
+  padding: 26px 22px 30px;
+}
+
+.motif-workbench {
+  min-width: 0;
+}
+
+.studio-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.studio-kicker {
+  margin: 0 0 2px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.studio-section-heading h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.shape-count {
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+#motifEditor {
+  display: block;
+  width: min(100%, 520px);
+  aspect-ratio: 1;
+  border: 1px solid #394c4e;
+  background: #10292d;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.motif-editor-background {
+  fill: #10292d;
+}
+
+.source-cell-fill {
+  fill: #17383c;
+}
+
+.motif-editor-grid path {
+  stroke: rgba(239, 224, 191, 0.11);
+  stroke-width: 0.3;
+}
+
+.source-cell-axis {
+  fill: none;
+  stroke: rgba(248, 244, 235, 0.72);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+.motif-shape {
+  cursor: grab;
+  stroke: rgba(248, 244, 235, 0.35);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.motif-shape.is-selected {
+  stroke: #f8f4eb;
+  stroke-width: 1.6;
+}
+
+.motif-shape.is-dragging {
+  cursor: grabbing;
+}
+
+.shape-actions,
+.studio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.shape-actions {
+  margin-top: 10px;
+}
+
+.shape-actions button,
+.studio-actions button,
+.file-action {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  padding: 0 11px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.shape-actions button:hover,
+.studio-actions button:hover,
+.file-action:hover {
+  border-color: var(--ink);
+}
+
+.shape-actions button:disabled,
+.studio-actions button:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.shape-actions .danger-button {
+  color: #8e3828;
+}
+
+.design-form {
+  display: grid;
+  min-width: 0;
+  gap: 22px;
+}
+
+.design-form fieldset {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  padding: 13px 0 0;
+}
+
+.design-form legend {
+  padding: 0 10px 0 0;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+}
+
+.fieldset-note {
+  margin: -5px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.studio-field,
+.color-field,
+.studio-range {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.studio-field input,
+.studio-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fffdf7;
+  color: var(--ink);
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(58px, 1fr));
+  gap: 8px;
+}
+
+.color-field input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: transparent;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.shape-fields,
+.studio-range-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px 16px;
+}
+
+.studio-range span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.studio-range output {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.studio-range input {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.mapping-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -7px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shape-range-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.studio-footer {
+  display: grid;
+  gap: 9px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.file-action {
+  display: inline-flex;
+  align-items: center;
+}
+
+.studio-actions .primary-action {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.studio-actions .quiet-action {
+  margin-left: auto;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.studio-status {
+  min-height: 17px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.studio-status.is-error {
+  color: #8e3828;
+}
+
+.studio-license-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
 .model-note {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -323,6 +687,14 @@ h1 {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+
+  .studio-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #motifEditor {
+    width: min(100%, 560px);
+  }
 }
 
 @media (max-width: 520px) {
@@ -352,11 +724,13 @@ h1 {
     justify-content: space-between;
   }
 
-  .symmetry-field {
+  .control-field,
+  .edge-field {
     flex: 1 0 100%;
   }
 
-  .symmetry-field select {
+  .control-field select,
+  .edge-field input {
     width: 100%;
     min-width: 0;
   }
@@ -376,5 +750,32 @@ h1 {
     right: 10px;
     bottom: 10px;
     justify-content: center;
+  }
+
+  .design-studio > summary {
+    align-items: start;
+    padding-inline: 14px;
+  }
+
+  .studio-summary-action {
+    margin-top: 5px;
+  }
+
+  .studio-layout {
+    gap: 26px;
+    padding: 22px 14px 26px;
+  }
+
+  .palette-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .shape-range-grid,
+  .studio-range-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-actions .quiet-action {
+    margin-left: 0;
   }
 }
