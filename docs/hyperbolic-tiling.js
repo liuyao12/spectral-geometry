@@ -193,6 +193,20 @@ const fragmentSource = `
     return abs(length(local / (0.5 * size)) - 1.0) - 0.16;
   }
 
+  float antialiasedFill(float signedDistance) {
+    float pixelWidth = max(fwidth(signedDistance), 0.00018);
+    return 1.0 - smoothstep(-pixelWidth, pixelWidth, signedDistance);
+  }
+
+  float antialiasedStroke(float distanceFromCenter, float halfWidth) {
+    float pixelWidth = max(fwidth(distanceFromCenter), 0.00012);
+    return 1.0 - smoothstep(
+      max(0.0, halfWidth - pixelWidth),
+      halfWidth + pixelWidth,
+      distanceFromCenter
+    );
+  }
+
   void main() {
     vec2 screenPixel = gl_FragCoord.xy;
     vec2 pixel = 0.5 * u_resolution +
@@ -207,11 +221,13 @@ const fragmentSource = `
       cMul(vec2(0.0, -u_model), displayPoint) + vec2(1.0 + u_model, 0.0);
     vec2 local = cDiv(displayPoint, modelDenominator);
     float frameDistance = 1.0 - length(local);
+    float framePixelWidth = max(fwidth(frameDistance), 0.00001);
 
     vec3 outside = rgb(13.0, 31.0, 34.0);
-    if (frameDistance < 0.0) {
-      float edgeGlow = exp(-abs(frameDistance) * 125.0);
-      gl_FragColor = vec4(mix(outside, rgb(205.0, 183.0, 138.0), edgeGlow * 0.5), 1.0);
+    float outsideGlow = exp(-abs(frameDistance) * 125.0);
+    vec3 outsideColor = mix(outside, rgb(205.0, 183.0, 138.0), outsideGlow * 0.5);
+    if (frameDistance < -2.0 * framePixelWidth) {
+      gl_FragColor = vec4(outsideColor, 1.0);
       return;
     }
 
@@ -358,19 +374,28 @@ const fragmentSource = `
     float signedA = paritySign * insideA;
     float signedB = paritySign * insideB;
     float signedC = paritySign * insideC;
-    float boundaryA = abs(signedA - waveA);
-    float boundaryB = abs(signedB - waveB);
-    float boundaryC = abs(signedC - waveC);
+    float signedBoundaryA = signedA - waveA;
+    float signedBoundaryB = signedB - waveB;
+    float signedBoundaryC = signedC - waveC;
+    float boundaryA = abs(signedBoundaryA);
+    float boundaryB = abs(signedBoundaryB);
+    float boundaryC = abs(signedBoundaryC);
     float deformedEdge = boundaryA;
-    float ownership = 1.0 - step(waveA, signedA);
+    float signedBoundary = signedBoundaryA;
     if (boundaryB < deformedEdge) {
       deformedEdge = boundaryB;
-      ownership = 1.0 - step(waveB, signedB);
+      signedBoundary = signedBoundaryB;
     }
     if (boundaryC < deformedEdge) {
       deformedEdge = boundaryC;
-      ownership = 1.0 - step(waveC, signedC);
+      signedBoundary = signedBoundaryC;
     }
+    float ownershipPixelWidth = max(fwidth(signedBoundary), 0.00012);
+    float ownership = 1.0 - smoothstep(
+      -ownershipPixelWidth,
+      ownershipPixelWidth,
+      signedBoundary
+    );
 
     vec3 teal = rgb(20.0, 79.0, 82.0);
     vec3 deepTeal = rgb(10.0, 42.0, 45.0);
@@ -569,8 +594,7 @@ const fragmentSource = `
         vec4 geometry = u_customGeometry[customIndex];
         vec4 style = u_customStyle[customIndex];
         float shapeDistance = customPrimitiveDistance(sourceTriangle, geometry, style);
-        float shapeWidth = max(fwidth(shapeDistance), 0.0025);
-        float shapeMask = (1.0 - smoothstep(-shapeWidth, shapeWidth, shapeDistance)) * style.w;
+        float shapeMask = antialiasedFill(shapeDistance) * style.w;
         color = mix(color, customPalette(style.z), shapeMask);
         creatureMask = max(creatureMask, shapeMask);
       }
@@ -578,8 +602,8 @@ const fragmentSource = `
       parchment = u_customColors[5];
     }
 
-    float edgeWidth = max(fwidth(deformedEdge), 0.00015);
-    float edgeLine = 1.0 - smoothstep(edgeWidth * 0.55, edgeWidth * 1.7, deformedEdge);
+    float edgeHalfWidth = max(ownershipPixelWidth * 0.72, 0.00012);
+    float edgeLine = antialiasedStroke(deformedEdge, edgeHalfWidth);
 
     float maskEdge = abs(creatureMask - 0.5);
     float outlineWidth = max(fwidth(maskEdge), 0.025);
@@ -587,12 +611,17 @@ const fragmentSource = `
     float motifOutlineStrength = u_design > 3.5 ? 0.72 : 0.14;
     color = mix(color, ink, max(edgeLine * 0.96, motifOutline * motifOutlineStrength));
 
-    float texture = 0.018 * sin((motif.x * 47.0 + motif.y * 31.0 + sideCrossings * 2.0) * PI);
+    float texturePhase = (motif.x * 47.0 + motif.y * 31.0 + sideCrossings * 2.0) * PI;
+    float textureBandwidth = fwidth(texturePhase);
+    float textureVisibility = 1.0 - smoothstep(0.75, 2.6, textureBandwidth);
+    float texture = 0.018 * sin(texturePhase) * textureVisibility;
     color += texture * (0.35 + 0.65 * creatureMask);
 
-    float frameWidth = max(fwidth(frameDistance), 0.00001);
-    float frameLine = 1.0 - smoothstep(frameWidth * 0.7, frameWidth * 2.2, frameDistance);
+    float frameLine = antialiasedStroke(abs(frameDistance), framePixelWidth * 0.85);
     color = mix(color, parchment, frameLine * 0.78);
+
+    float frameCoverage = smoothstep(-framePixelWidth, framePixelWidth, frameDistance);
+    color = mix(outsideColor, color, frameCoverage);
 
     float vignette = smoothstep(1.18, 0.18, length((screenPixel - 0.5 * u_resolution) / u_resolution.y));
     color *= 0.82 + 0.18 * vignette;
