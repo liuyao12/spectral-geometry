@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#eee9df">
     <title>After M.C. Escher — Edge of Infinity</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="hyperbolic-tiling.css">
+    <link rel="stylesheet" href="hyperbolic-tiling.css?v=8">
   </head>
   <body>
     <header class="page-header">
@@ -49,10 +49,11 @@
           <label class="control-field" for="designSelect">
             <span>Design</span>
             <select id="designSelect">
-              <option value="0">Celestial chimeras</option>
-              <option value="1">Koi currents</option>
-              <option value="2">Nocturnal moths</option>
-              <option value="3">Salamander garden</option>
+              <option value="0">Interlocking spirits</option>
+              <option value="1">River koi</option>
+              <option value="2">Velvet moths</option>
+              <option value="3">Garden salamanders</option>
+              <option value="4">Your design — edit below</option>
             </select>
           </label>
           <label class="control-field" for="symmetrySelect">
@@ -91,6 +92,196 @@
         </div>
       </section>
 
+      <details id="designStudio" class="design-studio">
+        <summary>
+          <span>
+            <strong>Design studio</strong>
+            <small>Draw in a flat source triangle, then let curvature take over.</small>
+          </span>
+          <span class="studio-summary-action">Make your own</span>
+        </summary>
+
+        <div class="studio-layout">
+          <section class="motif-workbench" aria-labelledby="motifEditorHeading">
+            <div class="studio-section-heading">
+              <div>
+                <p class="studio-kicker">Euclidean source cell</p>
+                <h2 id="motifEditorHeading">Compose before curvature</h2>
+              </div>
+              <span id="shapeCount" class="shape-count">0 / 12 shapes</span>
+            </div>
+
+            <svg
+              id="motifEditor"
+              viewBox="0 0 100 100"
+              role="img"
+              aria-label="Editable Euclidean triangular source cell. Select and drag a shape to move it through the hyperbolic tiling."
+            >
+              <defs>
+                <clipPath id="sourceCellClip">
+                  <polygon points="0,100 100,100 100,0" />
+                </clipPath>
+                <pattern id="motifGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <path d="M 10 0 L 0 0 0 10" fill="none" />
+                </pattern>
+              </defs>
+              <rect class="motif-editor-background" width="100" height="100" />
+              <polygon class="source-cell-fill" points="0,100 100,100 100,0" />
+              <rect class="motif-editor-grid" width="100" height="100" fill="url(#motifGrid)" clip-path="url(#sourceCellClip)" />
+              <path class="source-cell-axis" d="M 0 100 L 100 100 L 100 0 Z" />
+              <g id="motifShapeLayer" clip-path="url(#sourceCellClip)"></g>
+            </svg>
+
+            <div class="shape-actions" aria-label="Shape actions">
+              <button id="addShape" type="button">Add shape</button>
+              <button id="duplicateShape" type="button">Duplicate</button>
+              <button id="moveShapeBack" type="button">Move back</button>
+              <button id="deleteShape" class="danger-button" type="button">Delete</button>
+            </div>
+          </section>
+
+          <form id="designForm" class="design-form">
+            <fieldset>
+              <legend>Design</legend>
+              <label class="studio-field wide-field" for="designName">
+                <span>Name</span>
+                <input id="designName" type="text" maxlength="60" autocomplete="off" />
+              </label>
+
+              <div class="palette-grid">
+                <label class="color-field" for="colorTileA">
+                  <span>Tile A</span>
+                  <input id="colorTileA" type="color" />
+                </label>
+                <label class="color-field" for="colorTileB">
+                  <span>Tile B</span>
+                  <input id="colorTileB" type="color" />
+                </label>
+                <label class="color-field" for="colorFigure">
+                  <span>Figure</span>
+                  <input id="colorFigure" type="color" />
+                </label>
+                <label class="color-field" for="colorAccent">
+                  <span>Accent</span>
+                  <input id="colorAccent" type="color" />
+                </label>
+                <label class="color-field" for="colorInk">
+                  <span>Ink</span>
+                  <input id="colorInk" type="color" />
+                </label>
+                <label class="color-field" for="colorFrame">
+                  <span>Frame</span>
+                  <input id="colorFrame" type="color" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Hyperbolization</legend>
+              <p class="fieldset-note">
+                A discrete harmonic map carries this flat reference triangle into the curved
+                Schwarz triangle while keeping all three edge correspondences exact.
+              </p>
+              <label class="studio-range" for="harmonicFit">
+                <span>Harmonic fit <output id="harmonicFitReadout" for="harmonicFit">100%</output></span>
+                <input id="harmonicFit" type="range" min="0" max="100" value="100" />
+              </label>
+              <div class="mapping-legend" aria-hidden="true">
+                <span>radial chart</span>
+                <span>angle-aware fit</span>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Interlocking edges</legend>
+              <p class="fieldset-note">Each curve is mirrored onto its neighbour automatically.</p>
+              <div class="studio-range-grid">
+                <label class="studio-range" for="edgeCurveA">
+                  <span>Edge A <output id="edgeCurveAReadout" for="edgeCurveA">+0.80</output></span>
+                  <input id="edgeCurveA" type="range" min="-100" max="100" value="80" />
+                </label>
+                <label class="studio-range" for="edgeCurveB">
+                  <span>Edge B <output id="edgeCurveBReadout" for="edgeCurveB">−0.35</output></span>
+                  <input id="edgeCurveB" type="range" min="-100" max="100" value="-35" />
+                </label>
+                <label class="studio-range" for="edgeCurveC">
+                  <span>Edge C <output id="edgeCurveCReadout" for="edgeCurveC">+0.55</output></span>
+                  <input id="edgeCurveC" type="range" min="-100" max="100" value="55" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Selected shape</legend>
+              <label class="studio-field wide-field" for="shapeSelect">
+                <span>Layer</span>
+                <select id="shapeSelect"></select>
+              </label>
+              <div class="shape-fields">
+                <label class="studio-field" for="shapeType">
+                  <span>Kind</span>
+                  <select id="shapeType">
+                    <option value="ellipse">Ellipse</option>
+                    <option value="capsule">Capsule</option>
+                    <option value="ring">Ring</option>
+                  </select>
+                </label>
+                <label class="studio-field" for="shapeColor">
+                  <span>Color</span>
+                  <select id="shapeColor">
+                    <option value="0">Tile A</option>
+                    <option value="1">Tile B</option>
+                    <option value="2">Figure</option>
+                    <option value="3">Accent</option>
+                    <option value="4">Ink</option>
+                    <option value="5">Frame</option>
+                  </select>
+                </label>
+              </div>
+              <div class="studio-range-grid shape-range-grid">
+                <label class="studio-range" for="shapeX">
+                  <span>X <output id="shapeXReadout" for="shapeX">0.50</output></span>
+                  <input id="shapeX" type="range" min="0" max="100" value="50" />
+                </label>
+                <label class="studio-range" for="shapeY">
+                  <span>Y <output id="shapeYReadout" for="shapeY">0.50</output></span>
+                  <input id="shapeY" type="range" min="0" max="100" value="50" />
+                </label>
+                <label class="studio-range" for="shapeWidth">
+                  <span>Length <output id="shapeWidthReadout" for="shapeWidth">0.30</output></span>
+                  <input id="shapeWidth" type="range" min="2" max="100" value="30" />
+                </label>
+                <label class="studio-range" for="shapeHeight">
+                  <span>Width <output id="shapeHeightReadout" for="shapeHeight">0.14</output></span>
+                  <input id="shapeHeight" type="range" min="2" max="100" value="14" />
+                </label>
+                <label class="studio-range" for="shapeRotation">
+                  <span>Rotation <output id="shapeRotationReadout" for="shapeRotation">0°</output></span>
+                  <input id="shapeRotation" type="range" min="-180" max="180" value="0" />
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="studio-footer">
+              <div class="studio-actions">
+                <button id="saveDesign" class="primary-action" type="button">Save in browser</button>
+                <button id="shareDesign" type="button">Copy share link</button>
+                <button id="exportDesign" type="button">Export JSON</button>
+                <label class="file-action" for="importDesign">Import JSON</label>
+                <input id="importDesign" type="file" accept="application/json,.json" hidden />
+                <button id="resetDesign" class="quiet-action" type="button">Start over</button>
+              </div>
+              <p id="studioStatus" class="studio-status" aria-live="polite">
+                Changes appear immediately in the tiling above.
+              </p>
+              <p class="studio-license-note">
+                Shared designs should be your own work or use material you have permission to reuse.
+              </p>
+            </div>
+          </form>
+        </div>
+      </details>
+
       <section class="model-note" aria-label="About the models">
         <p>
           <strong>Same geometry, two windows.</strong> The Cayley transform carries
@@ -101,12 +292,13 @@
           group generates the design at render time; it is not a scaled bitmap.
         </p>
         <p>
-          <strong>Original figures.</strong> Four procedural creature families
-          share reflection-paired edges that remain matched as they bend.
+          <strong>Flat source, curved image.</strong> The studio exposes the local step
+          behind ornament hyperbolization: harmonic coordinates deform a Euclidean
+          source while reflections assemble the global pattern.
         </p>
       </section>
     </main>
 
-    <script src="hyperbolic-tiling.js?v=5"></script>
+    <script src="hyperbolic-tiling.js?v=8"></script>
   </body>
 </html>
