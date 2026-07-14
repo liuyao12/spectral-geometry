@@ -209,6 +209,10 @@ h1 {
   text-transform: none;
 }
 
+.family-field select {
+  min-width: 184px;
+}
+
 .edge-field {
   min-width: 128px;
 }
@@ -675,8 +679,18 @@ h1 {
 
   .view-tools {
     top: auto;
+    left: 12px;
     right: 12px;
     bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .view-tools .control-field {
+    flex: 1 1 170px;
+  }
+
+  .view-tools .edge-field {
+    flex: 1 1 128px;
   }
 
   .interaction-hint {
