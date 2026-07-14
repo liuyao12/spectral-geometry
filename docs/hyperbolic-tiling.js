@@ -1,5 +1,6 @@
 const canvas = document.querySelector("#tilingCanvas");
 const designSelect = document.querySelector("#designSelect");
+const familySelect = document.querySelector("#familySelect");
 const symmetrySelect = document.querySelector("#symmetrySelect");
 const edgePlayInput = document.querySelector("#edgePlay");
 const edgeReadout = document.querySelector("#edgeReadout");
@@ -72,9 +73,10 @@ const BUILT_IN_SYMMETRIES = [
 
 function starterCustomDesign() {
   return {
-    version: 2,
+    version: 3,
     name: "My interlocking creature",
     symmetry: [6, 4],
+    family: 0,
     edgePlay: 0.58,
     harmonicFit: 1,
     edges: [0.8, -0.35, 0.55],
@@ -112,6 +114,8 @@ const fragmentSource = `
   uniform float u_p;
   uniform float u_q;
   uniform float u_design;
+  uniform float u_family;
+  uniform vec2 u_wythoffPoint;
   uniform float u_edgePlay;
   uniform float u_model;
   uniform float u_orientation;
@@ -207,6 +211,15 @@ const fragmentSource = `
     );
   }
 
+  float diskCoshDistance(vec2 first, vec2 second) {
+    vec2 difference = first - second;
+    float denominator = max(
+      (1.0 - dot(first, first)) * (1.0 - dot(second, second)),
+      1.0e-10
+    );
+    return 1.0 + 2.0 * dot(difference, difference) / denominator;
+  }
+
   void main() {
     vec2 screenPixel = gl_FragCoord.xy;
     vec2 pixel = 0.5 * u_resolution +
@@ -246,6 +259,10 @@ const fragmentSource = `
     float sideCenter = (vertexRadius * vertexRadius + 1.0) / (2.0 * vertexRadius * cosAngle);
     float sideRadius2 = sideCenter * sideCenter - 1.0;
     vec2 sideOrigin = vec2(sideCenter, 0.0);
+    float axisVertex = sideCenter - sqrt(sideRadius2);
+    vec2 centerO = vec2(0.0);
+    vec2 centerM = vec2(axisVertex, 0.0);
+    vec2 centerV = vertexRadius * vec2(cosAngle, sinAngle);
     vec2 lineRotation = vec2(cos(2.0 * angle), sin(2.0 * angle));
 
     float parity = u_globalParity;
@@ -397,6 +414,68 @@ const fragmentSource = `
       signedBoundary
     );
 
+    // A Wythoff seed determines the common vertex of each multi-face tiling.
+    // Weighted hyperbolic Voronoi scores cut each Schwarz triangle into exact
+    // geodesic face sectors; reflection then assembles two or three face orbits
+    // without gaps. Mirror pieces are edges only for the opposite center orbit.
+    float faceWeightO = 0.0;
+    float faceWeightV = 0.0;
+    float faceWeightM = 0.0;
+    float wythoffEdge = 0.0;
+    if (u_family > 0.5) {
+      float scoreO = diskCoshDistance(point, centerO) /
+        max(diskCoshDistance(u_wythoffPoint, centerO), 1.0e-6);
+      float scoreV = diskCoshDistance(point, centerV) /
+        max(diskCoshDistance(u_wythoffPoint, centerV), 1.0e-6);
+      float scoreM = diskCoshDistance(point, centerM) /
+        max(diskCoshDistance(u_wythoffPoint, centerM), 1.0e-6);
+      float minimumScore;
+      float scoreGap;
+
+      if (u_family < 2.5) {
+        minimumScore = min(scoreO, scoreV);
+        scoreGap = abs(scoreO - scoreV);
+        float scoreWidth = max(fwidth(scoreO - scoreV) * 1.35, 0.00008);
+        faceWeightO = 1.0 - smoothstep(0.0, scoreWidth, scoreO - minimumScore);
+        faceWeightV = 1.0 - smoothstep(0.0, scoreWidth, scoreV - minimumScore);
+      } else {
+        minimumScore = min(scoreO, min(scoreV, scoreM));
+        float maximumScore = max(scoreO, max(scoreV, scoreM));
+        float middleScore = scoreO + scoreV + scoreM - minimumScore - maximumScore;
+        scoreGap = middleScore - minimumScore;
+        float scoreWidth = max(
+          max(fwidth(scoreO), max(fwidth(scoreV), fwidth(scoreM))) * 1.35,
+          0.00008
+        );
+        faceWeightO = 1.0 - smoothstep(0.0, scoreWidth, scoreO - minimumScore);
+        faceWeightV = 1.0 - smoothstep(0.0, scoreWidth, scoreV - minimumScore);
+        faceWeightM = 1.0 - smoothstep(0.0, scoreWidth, scoreM - minimumScore);
+      }
+
+      float faceWeightTotal = max(faceWeightO + faceWeightV + faceWeightM, 1.0e-5);
+      faceWeightO /= faceWeightTotal;
+      faceWeightV /= faceWeightTotal;
+      faceWeightM /= faceWeightTotal;
+
+      float internalEdge = antialiasedStroke(
+        scoreGap,
+        max(fwidth(scoreGap) * 0.76, 0.00006)
+      );
+      float mirrorA = antialiasedStroke(
+        abs(insideA),
+        max(fwidth(insideA) * 0.72, 0.00008)
+      ) * faceWeightV;
+      float mirrorB = antialiasedStroke(
+        abs(insideB),
+        max(fwidth(insideB) * 0.72, 0.00008)
+      ) * faceWeightM;
+      float mirrorC = antialiasedStroke(
+        abs(insideC),
+        max(fwidth(insideC) * 0.72, 0.00008)
+      ) * faceWeightO;
+      wythoffEdge = max(internalEdge, max(mirrorA, max(mirrorB, mirrorC)));
+    }
+
     vec3 teal = rgb(20.0, 79.0, 82.0);
     vec3 deepTeal = rgb(10.0, 42.0, 45.0);
     vec3 ochre = rgb(210.0, 157.0, 78.0);
@@ -431,6 +510,13 @@ const fragmentSource = `
     vec3 base = mix(ochre, teal, celestialType);
     vec3 creature = mix(deepTeal, parchment, celestialType);
     vec3 highlight = mix(coral, ochre, celestialType);
+    if (u_family > 0.5) {
+      vec3 faceBase = faceWeightO * ochre + faceWeightV * teal + faceWeightM * coral;
+      celestialType = clamp(faceWeightV + 0.38 * faceWeightM, 0.0, 1.0);
+      base = faceBase;
+      creature = mix(faceBase, parchment, 0.28);
+      highlight = mix(faceBase, ink, 0.32);
+    }
 
     float celestialHead = 1.0 - smoothstep(-0.04, 0.08,
       ellipse(motif, vec2(0.25, 0.31), vec2(0.105, 0.095)));
@@ -588,7 +674,12 @@ const fragmentSource = `
     color = mix(color, celestialType > 0.5 ? ink : coral, eyeMask);
 
     if (u_design > 3.5) {
-      color = mix(u_customColors[0], u_customColors[1], ownership);
+      vec3 customBase = mix(u_customColors[0], u_customColors[1], ownership);
+      if (u_family > 0.5) {
+        customBase = faceWeightO * u_customColors[0] +
+          faceWeightV * u_customColors[1] + faceWeightM * u_customColors[3];
+      }
+      color = customBase;
       creatureMask = 0.0;
       for (int customIndex = 0; customIndex < 12; customIndex += 1) {
         vec4 geometry = u_customGeometry[customIndex];
@@ -603,7 +694,8 @@ const fragmentSource = `
     }
 
     float edgeHalfWidth = max(ownershipPixelWidth * 0.72, 0.00012);
-    float edgeLine = antialiasedStroke(deformedEdge, edgeHalfWidth);
+    float regularEdgeLine = antialiasedStroke(deformedEdge, edgeHalfWidth);
+    float edgeLine = u_family > 0.5 ? wythoffEdge : regularEdgeLine;
 
     float maskEdge = abs(creatureMask - 0.5);
     float outlineWidth = max(fwidth(maskEdge), 0.025);
@@ -634,6 +726,8 @@ const state = {
   modelMix: 0,
   modelAnimation: null,
   design: 0,
+  family: 0,
+  wythoffPoint: { x: 0, y: 0 },
   edgePlay: 0.58,
   p: 6,
   q: 4,
@@ -770,11 +864,131 @@ function tilingGeometry() {
   const coshRadius = (1 / Math.tan(angle)) * (1 / Math.tan(Math.PI / state.q));
   const vertexRadius = Math.sqrt((coshRadius - 1) / (coshRadius + 1));
   const sideCenter = (vertexRadius * vertexRadius + 1) / (2 * vertexRadius * Math.cos(angle));
+  const sideRadius2 = sideCenter * sideCenter - 1;
+  const sideRadius = Math.sqrt(sideRadius2);
   return {
     angle,
     sideCenter,
-    sideRadius2: sideCenter * sideCenter - 1
+    sideRadius2,
+    sideRadius,
+    vertexRadius,
+    axisVertex: sideCenter - sideRadius
   };
+}
+
+function diskDistance(first, second) {
+  const differenceX = first.x - second.x;
+  const differenceY = first.y - second.y;
+  const denominator = Math.max(
+    (1 - first.x * first.x - first.y * first.y) *
+      (1 - second.x * second.x - second.y * second.y),
+    1e-14
+  );
+  const coshDistance = 1 + 2 * (
+    differenceX * differenceX + differenceY * differenceY
+  ) / denominator;
+  return Math.acosh(Math.max(1, coshDistance));
+}
+
+function reflectInRay(point, angle) {
+  const phase = complex(Math.cos(2 * angle), Math.sin(2 * angle));
+  return mul(phase, conjugate(point));
+}
+
+function reflectInSide(point, geometry) {
+  const delta = sub(point, complex(geometry.sideCenter));
+  const factor = geometry.sideRadius2 / Math.max(
+    delta.x * delta.x + delta.y * delta.y,
+    1e-14
+  );
+  return add(complex(geometry.sideCenter), scale(delta, factor));
+}
+
+function distanceToMirror(point, reflectedPoint) {
+  return 0.5 * diskDistance(point, reflectedPoint);
+}
+
+function bisectMirrorDistances(pointAt, firstReflection, secondReflection) {
+  let lower = 0;
+  let upper = 1;
+  for (let iteration = 0; iteration < 64; iteration += 1) {
+    const parameter = 0.5 * (lower + upper);
+    const point = pointAt(parameter);
+    const difference = distanceToMirror(point, firstReflection(point)) -
+      distanceToMirror(point, secondReflection(point));
+    if (difference > 0) upper = parameter;
+    else lower = parameter;
+  }
+  return pointAt(0.5 * (lower + upper));
+}
+
+function updateWythoffPoint() {
+  const geometry = tilingGeometry();
+  const midpoint = complex(geometry.axisVertex);
+
+  if (state.family <= 1) {
+    state.wythoffPoint = midpoint;
+    return;
+  }
+
+  const sideReflection = (point) => reflectInSide(point, geometry);
+  if (state.family === 2) {
+    const centerV = complex(
+      geometry.vertexRadius * Math.cos(geometry.angle),
+      geometry.vertexRadius * Math.sin(geometry.angle)
+    );
+    const vertexAngle = Math.atan2(
+      centerV.y,
+      centerV.x - geometry.sideCenter
+    );
+    state.wythoffPoint = bisectMirrorDistances(
+      (parameter) => {
+        const circleAngle = Math.PI + parameter * (vertexAngle - Math.PI);
+        return complex(
+          geometry.sideCenter + geometry.sideRadius * Math.cos(circleAngle),
+          geometry.sideRadius * Math.sin(circleAngle)
+        );
+      },
+      conjugate,
+      (point) => reflectInRay(point, geometry.angle)
+    );
+    return;
+  }
+
+  const incenterAngle = 0.5 * geometry.angle;
+  const cosIncenterAngle = Math.cos(incenterAngle);
+  const root = Math.sqrt(Math.max(
+    geometry.sideCenter * geometry.sideCenter * cosIncenterAngle * cosIncenterAngle - 1,
+    0
+  ));
+  const radialEdge = geometry.sideCenter * cosIncenterAngle - root;
+  state.wythoffPoint = bisectMirrorDistances(
+    (parameter) => complex(
+      parameter * radialEdge * Math.cos(incenterAngle),
+      parameter * radialEdge * Math.sin(incenterAngle)
+    ),
+    conjugate,
+    sideReflection
+  );
+}
+
+function familyLabel(family = state.family) {
+  if (family === 1) return `rectified · ${state.p}·${state.q}·${state.p}·${state.q}`;
+  if (family === 2) return `truncated · ${state.q}·${2 * state.p}·${2 * state.p}`;
+  if (family === 3) return `omnitruncated · 4·${2 * state.p}·${2 * state.q}`;
+  return `regular · {${state.p}, ${state.q}}`;
+}
+
+function updateFamilyLabels() {
+  const labels = [
+    `Regular {${state.p}, ${state.q}}`,
+    `Rectified ${state.p}·${state.q}·${state.p}·${state.q}`,
+    `Truncated ${state.q}·${2 * state.p}·${2 * state.p}`,
+    `Omnitruncated 4·${2 * state.p}·${2 * state.q}`
+  ];
+  Array.from(familySelect.options).forEach((option, index) => {
+    option.textContent = labels[index];
+  });
 }
 
 function harmonicMapData(size = 128) {
@@ -983,7 +1197,7 @@ function formatMagnification(value) {
 
 function updateStatus() {
   scaleReadout.textContent = `magnification ${formatMagnification(state.viewZoom)}`;
-  crossingReadout.textContent = `boundary fixed · {${state.p}, ${state.q}}`;
+  crossingReadout.textContent = `boundary fixed · ${familyLabel()}`;
 }
 
 function resetOpticalView() {
@@ -1055,6 +1269,8 @@ function initializeWebGL() {
     p: gl.getUniformLocation(program, "u_p"),
     q: gl.getUniformLocation(program, "u_q"),
     design: gl.getUniformLocation(program, "u_design"),
+    family: gl.getUniformLocation(program, "u_family"),
+    wythoffPoint: gl.getUniformLocation(program, "u_wythoffPoint"),
     edgePlay: gl.getUniformLocation(program, "u_edgePlay"),
     model: gl.getUniformLocation(program, "u_model"),
     orientation: gl.getUniformLocation(program, "u_orientation"),
@@ -1140,6 +1356,12 @@ function draw() {
   gl.uniform1f(state.uniforms.p, state.p);
   gl.uniform1f(state.uniforms.q, state.q);
   gl.uniform1f(state.uniforms.design, state.design);
+  gl.uniform1f(state.uniforms.family, state.family);
+  gl.uniform2f(
+    state.uniforms.wythoffPoint,
+    state.wythoffPoint.x,
+    state.wythoffPoint.y
+  );
   gl.uniform1f(state.uniforms.edgePlay, state.edgePlay);
   gl.uniform1f(state.uniforms.model, state.modelMix);
   gl.uniform1f(state.uniforms.orientation, state.orientation);
@@ -1192,11 +1414,12 @@ function sanitizeCustomDesign(value) {
   const migrateRadialChart = Array.isArray(source.shapes) && Number(source.version || 1) < 2;
 
   return {
-    version: 2,
+    version: 3,
     name: typeof source.name === "string" && source.name.trim()
       ? source.name.trim().slice(0, 60)
       : fallback.name,
     symmetry,
+    family: Math.round(clampNumber(source.family, 0, 3, fallback.family)),
     edgePlay: clampNumber(source.edgePlay, 0, 1, fallback.edgePlay),
     harmonicFit: clampNumber(source.harmonicFit, 0, 1, fallback.harmonicFit),
     edges: fallback.edges.map((edge, index) => clampNumber(edges[index], -1, 1, edge)),
@@ -1351,10 +1574,14 @@ function applyCustomViewSettings() {
   state.p = p;
   state.q = q;
   symmetrySelect.value = `${p},${q}`;
+  state.family = state.customDesign.family;
+  familySelect.value = String(state.family);
   state.edgePlay = state.customDesign.edgePlay;
   state.harmonicFit = state.customDesign.harmonicFit;
   edgePlayInput.value = String(Math.round(state.edgePlay * 100));
   edgeReadout.textContent = `${edgePlayInput.value}%`;
+  updateFamilyLabels();
+  updateWythoffPoint();
   rebuildHarmonicMap();
 }
 
@@ -1653,8 +1880,21 @@ symmetrySelect.addEventListener("change", () => {
     state.customDesign.symmetry = [p, q];
     setStudioStatus("Unsaved changes · symmetry updated.");
   }
+  updateFamilyLabels();
+  updateWythoffPoint();
   rebuildHarmonicMap();
   resetCamera();
+});
+
+familySelect.addEventListener("change", () => {
+  state.family = Number(familySelect.value);
+  if (state.design === 4) {
+    state.customDesign.family = state.family;
+    setStudioStatus("Unsaved changes · tile family updated.");
+  }
+  updateWythoffPoint();
+  updateStatus();
+  draw();
 });
 
 designSelect.addEventListener("change", () => {
@@ -1664,6 +1904,8 @@ designSelect.addEventListener("change", () => {
   } else {
     [state.p, state.q] = BUILT_IN_SYMMETRIES[state.design];
     symmetrySelect.value = `${state.p},${state.q}`;
+    updateFamilyLabels();
+    updateWythoffPoint();
     rebuildHarmonicMap();
     resetCamera();
   }
@@ -1878,6 +2120,9 @@ try {
 
 syncCustomControls();
 if (sharedDesignLoaded) setStudioStatus("Shared design loaded from this link.");
+
+updateFamilyLabels();
+updateWythoffPoint();
 
 try {
   initializeWebGL();

@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#eee9df">
     <title>After M.C. Escher — Edge of Infinity</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="hyperbolic-tiling.css?v=8">
+    <link rel="stylesheet" href="hyperbolic-tiling.css?v=10">
   </head>
   <body>
     <header class="page-header">
@@ -54,6 +54,15 @@
               <option value="2">Velvet moths</option>
               <option value="3">Garden salamanders</option>
               <option value="4">Your design — edit below</option>
+            </select>
+          </label>
+          <label class="control-field family-field" for="familySelect">
+            <span>Tile family</span>
+            <select id="familySelect">
+              <option value="0">Regular {6, 4}</option>
+              <option value="1">Rectified 6·4·6·4</option>
+              <option value="2">Truncated 4·12·12</option>
+              <option value="3">Omnitruncated 4·12·8</option>
             </select>
           </label>
           <label class="control-field" for="symmetrySelect">
@@ -288,8 +297,9 @@
           every arc and motif between the disk and half-plane views.
         </p>
         <p>
-          <strong>True hyperbolic repetition.</strong> A <i>{p, q}</i> reflection
-          group generates the design at render time; it is not a scaled bitmap.
+          <strong>Whole Wythoff families.</strong> Regular, rectified, truncated,
+          and omnitruncated faces are cut from the same <i>{p, q}</i> reflection
+          group at render time; none is a scaled bitmap.
         </p>
         <p>
           <strong>Flat source, curved image.</strong> The studio exposes the local step
@@ -299,6 +309,6 @@
       </section>
     </main>
 
-    <script src="hyperbolic-tiling.js?v=9"></script>
+    <script src="hyperbolic-tiling.js?v=10"></script>
   </body>
 </html>
