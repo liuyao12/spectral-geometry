@@ -1,0 +1,55 @@
+{
+  "model": "H_g,sigma=-Delta_x^D-Delta_y^D+g K_sigma^N(x,y)",
+  "scope": "Stationarity and first-exchange trace graph at fixed beta; not a full weighted-length trace theorem",
+  "rectangle_height": "3 sqrt(3)/4",
+  "results": [
+    {
+      "beta": 0.12,
+      "sigma": 0.02,
+      "u": [
+        0.25,
+        0.649519052838329
+      ],
+      "v": [
+        0.75,
+        0.649519052838329
+      ],
+      "displacement_x": 1.5,
+      "particle_edge_length": 3.0,
+      "kernel_edge_length": 0.5,
+      "particle_edge_weight": 12.5,
+      "kernel_edge_weight": 12.5,
+      "angle_D_N_degrees": 120.00000000000001,
+      "angle_D_D_degrees": 120.00000000000001,
+      "balance_residual": 0.0,
+      "net_trace": 0.032987297443256854,
+      "spectral_trace": 0.03298729744325692,
+      "trace_error": 6.938893903907228e-17,
+      "winding_tail_bound": 1.3450669275223204e-56
+    },
+    {
+      "beta": 0.12,
+      "sigma": 0.03,
+      "u": [
+        0.16666666666666669,
+        0.649519052838329
+      ],
+      "v": [
+        0.8333333333333333,
+        0.649519052838329
+      ],
+      "displacement_x": 1.3333333333333335,
+      "particle_edge_length": 2.9202359113225387,
+      "kernel_edge_length": 0.6666666666666666,
+      "particle_edge_weight": 12.167649630510578,
+      "kernel_edge_weight": 11.11111111111111,
+      "angle_D_N_degrees": 117.16690547392184,
+      "angle_D_D_degrees": 125.6661890521563,
+      "balance_residual": -1.7763568394002505e-15,
+      "net_trace": 0.029024838477042923,
+      "spectral_trace": 0.02902483847704288,
+      "trace_error": 4.163336342344337e-17,
+      "winding_tail_bound": 3.271369642094602e-55
+    }
+  ]
+}
