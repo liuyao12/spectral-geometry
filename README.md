@@ -1,23 +1,24 @@
 ## Current research: many-body spectra and geodesic nets
 
-The renewed objective is to extend trace correspondences between Laplace spectra
-and closed geodesics to many-body Schrödinger operators and weighted collision
-networks, and to test whether those networks offer a useful numerical method.
+The objective is a mathematical trace correspondence between Laplace-type
+operators and geodesic nets in Euclidean and hyperbolic domains. The operator
+should be free between geometric nodes; a physical interpretation is not needed.
+The node law and its exact spectral contribution remain to be identified.
 
-First results, proofs, limitations, and open hypotheses:
+Current evidence audit, formal baselines, and limitations (no general conjecture):
 
-https://liuyao12.github.io/spectral-geometry/many-body-nets.html
+https://liuyao12.github.io/spectral-geometry/net-evidence.html
 
-The current models are particles in bounded planar rectangles with Dirichlet
-walls. An exact graph identity evaluates separated contact-insertion traces as
-discrete reflected-net theta sums, with all spatial vertex integrals performed.
-The proof extends to even-degree heat-kernel graphs in rectangles. A computed
-unit-square example has rational vertices and algebraic lengths.
+The free many-particle trace is determined by one-particle traces and permutation
+cycles on any compact Euclidean or hyperbolic domain. It does not automatically
+assign a branching node law. A previous rectangle contact-insertion identity is
+retained at `docs/many-body-nets.html`; its crossing net alone does not distinguish
+an interaction from independent trajectories.
 
-The numerical checks compare net sums, exact sine-mode overlaps, image-kernel
-quadrature, and finite two-body contact matrices. Recovering a full interacting
-trace still requires contact renormalization, time integration, and control of
-the interaction-order sum. These remaining steps are not claimed as solved.
+An explicitly coupled smooth-kernel toy operator is tested as a control, outside
+the potential-free target. Its trivalent graph sums are compared with spectral
+coefficients and full finite matrices. It shows how adding a kernel assigns
+weights and incidence, but does not establish the desired pure-Laplacian result.
 
 The initial one-dimensional circle calculations are archived at
 `docs/many-body-circle.html`; they did not test the intended planar net geometry.
@@ -27,9 +28,10 @@ To reproduce all numerical results and figures (Python 3.12 or newer):
 ```bash
 python3 -m pip install -r research-requirements.txt
 python3 scripts/planar_net_trace.py
+python3 scripts/trivalent_toy.py
 ```
 
-Current results are written to `docs/data/planar-nets/`. Numerical discrepancies and
+Results are written to `docs/data/planar-nets/` and `docs/data/trivalent-toy/`. Numerical discrepancies and
 truncation errors are recorded separately from proved identities. Previous
 geometry galleries are preserved below as background.
 
