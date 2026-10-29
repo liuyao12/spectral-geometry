@@ -8,20 +8,28 @@ First results, proofs, limitations, and open hypotheses:
 
 https://liuyao12.github.io/spectral-geometry/many-body-nets.html
 
-The starting models are free particles and contact-interacting bosons on a
-circle. The experiments compare independent occupation sums, winding sums,
-contact boundary roots, Bethe equations, and Fourier occupation-space matrices.
-An exact finite-cutoff three-body factorization reduces the calculation to
-collision channels. A general stationary geodesic-net formula is still open.
+The current models are particles in bounded planar rectangles with Dirichlet
+walls. An exact graph identity evaluates separated contact-insertion traces as
+discrete reflected-net theta sums, with all spatial vertex integrals performed.
+The proof extends to even-degree heat-kernel graphs in rectangles. A computed
+unit-square example has rational vertices and algebraic lengths.
+
+The numerical checks compare net sums, exact sine-mode overlaps, image-kernel
+quadrature, and finite two-body contact matrices. Recovering a full interacting
+trace still requires contact renormalization, time integration, and control of
+the interaction-order sum. These remaining steps are not claimed as solved.
+
+The initial one-dimensional circle calculations are archived at
+`docs/many-body-circle.html`; they did not test the intended planar net geometry.
 
 To reproduce all numerical results and figures (Python 3.12 or newer):
 
 ```bash
 python3 -m pip install -r research-requirements.txt
-python3 scripts/many_body_nets.py
+python3 scripts/planar_net_trace.py
 ```
 
-Results are written to `docs/data/many-body/`. Numerical discrepancies and
+Current results are written to `docs/data/planar-nets/`. Numerical discrepancies and
 truncation errors are recorded separately from proved identities. Previous
 geometry galleries are preserved below as background.
 
