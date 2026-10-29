@@ -1,4 +1,34 @@
-Placeholder for a database for **spectral geometry**, that the *geometry* of a Riemannian manifold (with boundary) is "determined" by the **spectrum**
+## Current research: many-body spectra and geodesic nets
+
+The renewed objective is to extend trace correspondences between Laplace spectra
+and closed geodesics to many-body Schrödinger operators and weighted collision
+networks, and to test whether those networks offer a useful numerical method.
+
+First results, proofs, limitations, and open hypotheses:
+
+https://liuyao12.github.io/spectral-geometry/many-body-nets.html
+
+The starting models are free particles and contact-interacting bosons on a
+circle. The experiments compare independent occupation sums, winding sums,
+contact boundary roots, Bethe equations, and Fourier occupation-space matrices.
+An exact finite-cutoff three-body factorization reduces the calculation to
+collision channels. A general stationary geodesic-net formula is still open.
+
+To reproduce all numerical results and figures (Python 3.12 or newer):
+
+```bash
+python3 -m pip install -r research-requirements.txt
+python3 scripts/many_body_nets.py
+```
+
+Results are written to `docs/data/many-body/`. Numerical discrepancies and
+truncation errors are recorded separately from proved identities. Previous
+geometry galleries are preserved below as background.
+
+## Earlier geometric databases
+
+The original direction was a database for **spectral geometry**, studying how
+the geometry of a Riemannian manifold (with boundary) relates to its spectrum
 
 * of eigenvalues of the Laplacian, with either Dirichlet or Neumann (or mixed) boundary condition
 * of lengths of closed geodesics or billiard trajectories
