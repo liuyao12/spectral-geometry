@@ -1,0 +1,248 @@
+{
+  "scope": "Complete common-parity winding orbit only; not the entire signed image expansion.",
+  "central_rectangle_orbit": [
+    {
+      "kappa": 30.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.028464428907603565,
+      "rescaled_dirichlet": 0.00018470664257521605,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 0.006489033845533302,
+      "kappa_times_dirichlet_neumann_ratio": 0.19467101536599907,
+      "outer_quadrature_error_estimate": 6.047818232929052e-12,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 100.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.029324439389848557,
+      "rescaled_dirichlet": 0.00022657164076839164,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 0.007726375865409571,
+      "kappa_times_dirichlet_neumann_ratio": 0.772637586540957,
+      "outer_quadrature_error_estimate": 2.7354406278427228e-12,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 300.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.02933775155298109,
+      "rescaled_dirichlet": 6.601911447312136e-05,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 0.0022503126851387144,
+      "kappa_times_dirichlet_neumann_ratio": 0.6750938055416142,
+      "outer_quadrature_error_estimate": 1.5609672015591987e-15,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 1000.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.029339067640956687,
+      "rescaled_dirichlet": 1.7620679403546535e-05,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 0.0006005875721472641,
+      "kappa_times_dirichlet_neumann_ratio": 0.6005875721472641,
+      "outer_quadrature_error_estimate": 9.276067318837843e-15,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 3000.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.02933944374667711,
+      "rescaled_dirichlet": 5.5091143429666315e-06,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 0.00018777160162044914,
+      "kappa_times_dirichlet_neumann_ratio": 0.5633148048613474,
+      "outer_quadrature_error_estimate": 8.831557299625544e-15,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 10000.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.029339575393899607,
+      "rescaled_dirichlet": 1.585634858993954e-06,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 5.404423335054961e-05,
+      "kappa_times_dirichlet_neumann_ratio": 0.5404423335054962,
+      "outer_quadrature_error_estimate": 8.698303954762238e-15,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 30000.0,
+      "height": 1.299038105676658,
+      "total_length": 6.5,
+      "rescaled_neumann": 0.029339613008323447,
+      "rescaled_dirichlet": 5.171222191320947e-07,
+      "predicted_neumann_limit": 0.029339631815828507,
+      "predicted_dirichlet_limit": 1.302941391038304e-17,
+      "dirichlet_neumann_ratio": 1.7625393320129705e-05,
+      "kappa_times_dirichlet_neumann_ratio": 0.5287617996038911,
+      "outer_quadrature_error_estimate": 8.658885521596956e-15,
+      "scaled_box_radius": 14.0
+    }
+  ],
+  "radius_control_max_absolute_change": 8.326672684688674e-17,
+  "other_aspect_ratios": [
+    {
+      "kappa": 1000.0,
+      "height": 1.0,
+      "total_length": 5.464101615137754,
+      "rescaled_neumann": 0.02463316008503278,
+      "rescaled_dirichlet": -0.01627558140657047,
+      "predicted_neumann_limit": 0.02463372356257363,
+      "predicted_dirichlet_limit": -0.017012022967742034,
+      "dirichlet_neumann_ratio": -0.6607183711057676,
+      "kappa_times_dirichlet_neumann_ratio": -660.7183711057676,
+      "outer_quadrature_error_estimate": 2.3608139779393483e-14,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 1000.0,
+      "height": 1.2,
+      "total_length": 6.156921938165305,
+      "rescaled_neumann": 0.027847105042453017,
+      "rescaled_dirichlet": -0.006154903600537769,
+      "predicted_neumann_limit": 0.027847670364038107,
+      "predicted_dirichlet_limit": -0.0063692831834037695,
+      "dirichlet_neumann_ratio": -0.22102489975724926,
+      "kappa_times_dirichlet_neumann_ratio": -221.02489975724927,
+      "outer_quadrature_error_estimate": 3.190234473725538e-12,
+      "scaled_box_radius": 14.0
+    },
+    {
+      "kappa": 1000.0,
+      "height": 1.5,
+      "total_length": 7.196152422706632,
+      "rescaled_neumann": 0.03219756113662087,
+      "rescaled_dirichlet": 0.014711924468407106,
+      "predicted_neumann_limit": 0.03219812109322366,
+      "predicted_dirichlet_limit": 0.014943200003766113,
+      "dirichlet_neumann_ratio": 0.45692667236444984,
+      "kappa_times_dirichlet_neumann_ratio": 456.92667236444987,
+      "outer_quadrature_error_estimate": 7.521586031362938e-14,
+      "scaled_box_radius": 14.0
+    }
+  ],
+  "dirichlet_next_term_ratio_coefficient": "20/39",
+  "neumann_spectral_algorithm_checks": [
+    {
+      "cutoff": 8,
+      "direct": 0.00754566734449388,
+      "convolution": 0.007545667344493876,
+      "absolute_error": 4.336808689942018e-18
+    },
+    {
+      "cutoff": 16,
+      "direct": 0.0078412974192444,
+      "convolution": 0.007841297419244397,
+      "absolute_error": 3.469446951953614e-18
+    }
+  ],
+  "neumann_full_graph_spectral": [
+    {
+      "cutoff_per_coordinate": 8,
+      "value": 0.007545667344493876
+    },
+    {
+      "cutoff_per_coordinate": 16,
+      "value": 0.007841297419244397
+    },
+    {
+      "cutoff_per_coordinate": 32,
+      "value": 0.007922753913106354
+    },
+    {
+      "cutoff_per_coordinate": 64,
+      "value": 0.007945116277330199
+    },
+    {
+      "cutoff_per_coordinate": 128,
+      "value": 0.007951273100351397
+    },
+    {
+      "cutoff_per_coordinate": 256,
+      "value": 0.007952967219792776
+    },
+    {
+      "cutoff_per_coordinate": 512,
+      "value": 0.007953431693843374
+    }
+  ],
+  "neumann_full_graph_cubature": {
+    "mean": 0.007953508092905799,
+    "replicas": [
+      0.007953337700619317,
+      0.007953426011819567,
+      0.007953090962829172,
+      0.007953378663037226,
+      0.007953644974206229,
+      0.007953831645516739,
+      0.007953657059154236,
+      0.00795369772606391
+    ],
+    "empirical_standard_error": 8.536632072563675e-08,
+    "samples_per_replica": 262144,
+    "winding_cutoff": 3
+  },
+  "exact_neumann_orbit_length_density_checks": [
+    {
+      "length_excess": 0.1,
+      "mean_density": 0.0006713417428368875,
+      "scaled_density": 0.02122968995711594,
+      "predicted_threshold_coefficient": 0.022070819540822382,
+      "ratio_to_predicted_limit": 0.9618895174168463,
+      "empirical_standard_error_of_scaled_density": 3.0365185305508545e-06,
+      "samples_per_replica": 65536,
+      "replicas": 4
+    },
+    {
+      "length_excess": 0.03,
+      "mean_density": 0.00011465683513547505,
+      "scaled_density": 0.02206571820996569,
+      "predicted_threshold_coefficient": 0.022070819540822382,
+      "ratio_to_predicted_limit": 0.9997688653632795,
+      "empirical_standard_error_of_scaled_density": 6.058915544834887e-09,
+      "samples_per_replica": 65536,
+      "replicas": 4
+    },
+    {
+      "length_excess": 0.01,
+      "mean_density": 2.2069119039789126e-05,
+      "scaled_density": 0.022069119039789125,
+      "predicted_threshold_coefficient": 0.022070819540822382,
+      "ratio_to_predicted_limit": 0.9999229525197235,
+      "empirical_standard_error_of_scaled_density": 2.6019919532643957e-09,
+      "samples_per_replica": 65536,
+      "replicas": 4
+    },
+    {
+      "length_excess": 0.003,
+      "mean_density": 3.62652199210531e-06,
+      "scaled_density": 0.02207031000405167,
+      "predicted_threshold_coefficient": 0.022070819540822382,
+      "ratio_to_predicted_limit": 0.9999769135545797,
+      "empirical_standard_error_of_scaled_density": 1.4522256761543766e-09,
+      "samples_per_replica": 65536,
+      "replicas": 4
+    }
+  ],
+  "caveats": [
+    "Mixed reflection parities are outside the orbit computation.",
+    "No claim that other net families cannot share and alter the same length contribution.",
+    "Finite spectral sums have an uncertified positive tail.",
+    "Randomized cubature uncertainty and radius controls are empirical."
+  ],
+  "runtime_seconds": 12.20948083300027
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Start from the nets · Spectral Geometry</title><link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head><body><main>
+<nav><a href="index.html">Spectral geometry</a><span>Geometry first · October 30, 2026</span></nav>
+<header><p class="eyebrow">Stationary nets as the input</p><h1>Start from the nets.<br>Find the spectral object.</h1>
+<p class="lede">The geometric input is an ordinary unweighted geodesic net in a bounded planar domain: straight edges, specular boundary reflections, and balanced junctions. We investigate which spectral quantity detects it, without choosing a contact Hamiltonian in advance.</p>
+<div class="caution"><strong>Current scope.</strong> We have an exact Green-function graph identity, a proved reflection-orbit calculation, and an exact continuous length distribution with a net threshold. An exact trace formula that sums over stationary nets has not been established.</div></header>
+<div class="toc"><a href="#net">The geometric test</a><a href="#green">What the kernel means</a><a href="#identity">The exact identity</a><a href="#signs">Boundary signs</a><a href="#length">Exact length distribution</a><a href="#evidence">Numerical evidence</a><a href="#next">Open questions</a></div>
+
+<section id="net"><p class="eyebrow">01 / Geometry before operators</p><h2>An algebraic trivalent net</h2>
+<p>In a rectangle \(\Omega=(0,a)\times(0,b)\), consider three reflected paths between two free interior vertices. Their unfolded edge vectors are</p>
+<div class="math-scroll">\[r,\qquad r-(2a,2b),\qquad r-(2a,-2b),\qquad r=v-u.\]</div>
+<p>We vary ordinary total length, with no prescribed edge times. For \(\sqrt3a/2&lt;b&lt;\sqrt3a\), its unique minimizing relative displacement and edge lengths are</p>
+<div class="math-scroll">\[r_*=(d,0),\quad d=2a-\frac{2b}{\sqrt3},\qquad (\ell_1,\ell_2,\ell_3)=\left(d,\frac{4b}{\sqrt3},\frac{4b}{\sqrt3}\right).\]</div>
+<p>The outward unit tangents sum to zero at both junctions; all three angles are \(120^\circ\). The total length is \(L_*=2a+2\sqrt3b\). Common translations supply two zero modes, so this is a family of nets rather than an isolated net.</p>
+<p>The rectangle \(a=1\), \(b=3\sqrt3/4\) gives lengths \(1/2,3,3\) and total length \(13/2\). Folding the paths gives specular reflections and no corner hits in the displayed representative.</p>
+<figure style="max-width:480px"><img src="data/geodesic-first/theta-net.png" alt="A reflected net in a rectangle, with two marked trivalent vertices and three paths of lengths one half, three, and three."><figcaption>The marked vertices are the trivalent junctions. Other intersections are crossings of the immersed paths. The centered crossing can be recorded as a balanced vertex of degree six; translating the family generally separates it into ordinary crossings.</figcaption></figure>
+<details class="proof"><summary>Why the geometric calculation is exact</summary><p>The length is the convex function \(F(r)=|r|+|r-(2a,2b)|+|r-(2a,-2b)|\). At the displayed critical point its three unit vectors are \((1,0)\), \((-1/2,\sqrt3/2)\), and \((-1/2,-\sqrt3/2)\). Their sum vanishes. The relative Hessian is positive definite because the vectors are not parallel; convexity gives the unique minimizing displacement. The two common translations do not change the length. Folding unfolded straight lines proves the reflection law.</p></details>
+</section>
+
+<section id="green"><p class="eyebrow">02 / A spectral measuring device</p><h2>What “resolvent kernel” means</h2>
+<p>Let \(A=-\Delta\), with a specified boundary condition. If a source function \(f\) is given, solve the linear equation</p>
+<div class="math-scroll">\[(A+\kappa^2)u=f,\qquad \kappa&gt;0.\]</div>
+<p>The inverse \((A+\kappa^2)^{-1}\) is called the resolvent. Its kernel is the function \(G_\kappa(x,y)\) that writes the solution as</p>
+<div class="math-scroll">\[u(x)=\int_\Omega G_\kappa(x,y)f(y)\,dy.\]</div>
+<p>Thus the kernel is the response at \(x\) to a unit point source at \(y\). On an eigenfunction with eigenvalue \(\lambda\), the inverse simply multiplies by \((\lambda+\kappa^2)^{-1}\). We use it to measure spectral information. The constant spectral shift \(\kappa^2\) introduces no spatially varying force.</p>
+<p>For a reflected image path of length \(\ell\), the planar free kernel factor has the exact representation</p>
+<div class="math-scroll">\[g_\kappa(\ell)=\int_0^\infty\frac{e^{-\ell^2/(4t)-\kappa^2t}}{4\pi t}\,dt=\frac{K_0(\kappa\ell)}{2\pi}.\]</div>
+<p>Here \(K_0\) is a standard modified Bessel function. This identity follows from <a href="https://dlmf.nist.gov/10.32.E10">its integral representation</a>. The edge time is integrated independently on each edge. Minimizing the exponent over that time gives</p>
+<div class="math-scroll">\[\min_{t&gt;0}\left(\frac{\ell^2}{4t}+\kappa^2t\right)=\kappa\ell.\]</div>
+<p>Consequently the graph’s exponential action is ordinary total length, multiplied by \(\kappa\). This recovers the geometric junction rule. At finite parameter the Bessel amplitudes and vertex integrations remain present.</p>
+</section>
+
+<section id="identity"><p class="eyebrow">03 / Exact, but not yet a trace over nets</p><h2>A graph integral with spectral coefficients</h2>
+<div class="theorem"><span class="badge">Proved identity</span>
+<div class="math-scroll">\[I_\theta(\kappa)=\int_{\Omega^2}G_\kappa(u,v)^3\,du\,dv=\sum_{i,j,k}\frac{C_{ijk}^2}{(\lambda_i+\kappa^2)(\lambda_j+\kappa^2)(\lambda_k+\kappa^2)},\qquad C_{ijk}=\int_\Omega\phi_i\phi_j\phi_k.\]</div>
+<p>The eigenfunctions are real and orthonormal. The two-dimensional logarithmic singularity has an integrable cube. Heat regularization justifies the expansion and its limit. The same identity holds for Dirichlet and Neumann kernels when \(\kappa&gt;0\).</p></div>
+<p>This is the pointwise cube of a kernel. It is not the operator trace of the cubed resolvent. It uses triple eigenfunction products in addition to eigenvalues. These distinctions matter for the intended correspondence.</p>
+</section>
+
+<section id="signs"><p class="eyebrow">04 / Geometry does not fix the spectral sign</p><h2>Reflection signs can suppress a net contribution</h2>
+<p>Neumann reflection terms have positive image signs. Dirichlet reflection terms carry alternating signs. The billiard geometry is the same, but the spectral contributions can differ.</p>
+<p>We now sum a complete specified orbit of the geometric triangle: all four common reflection matrices and every common lattice translation. The three edges use the same reflection matrix in this orbit. Triples with different reflection matrices on different edges are outside this calculation.</p>
+<p>Write \(J_{\rm N}\) and \(J_{\rm D}\) for these orbit contributions. Their proved large-parameter ratio is</p>
+<div class="math-scroll">\[\lim_{\kappa\to\infty}\frac{J_{\rm D}(\kappa)}{J_{\rm N}(\kappa)}=\frac{4b}{\sqrt3a}-3.\]</div>
+<p>At \(a=1\), \(b=3\sqrt3/4\), the leading Dirichlet coefficient cancels exactly. The contribution survives at the next order:</p>
+<div class="math-scroll">\[J_{\rm N}(\kappa)\sim\frac{3}{16\sqrt{13\pi}}\kappa^{-5/2}e^{-13\kappa/2},\qquad \frac{J_{\rm D}}{J_{\rm N}}=\frac{20}{39\kappa}+O(\kappa^{-3/2}).\]</div>
+<details class="proof"><summary>Exact orbit formula behind the cancellation</summary>
+<p>Let \(b_\kappa(q)=g_\kappa(|q|)g_\kappa(|q-(2a,2b)|)g_\kappa(|q-(2a,-2b)|)\) and \(w_a(q)=a-2\operatorname{dist}(q,2a\mathbb Z)\). The exact grouped integrals are</p>
+<div class="math-scroll">\[J_{\rm N}=ab\int_{\mathbb R^2}b_\kappa(q)\,dq,\qquad J_{\rm D}=\int_{\mathbb R^2}w_a(q_x)w_b(q_y)b_\kappa(q)\,dq.\]</div>
+<p>These weights follow by pushing forward the two vertex positions under their sum and difference in each coordinate, then periodizing. At the length minimum \(q_*=(d,0)\), the weight ratio is \((a-2d)/a\), which proves the leading ratio. The first nonzero Dirichlet term follows from the next local Laplace coefficient; the full derivation is in the research note.</p>
+</details>
+<div class="caution"><strong>Scope of the cancellation result.</strong> It concerns the specified common-parity orbit. Other image sectors and other nets can share the same length. Their combined coefficient in the complete graph invariant has not been determined.</div>
+</section>
+
+<section id="length"><p class="eyebrow">05 / A step toward an exact length-side correspondence</p><h2>The net is an exact threshold</h2>
+<p>The Neumann orbit is exactly the Laplace transform of a positive continuous length distribution:</p>
+<div class="math-scroll">\[J_{\rm N}(\kappa)=\int_0^\infty e^{-\kappa s}\rho_{\rm N}(s)\,ds.\]</div>
+<p>For the rectangle above, this density is zero for \(s&lt;13/2\) and positive for \(s&gt;13/2\). Its threshold is therefore exactly the stationary net’s length. Just above the threshold,</p>
+<div class="math-scroll">\[\rho_{\rm N}(s)\sim\frac{1}{4\pi\sqrt{13}}(s-13/2)^{3/2}.\]</div>
+<p>The exact formula comes from writing each Bessel edge as a Laplace transform, convolving the three edge-length densities, and integrating the two vertex positions. Positivity justifies the interchanges. The threshold follows from the global minimum of total length; its local power and coefficient follow from the nondegenerate relative Hessian.</p>
+<p>This is a continuous length distribution with a geometrically determined threshold. We have not replaced it by a discrete exact sum over stationary nets.</p>
+<p>Independent direct cubature of the exact convolution formula gives the following ratios to the proved threshold coefficient:</p>
+<div class="table-scroll"><table><thead><tr><th>Length excess \(s-13/2\)</th><th>\(\rho_{\rm N}(s)/(s-13/2)^{3/2}\), divided by its limit</th></tr></thead><tbody>
+<tr><td>\(0.03\)</td><td>\(0.9997689\)</td></tr><tr><td>\(0.01\)</td><td>\(0.9999230\)</td></tr><tr><td>\(0.003\)</td><td>\(0.9999769\)</td></tr></tbody></table></div>
+<p>This calculation uses the exact edge-length convolution, with no large-parameter kernel approximation. It checks the local threshold law independently of the previous Bessel integration.</p>
+</section>
+
+<section id="evidence"><p class="eyebrow">06 / Independent numerical checks</p><h2>What was tested</h2>
+<ul><li>Four rectangles and three optimizer starts per rectangle recover the algebraic net displacement; the largest error is below \(4\times10^{-8}\).</li>
+<li>Direct edge-time quadrature and the Bessel kernel agree within \(1.4\times10^{-17}\) in four checks.</li>
+<li>Direct integration of the complete common-parity orbit checks the boundary-sign calculation in four aspect ratios. At \(\kappa=30000\), the normalized Neumann coefficient differs from its proved limit by approximately \(6.4\times10^{-7}\) relative.</li>
+<li>The full Neumann graph invariant is evaluated independently using cosine eigenfunctions and reflected-image cubature. The largest spectral cutoff is \(512\) modes per coordinate.</li></ul>
+<div class="table-scroll"><table><thead><tr><th>Full Neumann invariant, \(\kappa=3\)</th><th>Value</th></tr></thead><tbody>
+<tr><td>Cosine cutoff \(64\)</td><td>\(0.007945116277330199\)</td></tr>
+<tr><td>Cosine cutoff \(256\)</td><td>\(0.007952967219792776\)</td></tr>
+<tr><td>Cosine cutoff \(512\)</td><td>\(0.007953431693843374\)</td></tr>
+<tr><td>Independent reflected-image cubature</td><td>\(0.0079535081\)</td></tr>
+<tr><td>Empirical standard error of cubature</td><td>\(8.6\times10^{-8}\)</td></tr></tbody></table></div>
+<p>The spectral partial sums have a remaining positive tail. The cubature uncertainty and observed integration-cutoff stability are empirical, not rigorous error bounds. Agreement here does not certify a continuum error at the displayed decimal precision.</p>
+<p><a href="data/geodesic-first/results.json">Original geometry and single-sector checks</a> · <a href="data/geodesic-first/reflection-signs.json">Reflection-orbit, threshold-density, and Neumann checks</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/research/geodesic-first/main.tex">Proofs in the research note</a></p>
+<pre>python3 -m pip install -r research-requirements.txt
+python3 scripts/geodesic_first.py
+python3 scripts/net_reflection_signs.py</pre>
+</section>
+
+<section id="next"><p class="eyebrow">07 / Research status</p><h2>What the next test must decide</h2>
+<p>Complete the geometric grouping beyond common reflection parity, and determine whether the net’s length singularity survives in the full spectral quantity. Then identify whether a natural operator trace gives this information, or whether eigenfunction multiplication data are essential. A computational advantage over solving the original spectral problem has not been demonstrated.</p>
+<p>The input remains ordinary stationary nets. The quantum model is an outcome to discover. Hyperbolic domains remain part of the target but have not been tested in this geometry-first calculation.</p>
+<p><a href="net-evidence.html">Earlier evidence audit and control calculations</a> · <a href="many-body-nets.html">Earlier contact-insertion identities</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/geodesic_first.py">Geometry-first source</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/net_reflection_signs.py">Reflection-sign source</a></p>
+</section>
+<footer>Exact statements, asymptotic statements, and numerical evidence are distinguished. No general stationary-net trace formula is asserted.</footer>
+</main></body></html>

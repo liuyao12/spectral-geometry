@@ -1,0 +1,263 @@
+{
+  "scope": "Geometry-first; no many-body operator selected. Exact Green graph identity; stationary-net reduction remains unproved.",
+  "geometry": [
+    {
+      "width": 1.0,
+      "height": 1.0,
+      "vertex_difference": [
+        0.8452994616207483,
+        0.0
+      ],
+      "total_length": 5.464101615137755,
+      "edge_lengths": [
+        0.8452994616207483,
+        2.3094010767585034,
+        2.3094010767585034
+      ],
+      "angles_degrees": [
+        120.00000000000001,
+        120.00000000000001,
+        119.99999999999999
+      ],
+      "force_residual": 0.0,
+      "optimizer_errors": [
+        7.17753013674074e-11,
+        2.2239676608748177e-14,
+        5.995204332975845e-15
+      ],
+      "full_hessian_eigenvalues": [
+        -3.013727872440992e-17,
+        1.0224837946379356e-16,
+        1.2990381056766578,
+        2.799038105676659
+      ],
+      "common_translation_zero_modes": 2
+    },
+    {
+      "width": 1.0,
+      "height": 1.299038105676658,
+      "vertex_difference": [
+        0.4999999999999998,
+        0.0
+      ],
+      "total_length": 6.5,
+      "edge_lengths": [
+        0.4999999999999998,
+        3.0,
+        3.0
+      ],
+      "angles_degrees": [
+        120.00000000000001,
+        120.00000000000001,
+        120.00000000000001
+      ],
+      "force_residual": 2.220446049250313e-16,
+      "optimizer_errors": [
+        8.401432946233884e-12,
+        2.248869825754889e-11,
+        2.220446049250313e-16
+      ],
+      "full_hessian_eigenvalues": [
+        0.0,
+        2.7755575615628914e-17,
+        1.0,
+        4.333333333333336
+      ],
+      "common_translation_zero_modes": 2
+    },
+    {
+      "width": 1.0,
+      "height": 1.5,
+      "vertex_difference": [
+        0.2679491924311226,
+        0.0
+      ],
+      "total_length": 7.196152422706631,
+      "edge_lengths": [
+        0.2679491924311226,
+        3.4641016151377544,
+        3.4641016151377544
+      ],
+      "angles_degrees": [
+        120.00000000000001,
+        120.00000000000001,
+        120.00000000000001
+      ],
+      "force_residual": 2.220446049250313e-16,
+      "optimizer_errors": [
+        2.4486739841155055e-12,
+        1.414999606377194e-11,
+        1.33907329669114e-10
+      ],
+      "full_hessian_eigenvalues": [
+        -5.551115123125783e-17,
+        0.0,
+        0.8660254037844386,
+        7.752776749732571
+      ],
+      "common_translation_zero_modes": 2
+    },
+    {
+      "width": 1.7,
+      "height": 2.04,
+      "vertex_difference": [
+        1.0444109017063266,
+        0.0
+      ],
+      "total_length": 10.466767294881018,
+      "edge_lengths": [
+        1.0444109017063266,
+        4.711178196587346,
+        4.711178196587346
+      ],
+      "angles_degrees": [
+        120.00000000000001,
+        120.00000000000001,
+        120.00000000000001
+      ],
+      "force_residual": 2.220446049250313e-16,
+      "optimizer_errors": [
+        6.935265698626064e-10,
+        3.713166306154795e-08,
+        6.355138637559321e-12
+      ],
+      "full_hessian_eigenvalues": [
+        0.0,
+        0.0,
+        0.6367833851356166,
+        2.1272162449255427
+      ],
+      "common_translation_zero_modes": 2
+    }
+  ],
+  "schwinger": [
+    {
+      "length": 0.5,
+      "kappa": 1.0,
+      "integral": 0.14712586467430191,
+      "bessel": 0.14712586467430191,
+      "absolute_error": 0.0,
+      "quadrature_error_estimate": 6.6475419544184584e-15,
+      "stationary_time": 0.25,
+      "minimized_exponent": 0.5
+    },
+    {
+      "length": 3.0,
+      "kappa": 1.0,
+      "integral": 0.005528963843638922,
+      "bessel": 0.005528963843638922,
+      "absolute_error": 0.0,
+      "quadrature_error_estimate": 1.7023634872219763e-15,
+      "stationary_time": 1.5,
+      "minimized_exponent": 3.0
+    },
+    {
+      "length": 0.5,
+      "kappa": 3.0,
+      "integral": 0.03402821215589762,
+      "bessel": 0.03402821215589761,
+      "absolute_error": 1.3877787807814457e-17,
+      "quadrature_error_estimate": 7.953254349904986e-15,
+      "stationary_time": 0.08333333333333333,
+      "minimized_exponent": 1.5
+    },
+    {
+      "length": 3.0,
+      "kappa": 3.0,
+      "integral": 8.098012468026189e-06,
+      "bessel": 8.098012468026189e-06,
+      "absolute_error": 0.0,
+      "quadrature_error_estimate": 3.363196942817571e-16,
+      "stationary_time": 0.5,
+      "minimized_exponent": 9.0
+    }
+  ],
+  "stationary_sector": [
+    {
+      "kappa": 10.0,
+      "rescaled_sector_integral": 0.009881753522903372,
+      "predicted_limit": 0.014669815907914252,
+      "ratio_to_predicted_limit": 0.673611283531666
+    },
+    {
+      "kappa": 30.0,
+      "rescaled_sector_integral": 0.013056892560505058,
+      "predicted_limit": 0.014669815907914252,
+      "ratio_to_predicted_limit": 0.8900515618236876
+    },
+    {
+      "kappa": 100.0,
+      "rescaled_sector_integral": 0.01414614109451813,
+      "predicted_limit": 0.014669815907914252,
+      "ratio_to_predicted_limit": 0.9643025640755585
+    },
+    {
+      "kappa": 300.0,
+      "rescaled_sector_integral": 0.014345243634220262,
+      "predicted_limit": 0.014669815907914252,
+      "ratio_to_predicted_limit": 0.9778748229881409
+    },
+    {
+      "kappa": 1000.0,
+      "rescaled_sector_integral": 0.014484243877938107,
+      "predicted_limit": 0.014669815907914252,
+      "ratio_to_predicted_limit": 0.987350077796407
+    }
+  ],
+  "theta_spectral": [
+    {
+      "cutoff_per_coordinate": 8,
+      "value": 0.0006529572687814522
+    },
+    {
+      "cutoff_per_coordinate": 12,
+      "value": 0.0007164454198869923
+    },
+    {
+      "cutoff_per_coordinate": 16,
+      "value": 0.0007458790924355926
+    },
+    {
+      "cutoff_per_coordinate": 24,
+      "value": 0.0007717517361275406
+    },
+    {
+      "cutoff_per_coordinate": 32,
+      "value": 0.0007826250154492457
+    },
+    {
+      "cutoff_per_coordinate": 48,
+      "value": 0.0007915686286043534
+    },
+    {
+      "cutoff_per_coordinate": 64,
+      "value": 0.0007951340848152241
+    }
+  ],
+  "theta_image_cubature": {
+    "replicas": [
+      0.0008003664371638143,
+      0.0008005892275952095,
+      0.0008009283367499797,
+      0.0008007043146375248,
+      0.0008006628531117734,
+      0.0008004544794708664,
+      0.0008004514358225883,
+      0.0008008181868461935
+    ],
+    "mean": 0.0008006219089247437,
+    "empirical_standard_error": 6.87019641269739e-08,
+    "samples_per_replica": 16384,
+    "winding_cutoff": 3,
+    "change_at_seed_zero_on_increasing_winding_to_four": 8.515974384004643e-15
+  },
+  "caveats": [
+    "Two translation zero modes in the geometric net family.",
+    "Reflected curves are immersed; incidental crossings are not extra vertices.",
+    "Spectral triple overlaps are needed in addition to eigenvalues.",
+    "The spectral cutoff tail is not certified by these computations.",
+    "Randomized cubature error estimates are empirical, not rigorous bounds.",
+    "Critical total length is the large-parameter exponential action, not an exact graph-sum theorem."
+  ],
+  "runtime_seconds": 1.577485624999099
+}
