@@ -14,7 +14,8 @@
 <section id="claim"><p class="eyebrow">01 / The tested claim, now a theorem</p><h2>Exact local dependence on the net length</h2>
 <p>Let \(L\) be the length of an interior unweighted Steiner junction for three noncollinear unfolded anchors, with every triangle angle strictly below \(120^\circ\). Let \(B_i\) be the three lengths obtained by collapsing an edge to an anchor. A positive length density \(\rho(t)\), extracted from the spectral family below, satisfies</p>
 <div class="theorem"><span class="badge">Theorem · exact on an interval</span>
-<div class="math-scroll">\[\boxed{\rho(t)=\frac{t\operatorname{arcosh}(t/L)-\sqrt{t^2-L^2}}{4\pi\sqrt3},\qquad L&lt;t&lt;\min_i B_i.}\]</div>
+<div class="math-scroll">\[\boxed{\rho(t)=\frac{t\operatorname{arcosh}(t/L)-\sqrt{t^2-L^2}}{4\pi\sqrt3}}\]
+\[L&lt;t&lt;\min_i B_i.\]</div>
 <p>The density is zero below \(L\). Two triangles with the same Steiner length have exactly the same density before either reaches its first collapse threshold.</p></div>
 <p>The full answer beyond that interval is also explicit: three one-dimensional correction integrals account for the collapsed-path contributions. The spectral object and all normalizations are specified below.</p>
 </section>
@@ -34,7 +35,8 @@
 <section id="trace"><p class="eyebrow">03 / A quantum object derived from the graph</p><h2>Traces of a flat two-coordinate kinetic family</h2>
 <p>Boundary phases label how a function changes when it wraps around the torus. In a periodic gauge, their constant momentum shift is \(P_\alpha=-i\nabla+2\pi B^{-\mathsf T}\alpha\). This introduces no spatially varying force.</p>
 <p>On the four-dimensional configuration space \(T\times T\), define</p>
-<div class="math-scroll">\[H_s(\alpha,\beta)=s_1(P_\alpha^{(1)})^2+s_2(P_\beta^{(2)})^2+s_3(P_\alpha^{(1)}+P_\beta^{(2)})^2,\qquad s_i&gt;0,\quad\sum_i s_i=1.\]</div>
+<div class="math-scroll">\[\begin{aligned}H_s(\alpha,\beta)={}&amp;s_1(P_\alpha^{(1)})^2+s_2(P_\beta^{(2)})^2\\&amp;+s_3(P_\alpha^{(1)}+P_\beta^{(2)})^2.\end{aligned}\]
+\[s_i&gt;0,\qquad\sum_i s_i=1.\]</div>
 <p>This is an elliptic constant-coefficient kinetic operator. The cross term mixes momenta. The three parameters arose from the three net edges; no contact interaction is imposed.</p>
 <p>Write \(V=|\det B|\), and let \(\Delta\) be the triangle \(s_1,s_2&gt;0\), \(s_1+s_2&lt;1\), with ordinary measure \(ds_1ds_2\), of total mass \(1/2\). The spectral quantity is</p>
 <div class="math-scroll">\[\mathcal Q_\kappa(\alpha,\beta)=\frac{2}{V^2}\int_\Delta\operatorname{Tr}\big(H_s(\alpha,\beta)+\kappa^2\big)^{-3}\,ds,\qquad\kappa&gt;0.\]</div>
@@ -77,7 +79,8 @@
 <section id="weights"><p class="eyebrow">06 / Unequal junction angles</p><h2>A weighted local theorem</h2>
 <p>Let positive weights \(w_i\) form a strict triangle, whose area is \(\delta_w\). Suppose \(\sum_iw_i|q-a_i|\) has an interior minimizer of length \(L_w\). The force balance is \(\sum_iw_iT_i=0\). Define \(B_{i,w}=\sum_{j\ne i}w_j|a_i-a_j|\).</p>
 <div class="theorem"><span class="badge">Weighted theorem · exact before collapse</span>
-<div class="math-scroll">\[\rho_w(t)=\frac{t\operatorname{arcosh}(t/L_w)-\sqrt{t^2-L_w^2}}{16\pi\delta_w},\qquad L_w&lt;t&lt;\min_iB_{i,w}.\]</div>
+<div class="math-scroll">\[\rho_w(t)=\frac{t\operatorname{arcosh}(t/L_w)-\sqrt{t^2-L_w^2}}{16\pi\delta_w}\]
+\[L_w&lt;t&lt;\min_iB_{i,w}.\]</div>
 <p>The corresponding trace family has constant shift \(\kappa^2\sum_i s_iw_i^2\) in place of \(\kappa^2\). No spatially varying potential is introduced. This is a change of spectral parameters in a family, not a construction of one fixed interacting Hamiltonian.</p></div>
 <details class="proof"><summary>Why the weighted formula holds</summary><p>Rescale the three proper times by \(w_i^2\). The quadratic form on the parameter simplex becomes \(U_w=w_1^2s_2s_3+w_2^2s_1s_3+w_3^2s_1s_2\). Its two-dimensional matrix has determinant \(4\delta_w^2\). The geometric numerator remains linear, with coefficients \(w_j^2w_k^2|a_j-a_k|^2\). Its level sets are ellipses. Before the first side tangency their delta-integral is \(\pi/(2\delta_wz)\), giving the universal term \(K_0(\kappa L_w)/(16\pi\delta_w\kappa^2)\). Side tangencies occur at \(B_{i,w}^2\). The same inverse Laplace calculation proves the local formula. A global three-cap formula is asserted here only for the equal-weight case.</p></details>
 <p>For weights \((0.8,1,1)\) in the benchmark rectangle, the three angles are approximately \(113.5782^\circ,113.5782^\circ,132.8436^\circ\). The independent weighted density calculation differs from the exact local expression by about \(8.1\times10^{-7}\) relative; its empirical standard error is about \(3.5\times10^{-7}\) relative. These are numerical estimates rather than certified bounds.</p>
