@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>An exact theta-net term · Spectral Geometry</title><link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script><script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head><body><main>
+<nav><a href="index.html">Spectral geometry</a><span>Theta-net theorem · November 2, 2026</span></nav>
+<header><p class="eyebrow">Geometry first · a claim tested and proved</p><h1>An exact term<br>for a trivalent net</h1>
+<p class="lede">A theta net has two vertices joined by three geodesic paths. Starting from this geometry, we obtain an exact spectral transform with one explicit term at the net’s total length and three corrections at edge-collapse lengths.</p>
+<p>The interesting statement is local universality: before the first collapse, the exact length density depends on the triangle only through its total Steiner length. This holds on an interval, not just as a leading asymptotic.</p>
+<div class="caution"><strong>Scope.</strong> The spectral side uses a boundary-twist and parameter family of flat, two-coordinate kinetic operators. It is not one fixed Dirichlet or Neumann billiard spectrum. The result concerns theta nets, with a weighted local extension; general graphs, hyperbolic domains, and computational speedups remain open.</div>
+</header>
+<div class="toc"><a href="#claim">The theorem</a><a href="#geometry">Geometric input</a><a href="#trace">The spectral family</a><a href="#formula">Exact decomposition</a><a href="#proof">Why it is exact</a><a href="#weights">Unequal weights</a><a href="#evidence">Numerical evidence</a><a href="#scope">What remains open</a></div>
+
+<section id="claim"><p class="eyebrow">01 / The tested claim, now a theorem</p><h2>Exact local dependence on the net length</h2>
+<p>Let \(L\) be the length of an interior unweighted Steiner junction for three noncollinear unfolded anchors, with every triangle angle strictly below \(120^\circ\). Let \(B_i\) be the three lengths obtained by collapsing an edge to an anchor. A positive length density \(\rho(t)\), extracted from the spectral family below, satisfies</p>
+<div class="theorem"><span class="badge">Theorem · exact on an interval</span>
+<div class="math-scroll">\[\boxed{\rho(t)=\frac{t\operatorname{arcosh}(t/L)-\sqrt{t^2-L^2}}{4\pi\sqrt3},\qquad L&lt;t&lt;\min_i B_i.}\]</div>
+<p>The density is zero below \(L\). Two triangles with the same Steiner length have exactly the same density before either reaches its first collapse threshold.</p></div>
+<p>The full answer beyond that interval is also explicit: three one-dimensional correction integrals account for the collapsed-path contributions. The spectral object and all normalizations are specified below.</p>
+</section>
+
+<section id="geometry"><p class="eyebrow">02 / What geometry enters</p><h2>A theta net becomes a planar Steiner problem</h2>
+<p>Unfold the rectangle to the torus \(T=\mathbb R^2/\Lambda\), where \(\Lambda=B\mathbb Z^2\). For a rectangle with sides \(a,b\), take \(B=\operatorname{diag}(2a,2b)\). Fix one vertex by common translation. The other vertex joins three images of it, represented by anchors</p>
+<div class="math-scroll">\[a_1=0,\qquad a_2=Bn,\qquad a_3=Bm,\qquad n,m\in\mathbb Z^2.\]</div>
+<p>Minimize \(F(q)=\sum_i|q-a_i|\). An interior minimizer has three unit tangents summing to zero, so its junction angles are \(120^\circ\). The other torus vertex balances as well, because all three endpoint images differ by translations. Folding gives reflected geodesics in the rectangle, away from corner hits.</p>
+<p>Put \(A_i=|a_j-a_k|^2\), \(S=\sum_iA_i\), and let \(D\) be the area of the anchor triangle. Define</p>
+<div class="math-scroll">\[z_\pm=\frac S2\pm2\sqrt3D,\qquad L=\sqrt{z_+},\qquad B_i=|a_i-a_j|+|a_i-a_k|.\]</div>
+<p>Here \(\{i,j,k\}=\{1,2,3\}\). The angle assumption ensures a noncollapsed junction and \(B_i&gt;L\). All these lengths are exactly computable from the anchor coordinates.</p>
+<p>For the earlier rectangle of height \(3\sqrt3/4\), the anchors \(0,(2,3\sqrt3/2),(2,-3\sqrt3/2)\) give</p>
+<div class="math-scroll">\[L=\frac{13}{2},\qquad \min_i B_i=\sqrt{43}.\]</div>
+<p>The exact universal interval ends at \(\sqrt{43}\), slightly above the net length. This explains why the earlier numerical density followed its threshold expansion so closely and then deviated at a larger length excess.</p>
+</section>
+
+<section id="trace"><p class="eyebrow">03 / A quantum object derived from the graph</p><h2>Traces of a flat two-coordinate kinetic family</h2>
+<p>Boundary phases label how a function changes when it wraps around the torus. In a periodic gauge, their constant momentum shift is \(P_\alpha=-i\nabla+2\pi B^{-\mathsf T}\alpha\). This introduces no spatially varying force.</p>
+<p>On the four-dimensional configuration space \(T\times T\), define</p>
+<div class="math-scroll">\[H_s(\alpha,\beta)=s_1(P_\alpha^{(1)})^2+s_2(P_\beta^{(2)})^2+s_3(P_\alpha^{(1)}+P_\beta^{(2)})^2,\qquad s_i&gt;0,\quad\sum_i s_i=1.\]</div>
+<p>This is an elliptic constant-coefficient kinetic operator. The cross term mixes momenta. The three parameters arose from the three net edges; no contact interaction is imposed.</p>
+<p>Write \(V=|\det B|\), and let \(\Delta\) be the triangle \(s_1,s_2&gt;0\), \(s_1+s_2&lt;1\), with ordinary measure \(ds_1ds_2\), of total mass \(1/2\). The spectral quantity is</p>
+<div class="math-scroll">\[\mathcal Q_\kappa(\alpha,\beta)=\frac{2}{V^2}\int_\Delta\operatorname{Tr}\big(H_s(\alpha,\beta)+\kappa^2\big)^{-3}\,ds,\qquad\kappa&gt;0.\]</div>
+<p>Each trace is the sum of \((\lambda+\kappa^2)^{-3}\) over the eigenvalues of the displayed operator. Thus this formulation uses spectra of a specified family; it needs no eigenfunction overlap data.</p>
+<div class="theorem"><span class="badge">Exact Fourier coefficient</span>
+<div class="math-scroll">\[\widehat{\mathcal Q}_\kappa(n,m)=\int_{[0,1]^4}\mathcal Q_\kappa(\alpha,\beta)e^{2\pi i(\alpha\cdot n+\beta\cdot m)}\,d\alpha\,d\beta=\int_{\mathbb R^2}\prod_{i=1}^3g_\kappa(|q-a_i|)\,dq,\quad g_\kappa(r)=\frac{K_0(\kappa r)}{2\pi}.\]</div>
+<p>The coefficients are nonnegative. Their absolutely convergent Fourier series reconstructs the whole spectral quantity. The winding class is therefore selected by spectral boundary-phase data, rather than being manually retained in one untwisted image sum.</p></div>
+<details class="proof"><summary>Proof of the spectral coefficient identity</summary>
+<p>Fourier modes on \(T\times T\) diagonalize \(H_s\). For their three positive denominators, the scalar identity \((d_1d_2d_3)^{-1}=2\int_\Delta(\sum_i s_i d_i)^{-3}ds\) follows from three elementary Laplace integrals. Hence \(\mathcal Q\) is \(V^{-2}\) times the convergent double momentum sum of the three denominator products.</p>
+<p>Periodizing each free Green kernel gives three lattice image indices. The boundary-phase Fourier integral forces their two differences to be \(Bn\) and \(Bm\). The common index unfolds one relative vertex coordinate to the plane; the common-translation integral cancels the volume normalization. This gives the displayed integral. Exponential image decay and integrability of the planar logarithmic singularities justify the manipulations. Summing the positive coefficients gives \(\mathcal Q_\kappa(0,0)&lt;\infty\), proving absolute reconstruction.</p>
+</details>
+</section>
+
+<section id="formula"><p class="eyebrow">04 / An exact spectral–geometric formula</p><h2>One net term and three collapse corrections</h2>
+<p>For \(r\geq B_i\), let</p>
+<div class="math-scroll">\[\phi_i(r)=\arccos\frac{r^2+S-3A_i}{2\sqrt{(r^2-z_+)(r^2-z_-)}}.\]</div>
+<div class="theorem"><span class="badge">Theorem · all positive parameters</span>
+<div class="math-scroll">\[\boxed{\widehat{\mathcal Q}_\kappa(n,m)=\frac{K_0(\kappa L)}{4\pi\sqrt3\,\kappa^2}-\frac{1}{4\pi^2\sqrt3\,\kappa}\sum_{i=1}^3\int_{B_i}^\infty K_1(\kappa r)\phi_i(r)\,dr.}\]</div>
+<p>This holds for every \(\kappa&gt;0\) when the anchor triangle is noncollinear and all its angles are strictly below \(120^\circ\). The explicit net term depends only on \(L\). The corrections are nonnegative and use the collapse lengths and triangle geometry.</p></div>
+<p>This is an exact identity at finite parameter, not a stationary-phase approximation. It still contains correction integrals; it is not a discrete sum containing only ordinary stationary nets.</p>
+</section>
+
+<section id="proof"><p class="eyebrow">05 / The mechanism behind universality</p><h2>A circle inside a parameter triangle</h2>
+<p>Introduce one positive proper time per edge and integrate the planar vertex coordinate exactly as a Gaussian. On the parameter simplex, the remaining geometric functions are</p>
+<div class="math-scroll">\[U=s_1s_2+s_1s_3+s_2s_3,\qquad W=A_1s_1+A_2s_2+A_3s_3.\]</div>
+<p>The key calculation is the density of \(W/U\), with measure \(ds/U\). A fixed linear change makes the parameter triangle equilateral and its level sets circles. Before a circle touches a side, its entire angle contributes. After touching, a cap is removed. The three cap thresholds are exactly \(B_i^2\).</p>
+<figure><img src="data/twisted-nets/evidence.png" alt="Before collapse a parameter circle lies inside a triangle; after collapse three arcs are excluded; a separate plot shows exact local density universality ending at the first predicted collapse."><figcaption>Left and center: the equal-sided example makes the parameter-circle calculation visible. Right: for the earlier rectangle, direct convolution data agree with the exact density, including its deviation from the universal term after the first collapse.</figcaption></figure>
+<details class="proof"><summary>Circle calculation and the exact length density</summary>
+<p>Set \(s_3=1-s_1-s_2\), \(M=\begin{pmatrix}1&1/2\\1/2&1\end{pmatrix}\), \(c_i=(z+S-3A_i)/(3z)\), and \(R^2=(z-z_+)(z-z_-)/(3z^2)\). Completing the square gives \(zU-W=z(R^2-(s-c)^{\mathsf T}M(s-c))\).</p>
+<p>The full circle has delta-integral \(2\pi/(\sqrt3z)\). Its center is inside the triangle, and the vertices are outside the circle. The three excluded arcs are disjoint and have angles \(2\phi_i(\sqrt z)\). Therefore</p>
+<div class="math-scroll">\[D(z)=\frac{2\pi-2\sum_{i:B_i^2&lt;z}\phi_i(\sqrt z)}{\sqrt3z},\qquad z\geq L^2.\]</div>
+<p>Integrating the remaining proper time gives the exact Bessel decomposition above. For the length density, the net term has inverse Laplace transform</p>
+<div class="math-scroll">\[\rho_{\rm net}(t)=\frac{t\operatorname{arcosh}(t/L)-\sqrt{t^2-L^2}}{4\pi\sqrt3}.\]</div>
+<p>For arbitrary \(t&gt;L\), the full density is this function minus</p>
+<div class="math-scroll">\[\frac1{4\pi^2\sqrt3}\sum_{i:B_i&lt;t}\int_{B_i}^t\phi_i(r)\frac{\sqrt{t^2-r^2}}r\,dr.\]</div>
+<p>Thus every correction vanishes identically until its collapse threshold, which proves the exact universal interval.</p>
+</details>
+</section>
+
+<section id="weights"><p class="eyebrow">06 / Unequal junction angles</p><h2>A weighted local theorem</h2>
+<p>Let positive weights \(w_i\) form a strict triangle, whose area is \(\delta_w\). Suppose \(\sum_iw_i|q-a_i|\) has an interior minimizer of length \(L_w\). The force balance is \(\sum_iw_iT_i=0\). Define \(B_{i,w}=\sum_{j\ne i}w_j|a_i-a_j|\).</p>
+<div class="theorem"><span class="badge">Weighted theorem · exact before collapse</span>
+<div class="math-scroll">\[\rho_w(t)=\frac{t\operatorname{arcosh}(t/L_w)-\sqrt{t^2-L_w^2}}{16\pi\delta_w},\qquad L_w&lt;t&lt;\min_iB_{i,w}.\]</div>
+<p>The corresponding trace family has constant shift \(\kappa^2\sum_i s_iw_i^2\) in place of \(\kappa^2\). No spatially varying potential is introduced. This is a change of spectral parameters in a family, not a construction of one fixed interacting Hamiltonian.</p></div>
+<details class="proof"><summary>Why the weighted formula holds</summary><p>Rescale the three proper times by \(w_i^2\). The quadratic form on the parameter simplex becomes \(U_w=w_1^2s_2s_3+w_2^2s_1s_3+w_3^2s_1s_2\). Its two-dimensional matrix has determinant \(4\delta_w^2\). The geometric numerator remains linear, with coefficients \(w_j^2w_k^2|a_j-a_k|^2\). Its level sets are ellipses. Before the first side tangency their delta-integral is \(\pi/(2\delta_wz)\), giving the universal term \(K_0(\kappa L_w)/(16\pi\delta_w\kappa^2)\). Side tangencies occur at \(B_{i,w}^2\). The same inverse Laplace calculation proves the local formula. A global three-cap formula is asserted here only for the equal-weight case.</p></details>
+<p>For weights \((0.8,1,1)\) in the benchmark rectangle, the three angles are approximately \(113.5782^\circ,113.5782^\circ,132.8436^\circ\). The independent weighted density calculation differs from the exact local expression by about \(8.1\times10^{-7}\) relative; its empirical standard error is about \(3.5\times10^{-7}\) relative. These are numerical estimates rather than certified bounds.</p>
+</section>
+
+<section id="evidence"><p class="eyebrow">07 / Reproducible evidence</p><h2>What was checked independently</h2>
+<ul><li>Six triangle shapes, each at \(\kappa=1/2,1,2,5\): the exact one-dimensional net-plus-collapse formula agrees with independent positive two-dimensional quadrature in all \(24\) cases. Maximum observed relative discrepancy: \(6.1\times10^{-12}\).</li>
+<li>Cases include the square, the algebraic rectangle, an equilateral triangle, a right triangle, a scalene triangle, and a triangle with largest angle about \(119.745^\circ\). The implementation rejects a control above \(120^\circ\), where the interior-net hypothesis fails.</li>
+<li>Finite coupled-kinetic resolvent traces independently check the simplex normalization, with relative discrepancy about \(9.1\times10^{-15}\) at the finer quadrature.</li>
+<li>Independent Fourier quadrature of the Bloch spectral sum approaches the geometric coefficient. Three unequal-weight cases separately check the weighted local density by direct edge-length convolution.</li></ul>
+<div class="table-scroll"><table><thead><tr><th>Benchmark Fourier coefficient, \(\kappa=0.7\)</th><th>Value</th></tr></thead><tbody>
+<tr><td>Exact geometric decomposition</td><td>\(0.00034489241045041234\)</td></tr>
+<tr><td>Momentum cutoff \(16\), twist grid factor \(16\)</td><td>\(0.00034488888387802964\)</td></tr>
+<tr><td>Momentum cutoff \(32\), twist grid factor \(16\)</td><td>\(0.00034489198065699143\)</td></tr>
+<tr><td>Last observed relative discrepancy</td><td>\(1.25\times10^{-6}\)</td></tr></tbody></table></div>
+<p>These are observed numerical errors, not certified continuum bounds. The theorem follows from the analytic proof rather than from agreement alone.</p>
+<p><a href="data/twisted-nets/results.json">Complete numerical results</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/research/twisted-net-trace/main.tex">Formal theorem and proofs in LaTeX</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/twisted_net_trace.py">Reproducible source</a></p>
+<pre>python3 -m pip install -r research-requirements.txt
+python3 scripts/twisted_net_trace.py</pre>
+</section>
+
+<section id="scope"><p class="eyebrow">08 / What this establishes</p><h2>A precise correspondence to develop</h2>
+<p>Starting from a net led to an explicit spectral trace family and an exact net term with explicit collapse corrections. This goes beyond the earlier leading asymptotic calculation. Winding information is selected by boundary phases, so the earlier fixed-boundary cancellation issue is not silently treated as solved.</p>
+<p>The next questions are whether an equally useful identity exists for larger trivalent graphs, how much spectral parameter variation is essential, and what changes in hyperbolic domains. A single fixed many-body Hamiltonian, a practical spectral algorithm, and an arithmetic correspondence have not been obtained.</p>
+<p>Proper-time methods and geometrical interpretations of Feynman integrals are classical; compare <a href="https://arxiv.org/abs/hep-th/9709216">Davydychev and Delbourgo</a>. The Bessel identities used in the proof are recorded in <a href="https://dlmf.nist.gov/10.32">NIST DLMF</a>. This working note does not claim priority or novelty.</p>
+<p><a href="geodesic-first.html">Earlier geometry-first threshold tests</a> · <a href="net-evidence.html">Earlier evidence audit and control calculations</a></p>
+</section><footer>Exact identities and their hypotheses are explicit. The spectral family and its limitations are part of the statement.</footer>
+</main></body></html>

@@ -1,0 +1,1284 @@
+{
+  "status": "Exact theorem for noncollinear triangles with all angles strictly below 120 degrees.",
+  "decomposition_checks": [
+    {
+      "case": "algebraic_rectangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2.598076211353316
+        ],
+        [
+          2,
+          -2.598076211353316
+        ]
+      ],
+      "kappa": 0.5,
+      "steiner_length": 6.5,
+      "broken_lengths": [
+        6.557438524302,
+        8.474871684857632,
+        8.474871684857632
+      ],
+      "triangle_angles": [
+        104.82182106205012,
+        37.58908946897495,
+        37.58908946897495
+      ],
+      "positive_quadrature": 0.0026400873572618995,
+      "quadrature_refinement_change": 4.7704895589362195e-18,
+      "net_decomposition": {
+        "value": 0.0026400873572604688,
+        "net_term": 0.004788981583630466,
+        "corrections": [
+          0.0015551966039740904,
+          0.0002968488111979535,
+          0.0002968488111979535
+        ],
+        "quadrature_error_estimate": 1.294338777668776e-13
+      },
+      "absolute_discrepancy": 1.4307131868118717e-15,
+      "relative_discrepancy": 5.419188811599401e-13
+    },
+    {
+      "case": "algebraic_rectangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2.598076211353316
+        ],
+        [
+          2,
+          -2.598076211353316
+        ]
+      ],
+      "kappa": 1.0,
+      "steiner_length": 6.5,
+      "broken_lengths": [
+        6.557438524302,
+        8.474871684857632,
+        8.474871684857632
+      ],
+      "triangle_angles": [
+        104.82182106205012,
+        37.58908946897495,
+        37.58908946897495
+      ],
+      "positive_quadrature": 2.1921206090464575e-05,
+      "quadrature_refinement_change": 9.147955830346444e-20,
+      "net_decomposition": {
+        "value": 2.1921206090464785e-05,
+        "net_term": 3.3352263299889204e-05,
+        "corrections": [
+          1.0191469098431909e-05,
+          6.197940554962552e-07,
+          6.197940554962552e-07
+        ],
+        "quadrature_error_estimate": 1.5892031115868512e-15
+      },
+      "absolute_discrepancy": 2.1006417091906648e-19,
+      "relative_discrepancy": 9.58269221374829e-15
+    },
+    {
+      "case": "algebraic_rectangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2.598076211353316
+        ],
+        [
+          2,
+          -2.598076211353316
+        ]
+      ],
+      "kappa": 2.0,
+      "steiner_length": 6.5,
+      "broken_lengths": [
+        6.557438524302,
+        8.474871684857632,
+        8.474871684857632
+      ],
+      "triangle_angles": [
+        104.82182106205012,
+        37.58908946897495,
+        37.58908946897495
+      ],
+      "positive_quadrature": 6.4772705584811185e-09,
+      "quadrature_refinement_change": 2.5642598989143858e-23,
+      "net_decomposition": {
+        "value": 6.477270558481136e-09,
+        "net_term": 8.941341600998864e-09,
+        "corrections": [
+          2.4284703412693954e-09,
+          1.780035062416599e-11,
+          1.780035062416599e-11
+        ],
+        "quadrature_error_estimate": 6.930702600905193e-20
+      },
+      "absolute_discrepancy": 1.737079286361358e-23,
+      "relative_discrepancy": 2.681807515492595e-15
+    },
+    {
+      "case": "algebraic_rectangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2.598076211353316
+        ],
+        [
+          2,
+          -2.598076211353316
+        ]
+      ],
+      "kappa": 5.0,
+      "steiner_length": 6.5,
+      "broken_lengths": [
+        6.557438524302,
+        8.474871684857632,
+        8.474871684857632
+      ],
+      "triangle_angles": [
+        104.82182106205012,
+        37.58908946897495,
+        37.58908946897495
+      ],
+      "positive_quadrature": 2.4749432422490713e-18,
+      "quadrature_refinement_change": 5.7777898331617076e-33,
+      "net_decomposition": {
+        "value": 2.474943242249068e-18,
+        "net_term": 3.0916594098185064e-18,
+        "corrections": [
+          6.16693920871528e-19,
+          1.112334895517433e-23,
+          1.112334895517433e-23
+        ],
+        "quadrature_error_estimate": 5.903395579469377e-29
+      },
+      "absolute_discrepancy": 3.4666738998970245e-33,
+      "relative_discrepancy": 1.4007084448315395e-15
+    },
+    {
+      "case": "square_reflections",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          -2
+        ]
+      ],
+      "kappa": 0.5,
+      "steiner_length": 5.464101615137754,
+      "broken_lengths": [
+        5.65685424949238,
+        6.82842712474619,
+        6.82842712474619
+      ],
+      "triangle_angles": [
+        90.0,
+        45.000000000000014,
+        45.000000000000014
+      ],
+      "positive_quadrature": 0.004831538792596528,
+      "quadrature_refinement_change": 1.1275702593849246e-17,
+      "net_decomposition": {
+        "value": 0.004831538792596539,
+        "net_term": 0.0087184620944248,
+        "corrections": [
+          0.0022581744851188448,
+          0.0008143744083547076,
+          0.0008143744083547076
+        ],
+        "quadrature_error_estimate": 3.196785706360823e-14
+      },
+      "absolute_discrepancy": 1.1275702593849246e-17,
+      "relative_discrepancy": 2.333770477249867e-15
+    },
+    {
+      "case": "square_reflections",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          -2
+        ]
+      ],
+      "kappa": 1.0,
+      "steiner_length": 5.464101615137754,
+      "broken_lengths": [
+        5.65685424949238,
+        6.82842712474619,
+        6.82842712474619
+      ],
+      "triangle_angles": [
+        90.0,
+        45.000000000000014,
+        45.000000000000014
+      ],
+      "positive_quadrature": 7.210115439417535e-05,
+      "quadrature_refinement_change": 4.743384504624082e-19,
+      "net_decomposition": {
+        "value": 7.210115439417584e-05,
+        "net_term": 0.00010217344711536459,
+        "corrections": [
+          2.2132874145244095e-05,
+          3.969709287972326e-06,
+          3.969709287972326e-06
+        ],
+        "quadrature_error_estimate": 2.327502873085282e-15
+      },
+      "absolute_discrepancy": 4.87890977618477e-19,
+      "relative_discrepancy": 6.7667568115648785e-15
+    },
+    {
+      "case": "square_reflections",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          -2
+        ]
+      ],
+      "kappa": 2.0,
+      "steiner_length": 5.464101615137754,
+      "broken_lengths": [
+        5.65685424949238,
+        6.82842712474619,
+        6.82842712474619
+      ],
+      "triangle_angles": [
+        90.0,
+        45.000000000000014,
+        45.000000000000014
+      ],
+      "positive_quadrature": 6.384369101594525e-08,
+      "quadrature_refinement_change": 6.352747104407253e-22,
+      "net_decomposition": {
+        "value": 6.384369101594568e-08,
+        "net_term": 7.729250118032465e-08,
+        "corrections": [
+          1.2240371033203933e-08,
+          6.042195655875216e-10,
+          6.042195655875216e-10
+        ],
+        "quadrature_error_estimate": 3.595499076977829e-20
+      },
+      "absolute_discrepancy": 4.235164736271502e-22,
+      "relative_discrepancy": 6.633646440043308e-15
+    },
+    {
+      "case": "square_reflections",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          -2
+        ]
+      ],
+      "kappa": 5.0,
+      "steiner_length": 5.464101615137754,
+      "broken_lengths": [
+        5.65685424949238,
+        6.82842712474619,
+        6.82842712474619
+      ],
+      "triangle_angles": [
+        90.0,
+        45.000000000000014,
+        45.000000000000014
+      ],
+      "positive_quadrature": 5.559674449584584e-16,
+      "quadrature_refinement_change": 7.987216665362745e-30,
+      "net_decomposition": {
+        "value": 5.559674449584648e-16,
+        "net_term": 5.984214744655546e-16,
+        "corrections": [
+          4.2346407625795396e-17,
+          5.381094064720232e-20,
+          5.381094064720232e-20
+        ],
+        "quadrature_error_estimate": 1.1629958848124094e-27
+      },
+      "absolute_discrepancy": 6.409494854920721e-30,
+      "relative_discrepancy": 1.1528543466065059e-14
+    },
+    {
+      "case": "equilateral",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0.5,
+          0.8660254037844386
+        ]
+      ],
+      "kappa": 0.5,
+      "steiner_length": 1.7320508075688772,
+      "broken_lengths": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "triangle_angles": [
+        59.999999999999986,
+        59.999999999999986,
+        59.99999999999999
+      ],
+      "positive_quadrature": 0.03148647470144921,
+      "quadrature_refinement_change": 2.6249835638481045e-14,
+      "net_decomposition": {
+        "value": 0.031486474701450454,
+        "net_term": 0.09406313885437878,
+        "corrections": [
+          0.020858888050976108,
+          0.020858888050976108,
+          0.020858888050976115
+        ],
+        "quadrature_error_estimate": 4.443514271796458e-13
+      },
+      "absolute_discrepancy": 1.2420620087993939e-15,
+      "relative_discrepancy": 3.9447477705156564e-14
+    },
+    {
+      "case": "equilateral",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0.5,
+          0.8660254037844386
+        ]
+      ],
+      "kappa": 1.0,
+      "steiner_length": 1.7320508075688772,
+      "broken_lengths": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "triangle_angles": [
+        59.999999999999986,
+        59.999999999999986,
+        59.99999999999999
+      ],
+      "positive_quadrature": 0.003454199476077505,
+      "quadrature_refinement_change": 7.37257477290143e-18,
+      "net_decomposition": {
+        "value": 0.0034541994760775275,
+        "net_term": 0.00730197899658228,
+        "corrections": [
+          0.001282593173501584,
+          0.001282593173501584,
+          0.0012825931735015845
+        ],
+        "quadrature_error_estimate": 1.7468646257112826e-13
+      },
+      "absolute_discrepancy": 2.2551405187698492e-17,
+      "relative_discrepancy": 6.528692203180823e-15
+    },
+    {
+      "case": "equilateral",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0.5,
+          0.8660254037844386
+        ]
+      ],
+      "kappa": 2.0,
+      "steiner_length": 1.7320508075688772,
+      "broken_lengths": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "triangle_angles": [
+        59.999999999999986,
+        59.999999999999986,
+        59.99999999999999
+      ],
+      "positive_quadrature": 0.00015212995412224988,
+      "quadrature_refinement_change": 1.111307226797642e-18,
+      "net_decomposition": {
+        "value": 0.00015212995412225053,
+        "net_term": 0.00023447815373285082,
+        "corrections": [
+          2.7449399870200094e-05,
+          2.7449399870200094e-05,
+          2.7449399870200083e-05
+        ],
+        "quadrature_error_estimate": 2.5243486665246195e-16
+      },
+      "absolute_discrepancy": 6.505213034913027e-19,
+      "relative_discrepancy": 4.276089526514622e-15
+    },
+    {
+      "case": "equilateral",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0.5,
+          0.8660254037844386
+        ]
+      ],
+      "kappa": 5.0,
+      "steiner_length": 1.7320508075688772,
+      "broken_lengths": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "triangle_angles": [
+        59.999999999999986,
+        59.999999999999986,
+        59.99999999999999
+      ],
+      "positive_quadrature": 1.174462967026171e-07,
+      "quadrature_refinement_change": 1.707300784309449e-21,
+      "net_decomposition": {
+        "value": 1.1744629670261831e-07,
+        "net_term": 1.3382579981234209e-07,
+        "corrections": [
+          5.459834369907925e-09,
+          5.459834369907925e-09,
+          5.459834369907929e-09
+        ],
+        "quadrature_error_estimate": 3.5809663415732644e-19
+      },
+      "absolute_discrepancy": 1.2043749718772083e-21,
+      "relative_discrepancy": 1.0254686658420373e-14
+    },
+    {
+      "case": "right_triangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "kappa": 0.5,
+      "steiner_length": 1.9318516525781366,
+      "broken_lengths": [
+        1.9999999999999998,
+        2.414213562373095,
+        2.414213562373095
+      ],
+      "triangle_angles": [
+        90.0,
+        45.00000000000001,
+        45.00000000000001
+      ],
+      "positive_quadrature": 0.02811593413317813,
+      "quadrature_refinement_change": 9.078848783872218e-14,
+      "net_decomposition": {
+        "value": 0.02811593413334848,
+        "net_term": 0.08125537161434626,
+        "corrections": [
+          0.024049860998928856,
+          0.014544788241034461,
+          0.014544788241034461
+        ],
+        "quadrature_error_estimate": 2.715340589177866e-12
+      },
+      "absolute_discrepancy": 1.7034984534092246e-13,
+      "relative_discrepancy": 6.05883640692918e-12
+    },
+    {
+      "case": "right_triangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "kappa": 1.0,
+      "steiner_length": 1.9318516525781366,
+      "broken_lengths": [
+        1.9999999999999998,
+        2.414213562373095,
+        2.414213562373095
+      ],
+      "triangle_angles": [
+        90.0,
+        45.00000000000001,
+        45.00000000000001
+      ],
+      "positive_quadrature": 0.002722231783369768,
+      "quadrature_refinement_change": 2.168404344971009e-18,
+      "net_decomposition": {
+        "value": 0.002722231783369776,
+        "net_term": 0.005690947624425564,
+        "corrections": [
+          0.001561656374390849,
+          0.0007035297333324696,
+          0.0007035297333324696
+        ],
+        "quadrature_error_estimate": 2.730973405459682e-13
+      },
+      "absolute_discrepancy": 8.239936510889834e-18,
+      "relative_discrepancy": 3.02690482170841e-15
+    },
+    {
+      "case": "right_triangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "kappa": 2.0,
+      "steiner_length": 1.9318516525781366,
+      "broken_lengths": [
+        1.9999999999999998,
+        2.414213562373095,
+        2.414213562373095
+      ],
+      "triangle_angles": [
+        90.0,
+        45.00000000000001,
+        45.00000000000001
+      ],
+      "positive_quadrature": 9.43277761421154e-05,
+      "quadrature_refinement_change": 4.336808689942018e-19,
+      "net_decomposition": {
+        "value": 9.43277761421157e-05,
+        "net_term": 0.0001493319206135165,
+        "corrections": [
+          3.581827397949439e-05,
+          9.592935245953199e-06,
+          9.592935245953199e-06
+        ],
+        "quadrature_error_estimate": 2.465656600748157e-15
+      },
+      "absolute_discrepancy": 2.981555974335137e-19,
+      "relative_discrepancy": 3.1608462494049346e-15
+    },
+    {
+      "case": "right_triangle",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "kappa": 5.0,
+      "steiner_length": 1.9318516525781366,
+      "broken_lengths": [
+        1.9999999999999998,
+        2.414213562373095,
+        2.414213562373095
+      ],
+      "triangle_angles": [
+        90.0,
+        45.00000000000001,
+        45.00000000000001
+      ],
+      "positive_quadrature": 3.7745425948644136e-08,
+      "quadrature_refinement_change": 3.5072457972248373e-22,
+      "net_decomposition": {
+        "value": 3.774542594864437e-08,
+        "net_term": 4.6725994712924334e-08,
+        "corrections": [
+          7.930927168684269e-09,
+          5.248207977978497e-10,
+          5.248207977978497e-10
+        ],
+        "quadrature_error_estimate": 4.760323639627306e-19
+      },
+      "absolute_discrepancy": 2.3161057151484775e-22,
+      "relative_discrepancy": 6.136122873006484e-15
+    },
+    {
+      "case": "scalene",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "kappa": 0.5,
+      "steiner_length": 2.7774271574854588,
+      "broken_lengths": [
+        3.118033988749895,
+        3.802775637731995,
+        2.9208096264818897
+      ],
+      "triangle_angles": [
+        63.43494882292201,
+        33.69006752597977,
+        82.8749836510982
+      ],
+      "positive_quadrature": 0.01854777082933479,
+      "quadrature_refinement_change": 3.896188927043909e-15,
+      "net_decomposition": {
+        "value": 0.018547770829334866,
+        "net_term": 0.04544906644671883,
+        "corrections": [
+          0.009540654149342964,
+          0.005266585925606094,
+          0.012094055542434907
+        ],
+        "quadrature_error_estimate": 3.3591578708001615e-13
+      },
+      "absolute_discrepancy": 7.632783294297951e-17,
+      "relative_discrepancy": 4.115202503055564e-15
+    },
+    {
+      "case": "scalene",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "kappa": 1.0,
+      "steiner_length": 2.7774271574854588,
+      "broken_lengths": [
+        3.118033988749895,
+        3.802775637731995,
+        2.9208096264818897
+      ],
+      "triangle_angles": [
+        63.43494882292201,
+        33.69006752597977,
+        82.8749836510982
+      ],
+      "positive_quadrature": 0.0011417318865211343,
+      "quadrature_refinement_change": 3.2526065174565133e-18,
+      "net_decomposition": {
+        "value": 0.0011417318865211382,
+        "net_term": 0.0020670105600326693,
+        "corrections": [
+          0.00032710766070164355,
+          0.00012069567567043358,
+          0.00047747533713945415
+        ],
+        "quadrature_error_estimate": 2.4158197178371685e-14
+      },
+      "absolute_discrepancy": 3.903127820947816e-18,
+      "relative_discrepancy": 3.418602797229984e-15
+    },
+    {
+      "case": "scalene",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "kappa": 2.0,
+      "steiner_length": 2.7774271574854588,
+      "broken_lengths": [
+        3.118033988749895,
+        3.802775637731995,
+        2.9208096264818897
+      ],
+      "triangle_angles": [
+        63.43494882292201,
+        33.69006752597977,
+        82.8749836510982
+      ],
+      "positive_quadrature": 1.634147349184239e-05,
+      "quadrature_refinement_change": 1.2536087619363645e-19,
+      "net_decomposition": {
+        "value": 1.6341473491842466e-05,
+        "net_term": 2.31433767925286e-05,
+        "corrections": [
+          2.2344282944038175e-06,
+          3.897183772512019e-07,
+          4.177756629031113e-06
+        ],
+        "quadrature_error_estimate": 3.7688387565917406e-16
+      },
+      "absolute_discrepancy": 7.792703114739563e-20,
+      "relative_discrepancy": 4.768666129544349e-15
+    },
+    {
+      "case": "scalene",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "kappa": 5.0,
+      "steiner_length": 2.7774271574854588,
+      "broken_lengths": [
+        3.118033988749895,
+        3.802775637731995,
+        2.9208096264818897
+      ],
+      "triangle_angles": [
+        63.43494882292201,
+        33.69006752597977,
+        82.8749836510982
+      ],
+      "positive_quadrature": 5.001467409316349e-10,
+      "quadrature_refinement_change": 6.927637630131607e-24,
+      "net_decomposition": {
+        "value": 5.001467409316392e-10,
+        "net_term": 5.703727096344427e-10,
+        "corrections": [
+          1.5102086400847195e-11,
+          3.120442344568508e-13,
+          5.481183806749942e-11
+        ],
+        "quadrature_error_estimate": 6.4147737033181635e-21
+      },
+      "absolute_discrepancy": 4.239300639334267e-24,
+      "relative_discrepancy": 8.476113693028617e-15
+    },
+    {
+      "case": "near_120",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          -0.4,
+          0.7
+        ]
+      ],
+      "kappa": 0.5,
+      "steiner_length": 1.806221350028344,
+      "broken_lengths": [
+        1.806225774829855,
+        2.5652475842498528,
+        2.3714733590797077
+      ],
+      "triangle_angles": [
+        119.74488129694222,
+        26.565051177077994,
+        33.6900675259798
+      ],
+      "positive_quadrature": 0.028255800645799224,
+      "quadrature_refinement_change": 1.3688009059542594e-13,
+      "net_decomposition": {
+        "value": 0.02825580064579908,
+        "net_term": 0.08904101269972087,
+        "corrections": [
+          0.03354617643376674,
+          0.01247312302727621,
+          0.014765912592878834
+        ],
+        "quadrature_error_estimate": 2.60014654565362e-13
+      },
+      "absolute_discrepancy": 1.457167719820518e-16,
+      "relative_discrepancy": 5.1570569104972585e-15
+    },
+    {
+      "case": "near_120",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          -0.4,
+          0.7
+        ]
+      ],
+      "kappa": 1.0,
+      "steiner_length": 1.806221350028344,
+      "broken_lengths": [
+        1.806225774829855,
+        2.5652475842498528,
+        2.3714733590797077
+      ],
+      "triangle_angles": [
+        119.74488129694222,
+        26.565051177077994,
+        33.6900675259798
+      ],
+      "positive_quadrature": 0.00277499789772878,
+      "quadrature_refinement_change": 4.336808689942018e-17,
+      "net_decomposition": {
+        "value": 0.0027749978977288157,
+        "net_term": 0.006652702501458939,
+        "corrections": [
+          0.002603339914549278,
+          0.0005481978882756475,
+          0.000726166800905198
+        ],
+        "quadrature_error_estimate": 7.613158798278183e-14
+      },
+      "absolute_discrepancy": 3.5561831257524545e-17,
+      "relative_discrepancy": 1.2815084035425908e-14
+    },
+    {
+      "case": "near_120",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          -0.4,
+          0.7
+        ]
+      ],
+      "kappa": 2.0,
+      "steiner_length": 1.806221350028344,
+      "broken_lengths": [
+        1.806225774829855,
+        2.5652475842498528,
+        2.3714733590797077
+      ],
+      "triangle_angles": [
+        119.74488129694222,
+        26.565051177077994,
+        33.6900675259798
+      ],
+      "positive_quadrature": 0.00010071308211371966,
+      "quadrature_refinement_change": 0.0,
+      "net_decomposition": {
+        "value": 0.00010071308211372163,
+        "net_term": 0.00019819251171784307,
+        "corrections": [
+          8.092348649598289e-05,
+          6.284230534810695e-06,
+          1.0271712573327847e-05
+        ],
+        "quadrature_error_estimate": 2.06475773093813e-15
+      },
+      "absolute_discrepancy": 1.9786689647860456e-18,
+      "relative_discrepancy": 1.9646593305046922e-14
+    },
+    {
+      "case": "near_120",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          -0.4,
+          0.7
+        ]
+      ],
+      "kappa": 5.0,
+      "steiner_length": 1.806221350028344,
+      "broken_lengths": [
+        1.806225774829855,
+        2.5652475842498528,
+        2.3714733590797077
+      ],
+      "triangle_angles": [
+        119.74488129694222,
+        26.565051177077994,
+        33.6900675259798
+      ],
+      "positive_quadrature": 5.0625739769740244e-08,
+      "quadrature_refinement_change": 7.940933880509066e-23,
+      "net_decomposition": {
+        "value": 5.062573976974219e-08,
+        "net_term": 9.049152039308211e-08,
+        "corrections": [
+          3.9019984004027724e-08,
+          2.1241613346086798e-10,
+          6.333804858513291e-10
+        ],
+        "quadrature_error_estimate": 1.0337985707211151e-18
+      },
+      "absolute_discrepancy": 1.945528800724721e-21,
+      "relative_discrepancy": 3.8429636970709363e-14
+    }
+  ],
+  "spectral_fourier_checks": [
+    {
+      "cutoff": 8,
+      "twist_grid": 8,
+      "coefficient": {
+        "real": 0.0003451593061207429,
+        "imaginary": 0.0
+      },
+      "exact_geometric_coefficient": 0.00034489241045041234,
+      "absolute_discrepancy": 2.668956703305602e-07,
+      "relative_discrepancy": 0.0007738519672903435
+    },
+    {
+      "cutoff": 16,
+      "twist_grid": 8,
+      "coefficient": {
+        "real": 0.0003451704098253136,
+        "imaginary": -6.424901762877063e-20
+      },
+      "exact_geometric_coefficient": 0.00034489241045041234,
+      "absolute_discrepancy": 2.7799937490127205e-07,
+      "relative_discrepancy": 0.0008060466582555954
+    },
+    {
+      "cutoff": 32,
+      "twist_grid": 8,
+      "coefficient": {
+        "real": 0.00034517166126469347,
+        "imaginary": 3.2124508814385315e-20
+      },
+      "exact_geometric_coefficient": 0.00034489241045041234,
+      "absolute_discrepancy": 2.792508142811299e-07,
+      "relative_discrepancy": 0.000809675150335846
+    },
+    {
+      "cutoff": 16,
+      "twist_grid": 16,
+      "coefficient": {
+        "real": 0.00034488888387802964,
+        "imaginary": 0.0
+      },
+      "exact_geometric_coefficient": 0.00034489241045041234,
+      "absolute_discrepancy": 3.5265723826957175e-09,
+      "relative_discrepancy": 1.022513768305365e-05
+    },
+    {
+      "cutoff": 32,
+      "twist_grid": 16,
+      "coefficient": {
+        "real": 0.00034489198065699143,
+        "imaginary": 3.2124508814385315e-20
+      },
+      "exact_geometric_coefficient": 0.00034489241045041234,
+      "absolute_discrepancy": 4.2979342090507244e-10,
+      "relative_discrepancy": 1.2461666533739713e-06
+    }
+  ],
+  "two_coordinate_trace_simplex_checks": [
+    {
+      "simplex_order": 48,
+      "trace_average": 0.010178267845334658,
+      "product_sum": 0.010178267845279603,
+      "relative_discrepancy": 5.409065647904802e-12
+    },
+    {
+      "simplex_order": 80,
+      "trace_average": 0.010178267845279695,
+      "product_sum": 0.010178267845279603,
+      "relative_discrepancy": 9.033004989096464e-15
+    }
+  ],
+  "weighted_local_density_checks": [
+    {
+      "points": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          2.598076211353316
+        ],
+        [
+          2.0,
+          -2.598076211353316
+        ]
+      ],
+      "weights": [
+        0.8,
+        1.0,
+        1.0
+      ],
+      "weighted_net_length": 6.362352359916263,
+      "optimizer": {
+        "vertex": [
+          0.86610658108996,
+          0.0
+        ],
+        "length": 6.3623523599162635,
+        "force_residual": 6.972022958962043e-11,
+        "angles_degrees": [
+          113.57817847602256,
+          113.57817847602256,
+          132.84364304795488
+        ]
+      },
+      "tension_triangle_area": 0.3666060555964671,
+      "first_collapse_gap": 0.19508616438573778,
+      "tested_length_excess": 0.048771541096434445,
+      "exact_local_density": 0.0002183880265954152,
+      "direct_convolution_density": 0.00021838820231531562,
+      "empirical_standard_error": 7.51520008732531e-11,
+      "relative_discrepancy": 8.046224106159426e-07,
+      "samples_per_replica": 32768,
+      "replicas": 4
+    },
+    {
+      "points": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          2.598076211353316
+        ],
+        [
+          2.0,
+          -2.598076211353316
+        ]
+      ],
+      "weights": [
+        1.1,
+        1.0,
+        1.0
+      ],
+      "weighted_net_length": 6.539642842446829,
+      "optimizer": {
+        "vertex": [
+          0.28902970372917985,
+          0.0
+        ],
+        "length": 6.539642842446829,
+        "force_residual": 1.541766714296955e-11,
+        "angles_degrees": [
+          123.3670129687029,
+          123.3670129687029,
+          113.26597406259422
+        ]
+      },
+      "tension_triangle_area": 0.45934055993347683,
+      "first_collapse_gap": 0.017795681855170997,
+      "tested_length_excess": 0.004448920463792749,
+      "exact_local_density": 4.738155003211877e-06,
+      "direct_convolution_density": 4.738159684207075e-06,
+      "empirical_standard_error": 1.9095078421708167e-12,
+      "relative_discrepancy": 9.879362736143785e-07,
+      "samples_per_replica": 32768,
+      "replicas": 4
+    },
+    {
+      "points": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "weights": [
+        1.0,
+        0.9,
+        1.05
+      ],
+      "weighted_net_length": 1.8888161651518824,
+      "optimizer": {
+        "vertex": [
+          0.1825523272295522,
+          0.22775334024280386
+        ],
+        "length": 1.8888161651518824,
+        "force_residual": 3.4641071997654614e-12,
+        "angles_degrees": [
+          113.14475910075005,
+          127.98652928929297,
+          118.86871160995699
+        ]
+      },
+      "tension_triangle_area": 0.4137816264347658,
+      "first_collapse_gap": 0.061183834848117735,
+      "tested_length_excess": 0.015295958712029434,
+      "exact_local_density": 6.237021382389902e-05,
+      "direct_convolution_density": 6.237024010800696e-05,
+      "empirical_standard_error": 1.5628935670204865e-11,
+      "relative_discrepancy": 4.214208407396565e-07,
+      "samples_per_replica": 32768,
+      "replicas": 4
+    }
+  ],
+  "independent_prior_density_checks": [
+    {
+      "length_excess": 0.1,
+      "below_first_collapse": false,
+      "independently_computed_density": 0.0006713417428368875,
+      "exact_net_density": 0.0006974050411110211,
+      "exact_full_density": 0.0006712393186215004,
+      "relative_difference": 0.0001525664335339374
+    },
+    {
+      "length_excess": 0.03,
+      "below_first_collapse": true,
+      "independently_computed_density": 0.00011465683513547505,
+      "exact_net_density": 0.00011465689665161546,
+      "exact_full_density": 0.00011465689665142391,
+      "relative_difference": 5.365222996380545e-07
+    },
+    {
+      "length_excess": 0.01,
+      "below_first_collapse": true,
+      "independently_computed_density": 2.2069119039789126e-05,
+      "exact_net_density": 2.2069122204848995e-05,
+      "exact_full_density": 2.2069122205098334e-05,
+      "relative_difference": 1.4342707574054956e-07
+    },
+    {
+      "length_excess": 0.003,
+      "below_first_collapse": true,
+      "independently_computed_density": 3.62652199210531e-06,
+      "exact_net_density": 3.6265220334967676e-06,
+      "exact_full_density": 3.6265220328463907e-06,
+      "relative_difference": 1.1234202024498366e-08
+    }
+  ],
+  "obtuse_formula_rejected": true,
+  "scope": [
+    "Auxiliary two-dimensional periodic doubled rectangle; not the fixed Dirichlet or Neumann billiard spectrum.",
+    "A boundary-twist and simplex family of two-coordinate kinetic operators, not one many-body Hamiltonian.",
+    "Exact net term plus explicit collapsed-path corrections; no general trace formula over arbitrary nets proved.",
+    "Numerical truncation and quadrature errors are observed, not rigorous certificates."
+  ],
+  "runtime_seconds": 1.5093537079519592
+}
