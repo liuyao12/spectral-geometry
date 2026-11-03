@@ -1,0 +1,75 @@
+{
+  "operator": "Full scalar Neumann rhombus Laplacian",
+  "kappa": 1.5,
+  "first_point": [
+    0.2,
+    0.15
+  ],
+  "same_half_second_point": [
+    0.65,
+    0.1
+  ],
+  "opposite_half_second_point": [
+    1.088397459621556,
+    0.3531088913245536
+  ],
+  "boundary_nystrom": [
+    {
+      "panels": 16,
+      "image_cutoff": 10,
+      "triangle_green": 0.9115125532450641,
+      "boundary_correction": 0.7045166497227249,
+      "same_half_rhombus_green": 0.5592542283837016,
+      "opposite_half_rhombus_green": 0.35225832486136244
+    },
+    {
+      "panels": 32,
+      "image_cutoff": 10,
+      "triangle_green": 0.9115125532450641,
+      "boundary_correction": 0.7043694350470582,
+      "same_half_rhombus_green": 0.559327835721535,
+      "opposite_half_rhombus_green": 0.3521847175235291
+    },
+    {
+      "panels": 64,
+      "image_cutoff": 10,
+      "triangle_green": 0.9115125532450641,
+      "boundary_correction": 0.7043302257444771,
+      "same_half_rhombus_green": 0.5593474403728256,
+      "opposite_half_rhombus_green": 0.35216511287223856
+    },
+    {
+      "panels": 128,
+      "image_cutoff": 10,
+      "triangle_green": 0.9115125532450641,
+      "boundary_correction": 0.7043200460664243,
+      "same_half_rhombus_green": 0.5593525302118519,
+      "opposite_half_rhombus_green": 0.35216002303321214
+    }
+  ],
+  "full_domain_finite_elements": [
+    {
+      "subdivisions": 24,
+      "nodes": 625,
+      "same_half_rhombus_green": 0.5593492009922445,
+      "opposite_half_rhombus_green": 0.35224337490453045
+    },
+    {
+      "subdivisions": 48,
+      "nodes": 2401,
+      "same_half_rhombus_green": 0.5593529698640839,
+      "opposite_half_rhombus_green": 0.352193098944346
+    },
+    {
+      "subdivisions": 96,
+      "nodes": 9409,
+      "same_half_rhombus_green": 0.5593501408606824,
+      "opposite_half_rhombus_green": 0.3521619929147185
+    }
+  ],
+  "last_absolute_differences": {
+    "same_half_rhombus_green": 2.389351169584941e-06,
+    "opposite_half_rhombus_green": 1.969881506358462e-06
+  },
+  "scope": "Off-diagonal continuum image kernel plus logarithmic-panel boundary inversion, compared with independently assembled sparse full-rhombus finite elements. These are convergence checks, not certified error bounds."
+}

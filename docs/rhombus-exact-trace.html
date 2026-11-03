@@ -1,0 +1,187 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>An exact boundary-corrected rhombus trace · Spectral Geometry</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script></head>
+<body><main><nav><a href="index.html">Spectral geometry</a><span>Exact rhombus reduction · November 3, 2026</span></nav>
+<header><p class="eyebrow">A specified operator and an exact correction</p><h1>An exact boundary-corrected<br>rhombus trace</h1>
+<p class="lede">For the full Neumann rhombus, an exact network trace reduces to an explicit equilateral-triangle kernel and one boundary-operator inverse on the short diagonal. A separate rotational-gluing model has a closed weighted-family formula. The two operators are kept distinct throughout.</p>
+<div class="caution"><strong>Status.</strong> The full reflecting rhombus now has an exact boundary-corrected formula, with proofs and finite-element checks. The correction has not been converted into a sum solely over stationary net families and diffractive configurations. The closed Bessel lattice formula below belongs to a different operator, with rotational edge identifications.</div></header>
+<div class="toc"><a href="#operator">Operator and spectral data</a><a href="#full">Full rhombus identity</a><a href="#images">Geometric kernel</a><a href="#rotation">Closed comparison formula</a><a href="#families">Family weights</a><a href="#combined">Combined exact formula</a><a href="#checks">Checks and remaining work</a></div>
+
+<section id="operator"><p class="eyebrow">01 / The primary operator</p><h2>The full scalar Neumann Laplacian on the rhombus</h2>
+<p>Set \(a=(1,0)\), \(b=(1/2,\sqrt3/2)\), and \(\Omega=\operatorname{conv}\{0,a,a+b,b\}\). The operator is the nonnegative self-adjoint Neumann Laplacian \(h_\Omega\), defined by the quadratic form \(\int_\Omega|\nabla f|^2\) on \(H^1(\Omega)\). There is no potential. Choose a real orthonormal eigenbasis \(h_\Omega\phi_j=\lambda_j\phi_j\), and write</p>
+<div class="math-scroll">\[
+d_j=\lambda_j+\kappa^2,\quad
+c_{ijk}=\int_\Omega\phi_i\phi_j\phi_k,\quad
+\mathcal T_\Omega(\kappa)=
+\sum_{i,j,k}\frac{|c_{ijk}|^2}{d_id_jd_k}
+=\int_{\Omega^2}G_\Omega(x,y)^3\,dx\,dy .
+\]</div>
+<p>All kernels on this page use the same \(\kappa&gt;0\), suppressed in their arguments. This is an exact graph trace and uses triple-product spectral data, not just the eigenvalue list.</p>
+<p>It is also an ordinary trace of a specified positive operator on the two-coordinate Hilbert space. Define \(A_\kappa:L^2(\Omega^2)\to L^2(\Omega)\) by its matrix entries</p>
+<div class="math-scroll">\[
+\langle\phi_k,A_\kappa(\phi_i\otimes\phi_j)\rangle
+=\frac{c_{ijk}}{\sqrt{d_id_jd_k}},\qquad
+\mathcal T_\Omega(\kappa)=\operatorname{Tr}_{L^2(\Omega^2)}(A_\kappa^*A_\kappa).
+\]</div>
+<p>The displayed sum is finite, so \(A_\kappa\) extends to a Hilbert–Schmidt operator. This specifies the observable rigorously. It is a parameter-dependent operator built from the free Laplacian and a diagonal vertex contraction, not a claim that a fixed many-body Hamiltonian has these numbers as its eigenvalues.</p>
+<details class="proof"><summary>Why the spectral identity converges</summary><p>Expand three heat kernels at positive independent times, integrate both common vertices, and obtain squared triple products. Integrate the three times against \(e^{-\kappa^2(t_1+t_2+t_3)}\). Positivity permits Tonelli's theorem. In two dimensions the resolvent kernel has integrable logarithmic diagonal singularities, including their cube. Thus the kernel integral is finite and establishes the Hilbert–Schmidt assertion.</p></details>
+</section>
+
+<section id="full"><p class="eyebrow">02 / A theorem for the reflecting rhombus</p><h2>Reduce the full problem to a triangle and its short edge</h2>
+<p>Let \(E=\operatorname{conv}\{0,a,b\}\) be the unit equilateral triangle and let \(e=[a,b]\). Reflection \(\sigma\) in \(e\) exchanges the two halves of \(\Omega\). Even rhombus states give the all-Neumann triangle operator \(h_N\). Odd states give \(h_M\), with Neumann conditions on \([0,a]\), \([0,b]\) and Dirichlet condition on \(e\). Consequently</p>
+<div class="math-scroll">\[h_\Omega\simeq h_N\oplus h_M.\]</div>
+<p>Write \(N(x,y)\) and \(M(x,y)\) for the two triangle Green kernels. Define the trace map \(\gamma:H^1(E)\to\mathcal B=\gamma H^1(E)\) onto \(e\), using its quotient trace norm, and</p>
+<div class="math-scroll">\[
+S_\kappa=\gamma(h_N+\kappa^2)^{-1}\gamma^*,\qquad
+C_\kappa=(h_N+\kappa^2)^{-1}\gamma^*S_\kappa^{-1}\gamma(h_N+\kappa^2)^{-1}.
+\]</div>
+<p>Here resolvents are also understood as the variational inverses on the energy space; \(S_\kappa:\mathcal B^*\to\mathcal B\) is coercive and invertible. Its inverse is not an inverse of a bounded matrix on unweighted boundary \(L^2\). As a kernel, \(S_\kappa(s,t)=N(s,t)\) for \(s,t\in e\). Put \(C(x,y)=C_\kappa(x,y)\). Then</p>
+<div class="theorem"><span class="badge">Theorem · full Neumann rhombus</span>
+<div class="math-scroll">\[
+M=N-C,\qquad
+\boxed{\mathcal T_\Omega
+=\frac12\int_{E^2}N^3+\frac32\int_{E^2}NM^2
+=2\int_{E^2}N^3-3\int_{E^2}N^2C+\frac32\int_{E^2}NC^2.}
+\]</div>
+<p>Every product in this formula is pointwise multiplication of kernel entries. The boundary inverse on \(e\) retains the mixed sector and its corner effects exactly.</p></div>
+<p>The maximum principle gives \(0\leq M\leq N\), hence \(0\leq C\leq N\). All displayed cubic integrals are therefore finite; the formula does not rely on canceling divergent terms.</p>
+<details class="proof"><summary>Proof of the boundary correction and the factors</summary>
+<p>For a source \(f\), set \(u=(h_N+\kappa^2)^{-1}f-(h_N+\kappa^2)^{-1}\gamma^*S_\kappa^{-1}\gamma(h_N+\kappa^2)^{-1}f\). Its trace on \(e\) vanishes. Testing against any function with zero trace on \(e\) removes the boundary correction from the energy equation. Coercive uniqueness gives the mixed-boundary solution and hence \(M=N-C\).</p>
+<p>The unitary even extension of a normalized triangle state has amplitude \(1/\sqrt2\) on each half; the odd extension includes the half's sign. Thus \(G_\Omega(x,y)=\tfrac12[N(\bar x,\bar y)+\varepsilon_x\varepsilon_yM(\bar x,\bar y)]\), with \(\bar x,\bar y\in E\). Summing the cube over the four choices of halves eliminates odd powers of \(\varepsilon_x\varepsilon_y\), leaving \(\tfrac12N^3+\tfrac32NM^2\). Substitute \(M=N-C\) to obtain the final identity.</p>
+</details>
+<p>The mixed sector cannot be dropped. Its three reflection signs are not a scalar character of the equilateral reflection group: two incident side reflections whose product has order three would be assigned product sign \(-1\), contradicting that relation.</p>
+<p>There is a local corner distinction as well. At a reflecting corner of angle \(2\pi/3\), Neumann separation of variables gives angular orders \(3n/2\). The odd values of \(n\) produce fractional corner modes. A periodic cone of that angle instead has angular orders \(3n\). These local operator domains are different.</p>
+</section>
+
+<section id="images"><p class="eyebrow">03 / Explicit geometric ingredients</p><h2>The triangle kernel has an exact image expansion</h2>
+<p>Let</p><div class="math-scroll">\[
+\Lambda=\mathbb Z(3/2,\sqrt3/2)+\mathbb Z(0,\sqrt3),\quad
+V=\frac{3\sqrt3}{2},\quad
+R=\text{rotation by }2\pi/3.
+\]</div>
+<p>The equilateral reflection group is \(\Gamma=\Lambda\rtimes D_3\), and \(E\) is its fundamental chamber. With \(g_\kappa(r)=K_0(\kappa r)/(2\pi)\),</p>
+<div class="math-scroll">\[
+N(x,y)=\sum_{\gamma\in\Gamma}g_\kappa(|x-\gamma y|).
+\]</div>
+<p>The series converges off its logarithmic source singularities. Reflection permutes its terms and gives the Neumann condition; its unique interior source and coercive uniqueness identify it with the Green kernel. The same series, restricted to \(e\), explicitly determines \(S_\kappa\). There is no unknown rhombus eigenfunction on the geometric side.</p>
+<p>Unfold one common image in the cube. Define</p>
+<div class="math-scroll">\[
+\mathcal I_{\gamma_1,\gamma_2}=
+\int_E dx\int_{\mathbb R^2}dy\
+g_\kappa(|x-y|)g_\kappa(|x-\gamma_1y|)
+g_\kappa(|x-\gamma_2y|).
+\]</div>
+<p>Positivity and the fact that the chambers \(\gamma E\) tile the plane prove the absolutely convergent identity \(\int_{E^2}N^3=\sum_{\gamma_1,\gamma_2\in\Gamma}\mathcal I_{\gamma_1,\gamma_2}\).</p>
+<p>Let \(\Gamma_+=\Lambda\rtimes\{I,R,R^2\}\), and let \(\mathcal J_\kappa\) be the same sum restricted to pairs for which at least one \(\gamma_i\) reverses orientation. It is a completely specified nonnegative geometric term. The remaining pairs are exactly the orientation-preserving part.</p>
+</section>
+
+<section id="rotation"><p class="eyebrow">04 / A closed comparison theorem</p><h2>A different operator with rotational edge identifications</h2>
+<p>The rhombus is a fundamental domain for \(\Gamma_+\). The quotient \(P=\mathbb R^2/\Gamma_+\) is a compact flat orbifold. Its scalar Laplacian \(h_P\) is the Laplacian on the triangular torus \(T=\mathbb R^2/\Lambda\), restricted to \(C_3\)-invariant states. In rhombus coordinates it matches values and derivatives across rotationally paired edges. It has no Neumann wall on those edges. Equivalently \(h_P\simeq h_N\oplus h_D\), where \(h_D\) is the all-Dirichlet equilateral triangle, rather than the mixed operator \(h_M\).</p>
+<p>This quotient construction and its explicit spectrum are classical; see <a href="https://doi.org/10.1017/S1446788708000281">Harmer, <em>The spectra of the spherical and euclidean triangle groups</em>, Section 4.3</a>. The graph-trace identities proved here use additional triple-product data.</p>
+<p>For \(X=P,T\), define \(\mathcal T_X=\int_{X^2}G_X^3\). Let \(R_{T,\kappa}=(h_T+\kappa^2)^{-1}\). Then</p>
+<div class="theorem"><span class="badge">Theorem · exact rotational-quotient graph trace</span>
+<div class="math-scroll">\[
+\boxed{\mathcal T_P=
+\frac13\mathcal T_T+
+\frac{2}{V\kappa^2}\operatorname{Tr}R_{T,\kappa}^2+
+\frac{2}{3V}\operatorname{Tr}R_{T,\kappa}^3.}
+\]</div>
+<p>This identity is exact for every positive \(\kappa\). It is not the full reflecting-rhombus graph trace.</p></div>
+<p>The reciprocal-lattice eigenvalues are</p>
+<div class="math-scroll">\[
+\lambda_{m,n}=\frac{16\pi^2}{9}(m^2-mn+n^2),\qquad (m,n)\in\mathbb Z^2.
+\]</div>
+<p>The two rhombus operators are demonstrably not isospectral. If \(\lambda_{\mathrm{first}}\) denotes the first positive eigenvalue,</p>
+<div class="math-scroll">\[
+\lambda_{\mathrm{first}}(h_\Omega)\leq8
+&lt;\frac{16\pi^2}{9}
+=\lambda_{\mathrm{first}}(h_P).
+\]</div>
+<p>For the inequality, use the mean-zero linear trial function along the long diagonal. Its gradient has norm one and its mean squared value on the rhombus is \(1/8\), so its Neumann Rayleigh quotient is \(8\). The quotient spectrum follows from the reciprocal-lattice minimum. This proves that replacing one operator by the other would change the spectral problem.</p>
+<p>On \(P\), nonzero wavevectors occur in three-element rotation orbits. If \(O\) is such an orbit, of size \(s_O\), a complex normalized eigenbasis is \(\psi_O=\sqrt{3/(Vs_O)}\sum_{p\in O}e^{ip\cdot x}\). The squared triple coefficient is</p>
+<div class="math-scroll">\[
+\left|\int_P\psi_{O_1}\psi_{O_2}\psi_{O_3}\right|^2
+=\frac{3}{V}\frac{n(O_1,O_2,O_3)^2}{s_{O_1}s_{O_2}s_{O_3}},
+\]</div>
+<p>where \(n\) counts triples of wavevectors summing to zero. This also covers the singleton zero orbit. It specifies the spectral data without numerical eigenfunction solving.</p>
+<details class="proof"><summary>Proof by the nine rotation types</summary>
+<p>Unfold a common image as above, replace integration over the \(\Gamma_+\) domain by one third of a torus cell, and write \(\gamma_i y=S_i y+\lambda_i\). There are nine choices of \((S_1,S_2)\). The identity pair gives \(\mathcal T_T/3\). Six choices have exactly two equal linear parts among \(I,S_1,S_2\); unfolding \((R-I)x\) turns each into \((g_\kappa*g_\kappa)(\lambda)/(3\kappa^2)\). The map \(R-I\) has determinant three and degree three on the torus, so these factors cancel in the integral.</p>
+<p>The two remaining choices have the three distinct rotations. Since \((R-I)(R^2-I)^{-1}=-R\), the two anchor translations reduce to one lattice vector \(\mu\) and one plane variable \(a\). Their integral is \(\tfrac13\int da\,dw\,g_\kappa(w)g_\kappa(w-a)g_\kappa(w+Ra-\mu)=\tfrac13g_\kappa^{*3}(\mu)\), by a unit-Jacobian linear change of variables and rotation invariance. Summing both choices and periodizing the convolution kernels gives the stated traces.</p>
+</details>
+</section>
+
+<section id="families"><p class="eyebrow">05 / A closed geometric formula with family weights</p><h2>Translation families, rotation families, and collapsed terms</h2>
+<p>For arbitrary anchors define the positive plane integral \(\mathcal A_\kappa(a_0,a_1,a_2)=\int_{\mathbb R^2}\prod_i g_\kappa(|q-a_i|)\,dq\). It remains finite for coincident or collinear anchors. Let \(r_\lambda=|\lambda|\). Poisson periodization gives</p>
+<div class="theorem"><span class="badge">Exact Bessel and lattice form · rotational operator</span>
+<div class="math-scroll">\[
+\boxed{\begin{aligned}
+\mathcal T_P(\kappa)={}&
+\frac V3\sum_{\lambda,\mu\in\Lambda}
+\mathcal A_\kappa(0,\lambda,\mu)\\
+&+\sum_{\lambda\in\Lambda}
+\frac{r_\lambda K_1(\kappa r_\lambda)}{2\pi\kappa^3}
++\sum_{\lambda\in\Lambda}
+\frac{r_\lambda^2K_2(\kappa r_\lambda)}{24\pi\kappa^2}.
+\end{aligned}}
+\]</div>
+<p>At zero length use the limits \(1/(2\pi\kappa^4)\) and \(1/(12\pi\kappa^4)\) in the last two sums. All three sums converge absolutely.</p></div>
+<p>The first sum contains translation families. For a noncollinear lattice triangle with all angles below \(2\pi/3\), the <a href="theta-trace.html#formula">proved three-anchor decomposition</a> extracts its net term \(K_0(\kappa L)/(4\pi\sqrt3\,\kappa^2)\) and its explicit collapse corrections. The first-junction area weight is \(V/3\). The positive anchor integral handles the other triangle regimes without an invented stationary net.</p>
+<p>The last sum comes from shape-changing rotation families. In one unfolded orientation their positive edge lengths fill the simplex \(\ell_1+\ell_2+\ell_3=r\). The first-node area of the full unfolded family is \(r^2/(4\sqrt3)\): the length-coordinate Jacobian is \(2\sqrt3\). Including the two rotation choices gives effective area \(A_r=r^2/(2\sqrt3)\). Thus the exact term is</p>
+<div class="math-scroll">\[
+\frac{A_r}{4\pi\sqrt3\,\kappa^2}K_2(\kappa r),
+\qquad A_r=\frac{r^2}{2\sqrt3}.
+\]</div>
+<p>Its leading density agrees with the <a href="family-trace.html#cancellation">previously proved area law</a>. The full Bessel factor is \(K_2\), not just the local \(K_0\) term: the exact convolution includes the family endpoints and surrounding configurations. The middle lattice sum comes from the six mixed rotation types, which have no noncollapsed stationary theta net.</p>
+<p>The displayed rhombus family uses \(I\), rotation \(R^2\) about \(0\), and rotation \(R\) about \(a+b\). Its translation invariant has length \(3\), so it belongs to the nonzero rotation class of that length. Its visible first-node triangle has area \(\sqrt3/4\), one third of the full unfolded position triangle. The complete lattice term includes other representatives and multiplicities; it must not be identified with that single displayed branch.</p>
+<details class="proof"><summary>Convolution kernels and the two-coordinate kinetic family</summary>
+<div class="math-scroll">\[
+g_\kappa^{*2}(r)=\frac{rK_1(\kappa r)}{4\pi\kappa},
+\qquad
+g_\kappa^{*3}(r)=\frac{r^2K_2(\kappa r)}{16\pi\kappa^2}.
+\]</div>
+<p>These follow directly from the heat-kernel proper-time representation of \((|p|^2+\kappa^2)^{-2}\) and \((|p|^2+\kappa^2)^{-3}\). The torus term also has an exact two-coordinate trace representation. On \(L^2(T^2)\) set \(H_s=s_1P_1^2+s_2P_2^2+s_3(P_1+P_2)^2\), where \(s_i&gt;0\) and \(\sum s_i=1\). Then</p>
+<div class="math-scroll">\[
+\mathcal T_T=\frac2V\int_{\Delta}\operatorname{Tr}(H_s+\kappa^2)^{-3}\,ds_1ds_2.
+\]</div>
+<p>This is an averaged family of flat kinetic operators, rather than one fixed many-body Hamiltonian. Feynman parameterization proves it mode by mode.</p>
+</details>
+</section>
+
+<section id="combined"><p class="eyebrow">06 / Put the geometric terms back into the full rhombus</p><h2>An exact boundary-corrected network trace formula</h2>
+<p>The orientation-preserving image-pair sum in the triangle is \(\mathcal T_P/2\). Indeed the short-diagonal reflection conjugates \(\Gamma_+\) into itself, and the rhombus consists of two reflected triangle chambers. Therefore \(\int_{E^2}N^3=\mathcal T_P/2+\mathcal J_\kappa\). Combining this with the full-rhombus theorem gives</p>
+<div class="theorem"><span class="badge">Combined exact identity · primary Neumann operator</span>
+<div class="math-scroll">\[
+\boxed{\mathcal T_\Omega(\kappa)=
+\mathcal T_P(\kappa)+2\mathcal J_\kappa
+-3\mathcal B_{1,\kappa}+\frac32\mathcal B_{2,\kappa},}
+\]</div>
+<div class="math-scroll">\[
+\mathcal B_{1,\kappa}=\int_{E^2}N^2C,\qquad
+\mathcal B_{2,\kappa}=\int_{E^2}NC^2.
+\]</div>
+<p>The spectral left side is specified in Section 1. The first term has the closed weighted-family formula above. The mirror-image sum \(\mathcal J_\kappa\) and the one-dimensional boundary inverse defining both \(\mathcal B\) terms have been specified explicitly in Sections 2–3. No unnamed error term is being discarded.</p></div>
+<p>This is an exact decomposition into geometric kernels and a boundary inverse. It is not yet a pure sum over all physical rhombus-net families with only algebraic weights. In particular the other terms can contribute at the same length as a rotational family; the closed rotational term alone is not its coefficient in the full rhombus trace.</p>
+</section>
+
+<section id="checks"><p class="eyebrow">07 / Independent checks and the actual remaining step</p><h2>The boundary correction is numerically substantial</h2>
+<p>Matching equilateral finite-element meshes with \(49\), \(169\), and \(441\) rhombus nodes preserve the symmetry splitting. Their full Neumann eigenvalue lists agree with the union of the all-Neumann and mixed-triangle lists: the maximum discrepancy, divided by the largest discrete eigenvalue, is below \(1.7\times10^{-15}\). Across three positive spectral parameters, the parity and boundary-corrected graph traces agree to relative error below \(1.7\times10^{-13}\). On the smallest mesh, the independently computed complete spectral triple sum also agrees to relative error below \(1.1\times10^{-12}\).</p>
+<p>For example, at \(\kappa=1.5\) on the \(441\)-node mesh,</p>
+<div class="math-scroll">\[
+2\mathcal T_N=0.449522466425,\quad
+\mathcal B_1=0.179494258291,\quad
+\mathcal B_2=0.150931515076,\quad
+\mathcal T_\Omega=0.137436964167.
+\]</div>
+<p>These are finite-mesh values, not certified continuum evaluations. Their purpose is to test the identities and normalization; dropping the correction gives a markedly different quantity.</p>
+<p>A second check uses the continuum image sum and a logarithmic-panel discretization of the one-dimensional boundary inverse, independently of the finite-element assembly. At \(\kappa=1.5\), with source \((0.2,0.15)\), the \(128\)-panel calculation gives Green entries \(0.5593525302\) at \((0.65,0.1)\) and \(0.3521600230\) at its opposite-half reflection. Independent full-rhombus finite elements with \(9409\) nodes give \(0.5593501409\) and \(0.3521619929\). The absolute discrepancies are below \(2.4\times10^{-6}\). These are off-diagonal kernel convergence checks, not certified continuum trace values.</p>
+<p>For the separate rotational model, eight finite spectral cutoffs were checked using exact rational arithmetic: the normalized orbit triple sum minus the trace formula is exactly zero in every case. Independent reciprocal-lattice and Bessel-image sums check the ordinary resolvent traces with their finite cutoff discrepancies reported in the data.</p>
+<p>The remaining research problem is now concrete: resolve \(\mathcal J_\kappa\) and the short-diagonal boundary inverse into the physical reflected families, their degenerations, and the diffractive terms, with compatible multiplicities. The identities above do not prove that these corrections reduce to family areas and total lengths alone.</p>
+<p><a href="data/rhombus-exact-trace.json">Full-rhombus finite-element checks</a> · <a href="data/rhombus-boundary-kernel.json">Independent image and boundary-kernel checks</a> · <a href="data/rhombus-rotation-trace.json">Exact rational rotational certificates</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/rhombus_exact_trace.py">Rhombus calculation source</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/rhombus_boundary_kernel.py">Boundary calculation source</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/rhombus_rotation_trace.py">Rotational calculation source</a></p>
+<pre>python3 -m pip install -r research-requirements.txt
+python3 scripts/rhombus_exact_trace.py
+python3 scripts/rhombus_boundary_kernel.py
+python3 scripts/rhombus_rotation_trace.py</pre>
+</section><footer><a href="polygon-families.html">Move the nets</a> · <a href="family-trace.html">Local family density</a> · <a href="theta-trace.html">Three-anchor identity</a></footer>
+</main></body></html>

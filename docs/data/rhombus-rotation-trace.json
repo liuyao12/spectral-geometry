@@ -1,0 +1,121 @@
+{
+  "operator": "Laplacian on R^2/(Lambda semidirect C3), represented by the rhombus with rotational edge identifications.",
+  "excluded_operator": "This is not the full Dirichlet or Neumann reflecting rhombus.",
+  "lattice_columns": [
+    [
+      1.5,
+      0.8660254037844386
+    ],
+    [
+      0,
+      1.7320508075688772
+    ]
+  ],
+  "torus_area": 2.598076211353316,
+  "finite_certificates": [
+    {
+      "cutoff": 1,
+      "dimensionless_mass_squared": 1,
+      "torus_modes": 7,
+      "quotient_modes": 3,
+      "normalized_quotient_trace": "17/2",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 1,
+      "dimensionless_mass_squared": 3,
+      "torus_modes": 7,
+      "quotient_modes": 3,
+      "normalized_quotient_trace": "11/18",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 2,
+      "dimensionless_mass_squared": 1,
+      "torus_modes": 19,
+      "quotient_modes": 7,
+      "normalized_quotient_trace": "1523/125",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 2,
+      "dimensionless_mass_squared": 3,
+      "torus_modes": 19,
+      "quotient_modes": 7,
+      "normalized_quotient_trace": "47491/37044",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 4,
+      "dimensionless_mass_squared": 1,
+      "torus_modes": 61,
+      "quotient_modes": 21,
+      "normalized_quotient_trace": "463078592588113/29618354584000",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 4,
+      "dimensionless_mass_squared": 3,
+      "torus_modes": 61,
+      "quotient_modes": 21,
+      "normalized_quotient_trace": "4863623196113/2032678368000",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 7,
+      "dimensionless_mass_squared": 1,
+      "torus_modes": 187,
+      "quotient_modes": 63,
+      "normalized_quotient_trace": "8033971056599002941837867877148711903/458303383695049504029173820064000000",
+      "exact_difference": "0",
+      "status": "PASS"
+    },
+    {
+      "cutoff": 7,
+      "dimensionless_mass_squared": 3,
+      "torus_modes": 187,
+      "quotient_modes": 63,
+      "normalized_quotient_trace": "35411290725991504006622341991971/10585030931897513736773864736000",
+      "exact_difference": "0",
+      "status": "PASS"
+    }
+  ],
+  "poisson_checks": [
+    {
+      "kappa": 0.7,
+      "spectral_trace_square": 4.188866610485863,
+      "image_trace_square": 4.188866789549629,
+      "relative_square_difference": 4.27475437270175e-08,
+      "spectral_trace_cube": 8.500950409024501,
+      "image_trace_cube": 8.500950398083832,
+      "relative_cube_difference": 1.2869936227843937e-09,
+      "note": "Finite spectral and image cutoffs; differences are not certified tail bounds."
+    },
+    {
+      "kappa": 1.5,
+      "spectral_trace_square": 0.2181024517632244,
+      "image_trace_square": 0.21810263156940943,
+      "relative_square_difference": 8.244108918864512e-07,
+      "spectral_trace_cube": 0.0886276092885901,
+      "image_trace_cube": 0.08862760928866834,
+      "relative_cube_difference": 8.826273045769994e-13,
+      "note": "Finite spectral and image cutoffs; differences are not certified tail bounds."
+    },
+    {
+      "kappa": 3.0,
+      "spectral_trace_square": 0.025387483126293978,
+      "image_trace_square": 0.025387662931423454,
+      "relative_square_difference": 7.082382098788642e-06,
+      "spectral_trace_cube": 0.0017395320204975763,
+      "image_trace_cube": 0.0017395320205757631,
+      "relative_cube_difference": 4.4947046085042075e-11,
+      "note": "Finite spectral and image cutoffs; differences are not certified tail bounds."
+    }
+  ]
+}

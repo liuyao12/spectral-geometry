@@ -1,0 +1,221 @@
+{
+  "operator": "Full scalar Neumann Laplacian on the unit 60-degree rhombus.",
+  "observable": "Integral of the pointwise cube of its Green kernel; spectral weights are squared triple products.",
+  "method": "P1 finite elements with lumped vertex integration. All parity and Schur-complement identities are checked on the same mesh.",
+  "scope": "Finite-dimensional algebraic checks support, but do not replace, the continuum variational proof. Refinement values are not certified continuum error bounds.",
+  "meshes": [
+    {
+      "mesh_subdivisions": 6,
+      "rhombus_nodes": 49,
+      "triangle_nodes": 28,
+      "spectral_union_relative_error": 1.5502002973469775e-15,
+      "first_rhombus_eigenvalues": [
+        1.7053025658242404e-13,
+        7.06222378836793,
+        17.019375134841926,
+        17.01937513484205,
+        35.09203190085398,
+        43.74944896308756,
+        48.0,
+        62.12462093256542
+      ],
+      "first_neumann_triangle_eigenvalues": [
+        -9.215514518890984e-15,
+        17.019375134841837,
+        17.019375134841855,
+        48.00000000000004,
+        62.12462093256542
+      ],
+      "first_mixed_triangle_eigenvalues": [
+        7.062223788367596,
+        35.09203190085376,
+        43.74944896308739,
+        76.72237401924214,
+        90.78586454008484
+      ],
+      "checks": [
+        {
+          "kappa": 0.7,
+          "full_trace": 10.024232769952295,
+          "parity_formula": 10.024232769951935,
+          "neumann_triangle_trace": 19.751541943131393,
+          "first_boundary_term": 18.813670732155828,
+          "second_boundary_term": 17.97477405343776,
+          "boundary_corrected_formula": 10.024232769951944,
+          "spectral_triple_sum": 10.024232769941573,
+          "boundary_kernel_maximum_error": 3.552713678800501e-15,
+          "incorrectly_dropping_boundary_correction": 39.503083886262786,
+          "relative_trace_discrepancy": 3.5083047578154947e-14
+        },
+        {
+          "kappa": 1.5,
+          "full_trace": 0.1413823560033828,
+          "parity_formula": 0.1413823560033821,
+          "neumann_triangle_trace": 0.22817701634037693,
+          "first_boundary_term": 0.1819914053694985,
+          "second_boundary_term": 0.15400169295408256,
+          "boundary_corrected_formula": 0.1413823560033822,
+          "spectral_triple_sum": 0.1413823560033573,
+          "boundary_kernel_maximum_error": 7.771561172376096e-16,
+          "incorrectly_dropping_boundary_correction": 0.45635403268075386,
+          "relative_trace_discrepancy": 4.3298697960381105e-15
+        },
+        {
+          "kappa": 3.0,
+          "full_trace": 0.009267338633413306,
+          "parity_formula": 0.009267338633413311,
+          "neumann_triangle_trace": 0.008678046469094203,
+          "first_boundary_term": 0.004498020804906204,
+          "second_boundary_term": 0.0036035387399623348,
+          "boundary_corrected_formula": 0.009267338633413294,
+          "spectral_triple_sum": 0.009267338633413084,
+          "boundary_kernel_maximum_error": 8.881784197001252e-16,
+          "incorrectly_dropping_boundary_correction": 0.017356092938188405,
+          "relative_trace_discrepancy": 1.3322676295501878e-15
+        }
+      ]
+    },
+    {
+      "mesh_subdivisions": 12,
+      "rhombus_nodes": 169,
+      "triangle_nodes": 91,
+      "spectral_union_relative_error": 1.2500288869853615e-15,
+      "first_rhombus_eigenvalues": [
+        -2.2737367544323206e-13,
+        7.132556630538943,
+        17.4128396524168,
+        17.412839652417844,
+        36.881684148468594,
+        46.642649687856874,
+        51.44624494677612,
+        68.07750053936618
+      ],
+      "first_neumann_triangle_eigenvalues": [
+        -1.4356505722108526e-13,
+        17.412839652417304,
+        17.412839652418242,
+        51.446244946775394,
+        68.0775005393671
+      ],
+      "first_mixed_triangle_eigenvalues": [
+        7.132556630539221,
+        36.8816841484678,
+        46.64264968785781,
+        86.5736183231759,
+        105.15012803167556
+      ],
+      "checks": [
+        {
+          "kappa": 0.7,
+          "full_trace": 10.012453266798413,
+          "parity_formula": 10.01245326679804,
+          "neumann_triangle_trace": 19.740410202407432,
+          "first_boundary_term": 18.796560314551193,
+          "second_boundary_term": 17.947542537091362,
+          "boundary_corrected_formula": 10.012453266798325,
+          "spectral_triple_sum": null,
+          "boundary_kernel_maximum_error": 5.329070518200751e-15,
+          "incorrectly_dropping_boundary_correction": 39.480820404814864,
+          "relative_trace_discrepancy": 8.881784197001252e-15
+        },
+        {
+          "kappa": 1.5,
+          "full_trace": 0.13823667502263118,
+          "parity_formula": 0.1382366750226323,
+          "neumann_triangle_trace": 0.22542789014701115,
+          "first_boundary_term": 0.17994794121908908,
+          "second_boundary_term": 0.1514831455905869,
+          "boundary_corrected_formula": 0.1382366750226354,
+          "spectral_triple_sum": null,
+          "boundary_kernel_maximum_error": 1.7763568394002505e-15,
+          "incorrectly_dropping_boundary_correction": 0.4508557802940223,
+          "relative_trace_discrepancy": 3.042011087472929e-14
+        },
+        {
+          "kappa": 3.0,
+          "full_trace": 0.008209898212869864,
+          "parity_formula": 0.008209898212869868,
+          "neumann_triangle_trace": 0.007825550536497179,
+          "first_boundary_term": 0.004005988958943497,
+          "second_boundary_term": 0.00305117601113733,
+          "boundary_corrected_formula": 0.00820989821286986,
+          "spectral_triple_sum": null,
+          "boundary_kernel_maximum_error": 1.3322676295501878e-15,
+          "incorrectly_dropping_boundary_correction": 0.015651101072994358,
+          "relative_trace_discrepancy": 4.440892098500626e-16
+        }
+      ]
+    },
+    {
+      "mesh_subdivisions": 20,
+      "rhombus_nodes": 441,
+      "triangle_nodes": 231,
+      "spectral_union_relative_error": 1.6105635343895601e-15,
+      "first_rhombus_eigenvalues": [
+        4.547473508864641e-13,
+        7.147215629807306,
+        17.49792454914331,
+        17.49792454914605,
+        37.27140704851536,
+        47.273644301191325,
+        52.206382618502175,
+        69.41831514121856
+      ],
+      "first_neumann_triangle_eigenvalues": [
+        5.427719988936501e-13,
+        17.497924549145946,
+        17.49792454914713,
+        52.20638261850276,
+        69.41831514122005
+      ],
+      "first_mixed_triangle_eigenvalues": [
+        7.147215629806708,
+        37.27140704851471,
+        47.27364430119195,
+        88.793634255879,
+        108.45897460384583
+      ],
+      "checks": [
+        {
+          "kappa": 0.7,
+          "full_trace": 10.009623073972676,
+          "parity_formula": 10.009623073971074,
+          "neumann_triangle_trace": 19.737785656690487,
+          "first_boundary_term": 18.79265807219529,
+          "second_boundary_term": 17.941350651450616,
+          "boundary_corrected_formula": 10.009623073971028,
+          "spectral_triple_sum": null,
+          "boundary_kernel_maximum_error": 7.771561172376096e-15,
+          "incorrectly_dropping_boundary_correction": 39.475571313380975,
+          "relative_trace_discrepancy": 1.6464607455191071e-13
+        },
+        {
+          "kappa": 1.5,
+          "full_trace": 0.13743696416654802,
+          "parity_formula": 0.13743696416654683,
+          "neumann_triangle_trace": 0.22476123321241842,
+          "first_boundary_term": 0.17949425829080742,
+          "second_boundary_term": 0.1509315150760881,
+          "boundary_corrected_formula": 0.13743696416654674,
+          "spectral_triple_sum": null,
+          "boundary_kernel_maximum_error": 6.217248937900877e-15,
+          "incorrectly_dropping_boundary_correction": 0.44952246642483684,
+          "relative_trace_discrepancy": 9.325873406851315e-15
+        },
+        {
+          "kappa": 3.0,
+          "full_trace": 0.007895778213433525,
+          "parity_formula": 0.007895778213433482,
+          "neumann_triangle_trace": 0.007594871856870763,
+          "first_boundary_term": 0.0038957054115285935,
+          "second_boundary_term": 0.0029287671561851426,
+          "boundary_corrected_formula": 0.00789577821343346,
+          "spectral_triple_sum": null,
+          "boundary_kernel_maximum_error": 2.6645352591003757e-15,
+          "incorrectly_dropping_boundary_correction": 0.015189743713741526,
+          "relative_trace_discrepancy": 8.326672684688674e-15
+        }
+      ]
+    }
+  ]
+}
