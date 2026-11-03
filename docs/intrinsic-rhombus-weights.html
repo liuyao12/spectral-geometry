@@ -1,0 +1,138 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intrinsic rhombus weights: an exact sector and a missing stratum · Spectral Geometry</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>figure{margin:2rem 0}figure img{width:100%;height:auto}figcaption{color:#59666d;font-size:.9rem}table{width:100%;border-collapse:collapse}th,td{text-align:right;padding:.55rem;border-bottom:1px solid #d9e1df}th:first-child,td:first-child{text-align:left}</style>
+</head><body><main>
+<nav><a href="index.html">Spectral geometry</a><span>Reflecting rhombus · November 3, 2026</span></nav>
+<header><p class="eyebrow">Eliminating patch variables: what is now proved</p><h1>An exact physical weight<br>and a missing family stratum</h1>
+<p class="lede">The displayed length-three family has a patch-free, exact specular-itinerary weight. It is a Bessel factor times an explicit Gaussian-bridge probability. A second sector proves that collapsed nets must also enter the geometric classification.</p>
+<div class="caution"><strong>The requested full formula remains open here.</strong> The result below is one physical specular sector, not a completed trace formula indexed by maximal net families and corner diffraction. In particular, off-stationary rays in a sector are not themselves balanced geodesic nets. The earlier convergent patch construction does not justify regrouping its terms into the requested intrinsic sum.</div></header>
+<div class="toc"><a href="#operator">Spectral data</a><a href="#weight">Exact physical weight</a><a href="#proof">Proof</a><a href="#collapsed">Collapsed nets</a><a href="#local">Local weights</a><a href="#gap">Remaining theorem</a><a href="#checks">Checks</a></div>
+
+<section id="operator"><p class="eyebrow">01 / The actual reflecting domain</p><h2>Operator and observable stay fixed</h2>
+<p>Set \(a=(1,0)\), \(b=(1/2,\sqrt3/2)\), \(\Omega=\operatorname{conv}\{0,a,a+b,b\}\). Use the nonnegative Neumann Laplacian \(h=-\Delta_N\), its resolvent kernel \(G_\kappa\), and the observable</p>
+<div class="math-scroll">\[
+\mathcal T_\Omega(\kappa)=\int_{\Omega^2}G_\kappa(u,v)^3\,du\,dv
+=\sum_{i,j,k}\frac{\left|\int_\Omega\phi_i\phi_j\phi_k\right|^2}{(\lambda_i+\kappa^2)(\lambda_j+\kappa^2)(\lambda_k+\kappa^2)},\qquad \kappa&gt;0.
+\]</div>
+<p>The spectral data include eigenfunction triple products as well as eigenvalues. This is not the spectrum of a newly identified fixed many-body Hamiltonian. Its positive two-coordinate trace realization is given on the <a href="rhombus-exact-trace.html#operator">operator page</a>.</p></section>
+
+<section id="weight"><p class="eyebrow">02 / No auxiliary patches</p><h2>The physical length-three sector</h2>
+<p>Number the sides counterclockwise from the bottom: bottom, right, top, left. The three itineraries are direct, bottom then left, and right then top. With \(R\) rotation through \(2\pi/3\), their unfolded displacements are</p>
+<div class="math-scroll">\[
+d_0=v-u,\qquad d_1=R^2v-u,\qquad d_2=Rv+c-u,\qquad c=(3,0).
+\]</div>
+<p>Let \(\mathcal D\subset\Omega^2\) be the chamber where both reflected paths hit those finite side interiors in that order. This is a condition on the actual billiard rays; it includes no cutoff functions. Put \(g_\kappa(r)=K_0(\kappa r)/(2\pi)\), and define the weight of this single labeled, oriented ray chamber by</p>
+<div class="math-scroll">\[
+W_{\mathcal D}(\kappa)=\int_{\mathcal D}\prod_{i=0}^2g_\kappa(|d_i|)\,du\,dv.
+\]</div>
+<div class="theorem"><span class="badge">Exact physical-itinerary identity</span>
+<div class="math-scroll">\[
+\boxed{W_{\mathcal D}(\kappa)=\frac{9K_2(3\kappa)}{48\pi\kappa^2}\,P_{\mathcal D}(\kappa).}
+\]</div>
+<p>The factor \(P_{\mathcal D}\) is the following completely specified probability. It uses the actual finite-wall visibility test, not an unknown boundary kernel.</p></div>
+<ol>
+<li>Draw \(s=(s_0,s_1,s_2)\) uniformly on the simplex \(s_i&gt;0\), \(\sum s_i=1\).</li>
+<li>Independently draw \(T&gt;0\) with normalized density
+<div class="math-scroll">\[
+f_\kappa(T)=\frac{2\kappa^2}{9K_2(3\kappa)}\,T\exp\!\left(-\kappa^2T-\frac9{4T}\right).
+\]</div></li>
+<li>Draw two jointly Gaussian planar vectors with means \(s_0c,s_1c\) and covariance
+<div class="math-scroll">\[
+\operatorname{Cov}(z_0,z_1)=2T\begin{pmatrix}s_0(1-s_0)I&-s_0s_1I\\-s_0s_1I&s_1(1-s_1)I\end{pmatrix}.
+\]</div></li>
+<li>Set \(u=(I-R^2)^{-1}(z_0-R^2z_1)\), \(v=z_1+Ru\). Then \(P_{\mathcal D}(\kappa)=\Pr((u,v)\in\mathcal D)\).</li>
+</ol>
+<details class="proof"><summary>Exact finite-wall visibility test</summary>
+<p>For a word \(w\), start at \(u\) toward its unfolded image \(A_wv+b_w\), with unit direction \(e\) and remaining length \(L\). For each prescribed side with outward unit normal \(n_j\) and equation \(n_j\cdot x=c_j\), compute</p>
+<div class="math-scroll">\[
+\tau=\frac{c_j-n_j\cdot x}{n_j\cdot e},\quad p=x+\tau e.
+\]</div>
+<p>Require \(n_j\cdot e&gt;0\), \(0&lt;\tau&lt;L\), and \(p\) strictly between that side's vertices. Replace \(x\) by \(p\), \(L\) by \(L-\tau\), and \(e\) by \(e-2(n_j\cdot e)n_j\). After the last reflection require \(x+Le=v\). Convexity ensures that each segment between these successive finite-wall hits lies inside the rhombus. Boundary equalities have measure zero. The full four-dimensional chamber is generally semialgebraic; it is not assumed to be a polytope.</p></details>
+</section>
+
+<section id="proof"><p class="eyebrow">03 / An exact weight is more than area</p><h2>Proof and limiting family measure</h2>
+<p>Rotate the displacements separately: \(z_0=R^2d_0\), \(z_1=Rd_1\), \(z_2=d_2\). Then \(z_0+z_1+z_2=c\), and the linear change of variables has Jacobian \(du\,dv=\tfrac13\,dz_0\,dz_1\). Therefore the same integral over all endpoint pairs in \(\mathbb R^4\) is</p>
+<div class="math-scroll">\[
+\frac13(g_\kappa*g_\kappa*g_\kappa)(c)=\frac{9K_2(3\kappa)}{48\pi\kappa^2}.
+\]</div>
+<p>Insert \(g_\kappa(z)=\int_0^\infty(4\pi t)^{-1}e^{-\kappa^2t-|z|^2/(4t)}dt\) into this positive integral. Write the three times as \(t_i=Ts_i\), condition their Gaussian increments to sum to \(c\), and normalize. This gives exactly the probability law above. Restriction to \(\mathcal D\) proves the boxed formula by Tonelli's theorem.</p>
+<p>In the stationary limit the actual embedded family is</p>
+<div class="math-scroll">\[
+u=(x,y),\quad v=(x/2+\sqrt3y/2,\sqrt3x/2-y/2),
+\quad 0&lt;y&lt;\frac{\sqrt3}{2},\quad \sqrt3y&lt;x&lt;1+\frac y{\sqrt3},
+\]</div>
+<div class="math-scroll">\[
+(\ell_0,\ell_1,\ell_2)=(x-\sqrt3y,x+\sqrt3y,3-2x),\qquad \ell_0+\ell_1+\ell_2=3.
+\]</div>
+<p>At the bridge means, \(x=\tfrac32(s_0+s_1)\), \(y=\tfrac{\sqrt3}2(s_1-s_0)\). The finite-wall test becomes precisely \(s_0&lt;s_1\) and \(s_0&lt;s_2\): the direct edge is shortest. This event has probability \(1/3\).</p>
+<div class="theorem"><span class="badge">Proved endpoint limits</span>
+<div class="math-scroll">\[
+\lim_{\kappa\to\infty}P_{\mathcal D}(\kappa)=\frac13,\qquad
+W_{\mathcal D}(\kappa)\sim\frac{e^{-3\kappa}}{16\sqrt{6\pi}\,\kappa^{5/2}},\qquad
+\lim_{\kappa\downarrow0}P_{\mathcal D}(\kappa)=0.
+\]</div></div>
+<p>For the first limit, \(\mathbb E[T]=\tfrac3{2\kappa}K_3(3\kappa)/K_2(3\kappa)\to0\); hence the bridge fluctuations vanish in probability. The chamber boundary at the means has simplex measure zero, so bounded convergence in probability gives \(1/3\). Bessel asymptotics give the displayed weight. For the last limit, the physical endpoint domain is bounded and the logarithmic singularities of the three kernels are integrable; Hölder's inequality yields \(W_{\mathcal D}=O((1+|\log\kappa|)^3)\). The unrestricted factor is asymptotic to \(1/(24\pi\kappa^4)\), so their ratio tends to zero.</p>
+<p>Thus the continuum measure gives a leading coefficient, but cannot be the entire exact finite-parameter weight of this physical specular sector. This does not rule out cancellations with other sectors in a future full trace formula.</p>
+</section>
+
+<section id="collapsed"><p class="eyebrow">04 / A necessary addition to the index set</p><h2>A ray sector with no genuine theta net</h2>
+<p>Consider the three words direct, bottom reflection, top reflection, and put \(H=\sqrt3/2\). Their displacements are</p>
+<div class="math-scroll">\[
+(v_x-u_x,v_y-u_y),\quad(v_x-u_x,-v_y-u_y),\quad(v_x-u_x,2H-v_y-u_y).
+\]</div>
+<p>The physical chamber is nonempty: \(u=(0.7,0.4)\), \(v=(0.8,0.4)\) have bottom and top hits at horizontal coordinate \(0.75\), on both finite walls. However, all three outgoing horizontal components have the sign of \(v_x-u_x\). Force balance at \(u\) therefore requires \(v_x=u_x\). The three nonzero unit directions would then be collinear, and three collinear unit vectors cannot sum to zero. There is no noncollapsed equal-weight theta net in this chamber.</p>
+<div class="theorem"><span class="badge">Proved collapsed minimizing family</span>
+<div class="math-scroll">\[
+|d_0|+|d_b|+|d_t|\geq 2H=\sqrt3.
+\]</div>
+<p>Equality holds on the limiting stratum \(u=v=(x,y)\), \(1/2&lt;x&lt;1\), \(0&lt;y&lt;H\). The direct edge has zero length; the other edges are the vertical bottom and top reflection loops. No corner is involved.</p></div>
+<p>The inequality follows from \(|d_b|\geq u_y+v_y\), \(|d_t|\geq2H-u_y-v_y\), and \(|d_0|\geq0\). Equality requires a collapsed direct edge, and the two vertical wall hits are interior precisely on the stated strip. This exhibits a geometric stratum that a classification by noncollapsed theta nets and corner-diffractive nets alone would omit.</p>
+<p>A local asymptotic calculation predicts, per labeled chamber,</p>
+<div class="math-scroll">\[
+W_{\rm coll}(\kappa)\sim\frac{e^{-\sqrt3\kappa}}{32\kappa^3}.
+\]</div>
+<p>The proposed coefficient comes from \(\int_{\mathbb R^2}g_\kappa(|v-u|)\,d(v-u)=\kappa^{-2}\), the product of the two large-distance Bessel factors, strip width \(1/2\), and \(\int_0^H[y(H-y)]^{-1/2}dy=\pi\). The numerical check below supports this limit. Uniform control near the strip endpoints is not supplied here, so this coefficient is a prediction rather than one of the proved theorems.</p></section>
+
+<section id="local"><p class="eyebrow">05 / Explicit weights for local strata</p><h2>The flat-edge coefficient can be evaluated</h2>
+<p>Any complete trace formula must also account for zero-length local terms. Scaling the plane model gives the bulk density \(c_{\rm bulk}\kappa^{-2}\), where</p>
+<div class="math-scroll">\[
+c_{\rm bulk}=\frac1{4\pi^2}\int_0^\infty rK_0(r)^3\,dr\approx0.0148429659857.
+\]</div>
+<p>For a flat Neumann wall let \(a=g_1(\sqrt{t^2+(h-k)^2})\), \(b=g_1(\sqrt{t^2+(h+k)^2})\), with \(h,k&gt;0\). After subtracting the plane bulk term, the deficit from \(a^3\) cancels \(b^3\). The remaining edge density is</p>
+<div class="math-scroll">\[
+c_{\rm edge}=3\int_{\mathbb R\times\mathbb R_+^2}(a^2b+ab^2)\,dt\,dh\,dk
+=\boxed{\frac3{32}-\frac1{8\sqrt3}}\approx0.0215812163513.
+\]</div>
+<p>This is the exact half-plane excess per unit boundary length; scaling gives \(c_{\rm edge}\kappa^{-3}\). It is not an exact expression for all finite-domain boundary corrections.</p>
+<details class="proof"><summary>Positive-integral evaluation</summary>
+<p>Insert the three positive heat-time representations. For the two direct factors let \(A=1/t_1+1/t_2\); for the image factor let \(C=1/t_3\). Integration over the horizontal displacement gives \(2\sqrt\pi/\sqrt{A+C}\); integration over the positive vertical quadrant gives \(2\arctan\sqrt{A/C}/\sqrt{AC}\). For the complementary term interchange \(A,C\); the two arctangents sum to \(\pi/2\). Set \(t_i=Ts_i\) and integrate \(T\). With \(U=s_1s_2+s_2s_3+s_3s_1\), the result is</p>
+<div class="math-scroll">\[
+c_{\rm edge}=\frac3{64\pi}J,\qquad J=\int_\Delta\frac{ds_1ds_2}{\sqrt{U(1-s_3)}}
+=2\int_0^1\frac{dt}{1+\sqrt{t(1-t)}}=2\pi-\frac{8\pi}{3\sqrt3}.
+\]</div>
+<p>For the middle equality use \(s_1=rt\), \(s_2=r(1-t)\), and integrate \(r\) first. The last integral is elementary after \(t=(1+\cos\theta)/2\). All integrations before the elementary substitutions have positive integrands, so their interchanges need no conditional summation prescription.</p></details></section>
+
+<section id="gap"><p class="eyebrow">06 / What still separates this from the requested formula</p><h2>The unproved global resummation</h2>
+<p>The actual obtuse-corner weight is already explicit in the <a href="rhombus-corner-expansion.html#corner">exact Neumann wedge formula</a>. Its geometric and diffractive pieces cancel each other's jumps at optical boundaries. A global formula must preserve these paired cancellations through repeated corner encounters, then group the three propagators by maximal stationary families and their collapsed or corner limits.</p>
+<p>The missing theorem is convergence of that intrinsic global expansion in a norm strong enough to justify the cubed-kernel integral, together with a consistent summation prescription at optical boundaries. Convergence of the auxiliary patch series does not prove this. The single-sector identity above eliminates its patch variables but does not establish that theorem.</p>
+<p><a href="https://arxiv.org/abs/physics/0303093">Hannay and Thain's exact straight-reflector scattering construction</a> is a relevant candidate for the physical corner-path expansion; its Appendix C convergence argument concerns the slit case, not the full rhombus grouping needed here. The <a href="https://arxiv.org/abs/chao-dyn/9910037">polygonal trace corrections of Bogomolny, Pavloff, and Schmit</a> address the delicate family/diffraction transitions semiclassically. Neither is being used here as a proof of the requested exact family identity.</p>
+<p>The necessary geometric index set now includes genuine theta families, positive-length collapsed strata, corner-diffractive strata, and the local bulk/edge/corner terms. An explicit scalar weight for every such stratum of the full reflecting rhombus has not been obtained.</p></section>
+
+<section id="checks"><p class="eyebrow">07 / Reproducible evidence</p><h2>Physical visibility, not unrestricted images</h2>
+<figure><img src="assets/intrinsic-rhombus-weights.png" width="1870" height="714" alt="The physical chamber probability rises toward one third; the scaled collapsed-sector weight rises toward the predicted one over thirty-two."><figcaption>Independent Monte Carlo samples; bars show twice the estimated standard error. Each point uses \(262144\) samples. The right-hand horizontal line is a prediction; the left-hand limit is proved above.</figcaption></figure>
+<table><thead><tr><th>\(\kappa\)</th><th>\(P_{\mathcal D}\)</th><th>Estimated standard error</th><th>Weight / leading term</th></tr></thead><tbody>
+<tr><td>\(1\)</td><td>\(0.040562\)</td><td>\(0.000385\)</td><td>\(0.20776\)</td></tr>
+<tr><td>\(5\)</td><td>\(0.157009\)</td><td>\(0.000711\)</td><td>\(0.53158\)</td></tr>
+<tr><td>\(80\)</td><td>\(0.284912\)</td><td>\(0.000882\)</td><td>\(0.86143\)</td></tr>
+<tr><td>\(1280\)</td><td>\(0.321072\)</td><td>\(0.000912\)</td><td>\(0.96369\)</td></tr>
+<tr><td>\(5120\)</td><td>\(0.326805\)</td><td>\(0.000916\)</td><td>\(0.98054\)</td></tr>
+</tbody></table>
+<p>The stationary chamber characterization was checked at \(1000\) independently drawn simplex points. Direct three-dimensional quadrature of the edge integral at orders \(32,64,128\) gives \(0.02144229,0.02155562,0.02157684\), approaching the exact coefficient \(0.02158122\). This is a convergence check, not an interval certificate.</p>
+<p>The bounded probability estimates admit a simultaneous Hoeffding half-width \(0.003752\) with confidence at least \(99\%\) for the eight sampled parameters, under ideal independent sampling. The weighted collapsed-sector estimates do not inherit that bounded-indicator guarantee. Pseudorandom sampling and numerical quadrature are not rigorous error enclosures.</p>
+<p><a href="data/intrinsic-rhombus-weights.json">Full data</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/intrinsic_rhombus_weights.py">Calculation source</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/plot_intrinsic_rhombus_weights.py">Plot source</a></p>
+</section>
+<footer><a href="rhombus-corner-expansion.html">Previous: convergent patch construction</a> · <a href="polygon-families.html#viewer">Physical family viewer</a></footer>
+</main></body></html>
