@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How a continuum of nets enters a trace · Spectral Geometry</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head><body><main>
+<nav><a href="index.html">Spectral geometry</a><span>Family weights · November 2, 2026</span></nav>
+<header><p class="eyebrow">The next step after finding continua</p><h1>Measuring a family<br>of geodesic nets</h1>
+<p class="lede">A continuous family contributes an integral over its positions, with a transverse stability factor. For the equal-weight planar theta families considered here, that factor simplifies to ordinary area times a universal function of total length.</p>
+<div class="caution"><strong>What is proved here.</strong> The family density and exact Bessel decomposition below concern specified unfolded plane Green kernels. A separate exact identity supplies a natural spectral object using triple products of billiard eigenfunctions. A complete formula equating that object's contributions to all billiard-net families, including corner diffraction and degenerations, is not proved here.</div>
+</header>
+<div class="toc"><a href="#density">Family density</a><a href="#cancellation">An area law</a><a href="#rhombus">Exact rhombus weight</a><a href="#spectral">The spectral side</a><a href="#next">What remains</a></div>
+
+<section id="density"><p class="eyebrow">01 / A finite measure for a continuum</p><h2>The transverse Hessian supplies the weight</h2>
+<p>Fix three unfolded path maps \(v\mapsto S_ev+b_e\), with orthogonal \(S_e\), and write</p>
+<div class="math-scroll">\[\ell_e(u,v)=|S_ev+b_e-u|,\qquad F(u,v)=\sum_{e=1}^3\ell_e(u,v).\]</div>
+<p>A stationary point of \(F\) balances the three unit directions at both junctions. Let \(\mathcal C\) be a smooth \(d\)-dimensional stationary family of total length \(L\), with positive edge lengths. Put \(H=D^2F\). Assume that its kernel is exactly the tangent space to \(\mathcal C\). This is the clean, or Morse–Bott, condition: there are no further flat directions transverse to the family.</p>
+<p>For plane resolvent kernels, define</p>
+<div class="math-scroll">\[g_\kappa(r)=\frac{K_0(\kappa r)}{2\pi},\qquad
+I_\chi(\kappa)=\int_{\mathbb R^4}\chi(u,v)\prod_{e=1}^3g_\kappa(\ell_e(u,v))\,du\,dv,\]</div>
+<p>where the smooth cutoff \(\chi\) is supported near a compact nondegenerate part of the family. The kernel is a continuous matrix entry of \((-\Delta+\kappa^2)^{-1}\); \(K_0\) is the modified Bessel function. Clean Laplace asymptotics give</p>
+<div class="theorem"><span class="badge">Proposition · localized plane-kernel model</span>
+<div class="math-scroll">\[
+I_\chi(\kappa)\sim
+\frac{(2\pi)^{(4-d)/2}}{(8\pi)^{3/2}}\,
+\kappa^{-(7-d)/2}e^{-\kappa L}\,
+\mathcal W_\chi(\mathcal C),
+\]</div>
+<div class="math-scroll">\[
+\mathcal W_\chi(\mathcal C)=
+\int_{\mathcal C}\frac{\chi\,d\operatorname{vol}_{\mathcal C}}
+{\sqrt{\ell_1\ell_2\ell_3\,\det{}'H}}.
+\]</div>
+<p>The prime means the determinant on the normal space, omitting the zero eigenvalues tangent to the family. The volume is induced by the Euclidean measure \(du\,dv\). This expression is unchanged by a different parameterization of the same family.</p>
+</div>
+<details class="proof"><summary>Proof and interpretation</summary>
+<p>Uniformly away from collapsed edges, \(g_\kappa(\ell)\sim e^{-\kappa\ell}/\sqrt{8\pi\kappa\ell}\). Multiply three such factors and apply the Gaussian Laplace formula in the \(4-d\) positive normal directions. Each supplies a factor \(\kappa^{-1/2}\); the tangent directions remain as an integral over the family. The reciprocal square root of the normal determinant measures how broadly neighboring configurations concentrate around the stationary family.</p>
+<p>Thus a slider's parameter length is not the weight. Both the measure induced by the original vertex integrals and the behavior transverse to the family matter. A larger family dimension also changes the power of the spectral parameter.</p>
+</details>
+</section>
+
+<section id="cancellation"><p class="eyebrow">02 / A simplification special to this planar theta problem</p><h2>For even reflection words, the density is constant in junction coordinates</h2>
+<p>Suppose all three \(S_e\) preserve orientation. This includes a direct edge and two edges having even numbers of reflections, as in both displayed rhombus and regular-pentagon examples. Let \(t_e=(S_ev+b_e-u)/\ell_e\), put \(n_e=Jt_e\), with \(J\) rotation by \(\pi/2\), and define the three row vectors</p>
+<div class="math-scroll">\[q_e=(-n_e,\ S_e^{\mathsf T}n_e)\in\mathbb R^4.\]</div>
+<p>The two junction balances and the orientation assumption imply</p>
+<div class="math-scroll">\[
+\sum_e q_e=0,\qquad |q_e|^2=2,\qquad q_e\cdot q_f=-1\quad(e\ne f),
+\qquad H=\sum_e\frac{q_eq_e^{\mathsf T}}{\ell_e}.
+\]</div>
+<p>In the last expression regard each \(q_e\) as a column. The vectors span a plane. The two nonzero eigenvalues therefore have product</p>
+<div class="math-scroll">\[
+\det{}'H=
+3\left(\frac1{\ell_1\ell_2}+\frac1{\ell_1\ell_3}+\frac1{\ell_2\ell_3}\right)
+=\frac{3L}{\ell_1\ell_2\ell_3}.
+\]</div>
+<p>Moreover the family has the form \(v=Ou+r\), with orthogonal \(O\). Consequently \(d\operatorname{vol}_{\mathcal C}=2\,du\). For a first-junction position region \(U\), this gives</p>
+<div class="theorem"><span class="badge">Area law · one labeled, oriented itinerary triple</span>
+<div class="math-scroll">\[
+\boxed{\mathcal W(\mathcal C_U)=
+\frac{2\,\operatorname{Area}(U)}{\sqrt{3L}}.}
+\]</div>
+<div class="math-scroll">\[
+I_{\mathcal C_U}(\kappa)\ \text{has leading local family term}\quad
+\frac{\operatorname{Area}(U)}{4\sqrt{6\pi L}}\,
+\kappa^{-5/2}e^{-\kappa L}.
+\]</div>
+<p>The individual edge lengths have canceled from the density. The admissible position region is determined by linear reflection inequalities, so its area is often exactly algebraic. Multiplicities for exchanging the vertices or permuting the three edges must be specified separately.</p>
+</div>
+<details class="proof"><summary>Why the family map is an isometry</summary>
+<p>Each of the triples \((n_e)\) and \((S_e^{\mathsf T}n_e)\) consists of three unit vectors summing to zero. Hence one orthogonal map \(O\) carries the first labeled triple to the second. The equations preserving all three unfolded directions reduce to \(dv=O\,du\). The corresponding affine family is \(v=Ou+r\), and its metric is \(du^{\mathsf T}(I+O^{\mathsf T}O)du=2|du|^2\). The Gram matrix of the \(q_e\) gives the displayed determinant by summing the three two-row minors.</p>
+</details>
+</section>
+
+<section id="rhombus"><p class="eyebrow">03 / The family in the image</p><h2>The rhombus contributes an explicit area weight</h2>
+<p>For the unit-side rhombus of angle \(\pi/3\), use the direct edge and side words \((1,4)\), \((2,3)\). The full first-junction region for the previously verified crossing-free family is</p>
+<div class="math-scroll">\[
+U=\left\{(x,y):0&lt;y&lt;\frac{\sqrt3}{2},\
+\sqrt3y&lt;x&lt;1+\frac{y}{\sqrt3}\right\},\qquad
+\operatorname{Area}(U)=\frac{\sqrt3}{4},\quad L=3.
+\]</div>
+<p>Thus \(\mathcal W=\sqrt3/6\), and the leading family term is</p>
+<div class="math-scroll">\[
+\boxed{\frac{e^{-3\kappa}}{16\sqrt{6\pi}\,\kappa^{5/2}}.}
+\]</div>
+<p>There is also an exact statement in the unfolded model. Integrate the first junction over \(U\), and the second over the whole plane:</p>
+<div class="math-scroll">\[
+\mathcal A_U(\kappa)=
+\int_U\int_{\mathbb R^2}
+\prod_{e=1}^3g_\kappa(|S_ev+b_e-u|)\,dv\,du.
+\]</div>
+<p>The second-node integration uses the whole plane, so this is the unfolded auxiliary quantity. Rotating each distance identifies, for fixed \(u\), three anchors \(a_e(u)=S_e^{\mathsf T}(u-b_e)\). Their Steiner point is the family vertex \(v(u)\), and their Steiner length is always \(3\). Applying the <a href="theta-trace.html#formula">earlier exact three-anchor identity</a> pointwise and then integrating over \(u\) proves</p>
+<div class="theorem"><span class="badge">Exact unfolded decomposition</span>
+<div class="math-scroll">\[
+\boxed{\mathcal A_U(\kappa)=
+\frac{K_0(3\kappa)}{16\pi\kappa^2}-\mathcal R_U(\kappa),\qquad
+\mathcal R_U(\kappa)\geq0.}
+\]</div>
+<p>Here \(\mathcal R_U\) is the integral over \(U\) of the explicit edge-collapse corrections in that identity. The Bessel term is exact as one term of this decomposition; it is not the entire integral.</p>
+</div>
+<p>For every interior \(u\), the collapse lengths are strictly greater than \(3\), so the correction is exponentially smaller than the net term at that \(u\). The nonnegative anchor integral is bounded above by the universal Bessel term. Dominated convergence therefore proves</p>
+<div class="math-scroll">\[
+\mathcal A_U(\kappa)\sim\frac{K_0(3\kappa)}{16\pi\kappa^2}
+\sim\frac{e^{-3\kappa}}{16\sqrt{6\pi}\,\kappa^{5/2}}.
+\]</div>
+<p>The closure of \(U\) contains collapsed nets, so there is no common positive gap between \(3\) and all the collapse thresholds. The argument above handles that issue without assuming a uniform gap.</p>
+<p>Numerically, the determinant and constant-density identities were checked at \(500\) positions, with maximum relative determinant error below \(3\times10^{-14}\). Independent plane-kernel quadrature at three junction positions, using orders \(80\) and \(112\), gives at \(\kappa=320\) a ratio \(0.999869868\) to the predicted leading coefficient; the order changes are below \(1.1\times10^{-11}\). The residual difference from \(1\) agrees with the first Bessel correction. These order comparisons are numerical convergence checks, not rigorous error bounds.</p>
+<p><a href="polygon-families.html#viewer">Move this family</a> · <a href="data/theta-family-weights.json">All weight and quadrature checks</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/theta_family_weights.py">Reproducible calculation</a></p>
+</section>
+
+<section id="spectral"><p class="eyebrow">04 / A concrete spectral object for branching</p><h2>Triple products of eigenfunctions supply a natural spectral side</h2>
+<p>Choose Dirichlet or Neumann boundary conditions on a bounded planar polygon, and take a real orthonormal basis with \(-\Delta\phi_j=\lambda_j\phi_j\). Define \(c_{ijk}=\int_\Omega\phi_i\phi_j\phi_k\,dx\), and let \(G_\kappa\) be the kernel of \((-\Delta+\kappa^2)^{-1}\). Then</p>
+<div class="theorem"><span class="badge">Exact spectral identity · full domain Green kernel</span>
+<div class="math-scroll">\[
+\boxed{\int_{\Omega\times\Omega}G_\kappa(x,y)^3\,dx\,dy
+=\sum_{i,j,k}
+\frac{|c_{ijk}|^2}
+{(\lambda_i+\kappa^2)(\lambda_j+\kappa^2)(\lambda_k+\kappa^2)}.}
+\]</div>
+<p>This is a triple-kernel contraction, or graph trace, with an exact spectral expansion. It uses eigenfunction triple products in addition to eigenvalues. It is not the ordinary trace of a specified many-body Hamiltonian.</p>
+</div>
+<p>It can also be written using ordinary operator traces with insertions. If \(R_\kappa=(-\Delta+\kappa^2)^{-1}\) and \(M_{\phi_i}\) multiplies by \(\phi_i\), the same quantity is</p>
+<div class="math-scroll">\[
+\mathcal T_\kappa=\sum_i
+\frac{\operatorname{Tr}(R_\kappa M_{\phi_i}R_\kappa M_{\phi_i})}
+{\lambda_i+\kappa^2}.
+\]</div>
+<p>The multiplication appears in the observable at a vertex; the propagation operator remains the free Laplacian with the chosen boundary conditions.</p>
+<details class="proof"><summary>A convergent derivation using heat kernels</summary>
+<p>If \(K_t(x,y)\) is the heat kernel, expansion at positive times gives</p>
+<div class="math-scroll">\[
+\int_{\Omega^2}\prod_{e=1}^3 K_{t_e}(x,y)\,dx\,dy
+=\sum_{i,j,k}|c_{ijk}|^2
+e^{-t_1\lambda_i-t_2\lambda_j-t_3\lambda_k}.
+\]</div>
+<p>Integrate each time over the positive half-line with factor \(e^{-\kappa^2t_e}\). Positivity of both sides permits Tonelli's theorem. The resolvent kernel has only logarithmic diagonal singularities in two dimensions, so its cube is integrable. This proves the displayed identity without multiplying a merely formal eigenfunction expansion.</p>
+</details>
+<p>The two vertex integrals in a three-path contribution impose the two junction balances. At a common edge wavenumber, the three unit directions sum to zero, giving angles \(120^\circ\). The normal Hessian above then determines how a clean continuum is weighted.</p>
+<p>This direction has a close precedent: <a href="https://arxiv.org/abs/2103.03336">Emmett Wyman, <em>Triangles and triple products of Laplace eigenfunctions</em></a>. Definition 2.4 and Proposition 2.5 identify balanced three-geodesic configurations joining the same two points in the wavefront geometry of squared triple products. That work treats closed manifolds; it does not establish the rhombus billiard formula here.</p>
+</section>
+
+<section id="next"><p class="eyebrow">05 / The remaining trace-formula problem</p><h2>Connect the exact spectral contraction to its billiard families</h2>
+<p>The precise next target is a localized billiard expansion of the exact triple-kernel spectral quantity, with the clean density above for each nondegenerate theta family. One must isolate reflection patterns, keep their signs and multiplicities, and include local diagonal terms, collapsed nets, and corner diffraction. The unfolded calculation alone does not justify that complete expansion.</p>
+<p>For the displayed words every edge has an even number of reflections, so the product of the usual Dirichlet reflection signs is positive, as is the Neumann product. That fixes the sign of this candidate geometric branch, while leaving the global decomposition to be proved.</p>
+<p>The finite, often algebraic area of the admissible family is therefore a useful geometric quantity to compute now. Its role is supported by a proved local density, an exact unfolded decomposition, and a concrete exact spectral expression to compare against.</p>
+</section>
+<footer><a href="polygon-families.html">Polygon experiments</a> · <a href="theta-trace.html">Earlier exact spectral-family identity</a></footer>
+</main></body></html>

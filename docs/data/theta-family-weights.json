@@ -1,0 +1,131 @@
+{
+  "scope": "Plane Green kernels for one labeled, oriented unfolded rhombus itinerary triple. Not a complete billiard spectral trace.",
+  "sampled_geometry_points": 500,
+  "maximum_errors": {
+    "transverse_determinant": 2.90878432451791e-14,
+    "position_density": 9.658940314238862e-15,
+    "length": 1.3322676295501878e-15
+  },
+  "position_density": 0.6666666666666666,
+  "first_junction_area": 0.4330127018922193,
+  "intrinsic_family_weight": 0.28867513459481287,
+  "fixed_first_junction_leading_coefficient": 0.03324519003345273,
+  "whole_family_leading_coefficient": 0.014395589561305646,
+  "exact_net_term": "K0(3*kappa)/(16*pi*kappa^2); subtract positive edge-collapse corrections.",
+  "quadrature": [
+    {
+      "first_junction": [
+        0.75,
+        0.1
+      ],
+      "values": [
+        {
+          "kappa": 20,
+          "scaled_integral": 0.03303827593164448,
+          "ratio_to_leading_coefficient": 0.9937761191438509,
+          "quadrature_relative_change": 0.0003085554352037067
+        },
+        {
+          "kappa": 40,
+          "scaled_integral": 0.033207426005460235,
+          "ratio_to_leading_coefficient": 0.9988640754360407,
+          "quadrature_relative_change": 1.2692693276615328e-05
+        },
+        {
+          "kappa": 80,
+          "scaled_integral": 0.033227911826345255,
+          "ratio_to_leading_coefficient": 0.9994802794903538,
+          "quadrature_relative_change": 3.391370006265692e-08
+        },
+        {
+          "kappa": 160,
+          "scaled_integral": 0.03323654255555777,
+          "ratio_to_leading_coefficient": 0.9997398878488509,
+          "quadrature_relative_change": 5.428098942602555e-14
+        },
+        {
+          "kappa": 320,
+          "scaled_integral": 0.033240863766318636,
+          "ratio_to_leading_coefficient": 0.9998698678777369,
+          "quadrature_relative_change": 1.4194720954988814e-14
+        }
+      ]
+    },
+    {
+      "first_junction": [
+        0.75,
+        0.21650635094610965
+      ],
+      "values": [
+        {
+          "kappa": 20,
+          "scaled_integral": 0.03181035141189754,
+          "ratio_to_leading_coefficient": 0.9568407153001263,
+          "quadrature_relative_change": 0.013626669091051476
+        },
+        {
+          "kappa": 40,
+          "scaled_integral": 0.032944109571388894,
+          "ratio_to_leading_coefficient": 0.9909436384102219,
+          "quadrature_relative_change": 0.0019275667247489914
+        },
+        {
+          "kappa": 80,
+          "scaled_integral": 0.033216624475074695,
+          "ratio_to_leading_coefficient": 0.999140761164268,
+          "quadrature_relative_change": 8.077869063203517e-05
+        },
+        {
+          "kappa": 160,
+          "scaled_integral": 0.03323650386160647,
+          "ratio_to_leading_coefficient": 0.9997387239526223,
+          "quadrature_relative_change": 2.458738988035822e-07
+        },
+        {
+          "kappa": 320,
+          "scaled_integral": 0.03324086376591636,
+          "ratio_to_leading_coefficient": 0.9998698678656367,
+          "quadrature_relative_change": 1.056567354625667e-11
+        }
+      ]
+    },
+    {
+      "first_junction": [
+        0.8,
+        0.2
+      ],
+      "values": [
+        {
+          "kappa": 20,
+          "scaled_integral": 0.03267448609828597,
+          "ratio_to_leading_coefficient": 0.982833488556014,
+          "quadrature_relative_change": 0.004611865561472735
+        },
+        {
+          "kappa": 40,
+          "scaled_integral": 0.033140988035144876,
+          "ratio_to_leading_coefficient": 0.9968656518972219,
+          "quadrature_relative_change": 0.00026839069870106225
+        },
+        {
+          "kappa": 80,
+          "scaled_integral": 0.03322698555074556,
+          "ratio_to_leading_coefficient": 0.9994524175470543,
+          "quadrature_relative_change": 1.393353480345896e-06
+        },
+        {
+          "kappa": 160,
+          "scaled_integral": 0.033236542311526826,
+          "ratio_to_leading_coefficient": 0.9997398805085127,
+          "quadrature_relative_change": 8.119534595778515e-09
+        },
+        {
+          "kappa": 320,
+          "scaled_integral": 0.033240863766318525,
+          "ratio_to_leading_coefficient": 0.9998698678777336,
+          "quadrature_relative_change": 1.6490925815354706e-14
+        }
+      ]
+    }
+  ]
+}
