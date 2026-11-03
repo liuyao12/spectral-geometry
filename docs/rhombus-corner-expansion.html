@@ -1,0 +1,203 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A convergent corner-kernel expansion for the reflecting rhombus · Spectral Geometry</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head><body><main>
+<nav><a href="index.html">Spectral geometry</a><span>Reflecting rhombus · November 3, 2026</span></nav>
+<header><p class="eyebrow">Keep the actual operator; make diffraction explicit</p><h1>A convergent expansion<br>from mirrors and corners</h1>
+<p class="lede">The full Neumann rhombus resolvent can be constructed from explicit plane, half-plane, and wedge kernels by a convergent series. Cubing that kernel gives an exact network-integral trace identity. No global boundary inverse remains in this construction.</p>
+<div class="caution"><strong>Scope.</strong> This is an exact expansion with auxiliary patch integrals and explicit corner kernels. It is not yet a formula assigning one closed scalar weight to each maximal physical geodesic-net family. The family-area density describes the leading clean stationary contribution; the exact terms retain more integration variables and optical-boundary cancellations.</div></header>
+<div class="toc"><a href="#operator">Operator</a><a href="#corner">Exact corner kernel</a><a href="#shadow">Optical boundaries</a><a href="#global">Global construction</a><a href="#proof">Convergence proof</a><a href="#trace">Exact network trace</a><a href="#family">Relation to the families</a><a href="#checks">Numerical checks</a></div>
+
+<section id="operator"><p class="eyebrow">01 / No change of quantum problem</p><h2>The full reflecting rhombus</h2>
+<p>Let \(\Omega=\operatorname{conv}\{(0,0),(1,0),(3/2,\sqrt3/2),(1/2,\sqrt3/2)\}\), and let \(h=-\Delta_N\) be its nonnegative Neumann Laplacian. For every constant \(\kappa&gt;0\), write \(R_\kappa=(h+\kappa^2)^{-1}\), with kernel \(G_\kappa\). The spectral observable remains</p>
+<div class="math-scroll">\[
+\mathcal T_\Omega(\kappa)=
+\int_{\Omega^2}G_\kappa(x,y)^3\,dx\,dy
+=\sum_{i,j,k}\frac{|c_{ijk}|^2}
+{(\lambda_i+\kappa^2)(\lambda_j+\kappa^2)(\lambda_k+\kappa^2)},
+\quad c_{ijk}=\int_\Omega\phi_i\phi_j\phi_k .
+\]</div>
+<p>The eigenvalues and triple products are those of the actual Neumann rhombus. The <a href="rhombus-exact-trace.html#operator">positive two-coordinate trace realization</a> is unchanged. The auxiliary parameter \(\mu\) below is a larger constant resolvent parameter, not a spatial potential.</p>
+</section>
+
+<section id="corner"><p class="eyebrow">02 / The only genuine diffraction sites</p><h2>An explicit kernel at an obtuse corner</h2>
+<p>The two acute corners have angle \(\pi/3\) and exact finite image formulas. The two obtuse corners have angle \(\alpha=2\pi/3\). For one such infinite Neumann wedge, use polar coordinates \(x=(r,\theta)\), \(y=(r',\theta')\), with \(0\leq\theta,\theta'\leq\alpha\). Put \(\beta=2\alpha=4\pi/3\), \(q=\pi/\alpha=3/2\), and define</p>
+<div class="math-scroll">\[
+d(\varphi)=\sqrt{r^2+r'^2-2rr'\cos\varphi},\qquad
+\rho(s)=\sqrt{r^2+r'^2+2rr'\cosh s},\qquad
+g_\kappa(\ell)=\frac{K_0(\kappa\ell)}{2\pi}.
+\]</div>
+<p>For an angular difference \(\delta\), understood modulo \(\beta\), let</p>
+<div class="math-scroll">\[
+D(s,\delta)=
+\frac{3}{2\pi}
+\frac{\cos(3\delta/2)\cosh(3s/2)}
+{\cosh^2(3s/2)-\sin^2(3\delta/2)}.
+\]</div>
+<div class="theorem"><span class="badge">Exact Neumann wedge identity</span>
+<div class="math-scroll">\[
+\boxed{W_\kappa(x,y)=
+\sum_{\varepsilon=\pm1}
+\left[
+\sum_{\substack{k\in\mathbb Z\\|\delta_\varepsilon+k\beta|&lt;\pi}}
+g_\kappa(d(\delta_\varepsilon+k\beta))
++\int_0^\infty D(s,\delta_\varepsilon)g_\kappa(\rho(s))\,ds
+\right],\quad
+\delta_\varepsilon=\theta-\varepsilon\theta'.}
+\]</div>
+<p>The first terms are actual geometric images. The integrals are exact corner diffraction, with angular weights that can have either sign. Optical-boundary values use the combined limiting prescription in the next section.</p></div>
+<details class="proof"><summary>Derivation from angular modes</summary>
+<p>Separation of variables gives</p>
+<div class="math-scroll">\[
+W_\kappa(x,y)=
+\frac1\alpha I_0(\kappa r_&lt;)K_0(\kappa r_&gt;)
++\frac2\alpha\sum_{n=1}^\infty
+\cos(qn\theta)\cos(qn\theta')
+I_{qn}(\kappa r_&lt;)K_{qn}(\kappa r_&gt;).
+\]</div>
+<p>One convenient derivation of the image/integral form starts with the heat kernel on the doubled cone. Insert the <a href="https://dlmf.nist.gov/10.32.E4">real-integral representation of \(I_\nu\), DLMF 10.32.4</a>. Its cosine integral produces the image terms; its remaining integral is summed using the geometric series for \(\sum_{n\geq1}e^{-qns}\sin(nu)\). The resulting cone density is</p>
+<div class="math-scroll">\[
+-\frac1\beta\left[
+\frac{\sin(q(\pi+\delta))}{\cosh(qs)-\cos(q(\pi+\delta))}
++\frac{\sin(q(\pi-\delta))}{\cosh(qs)-\cos(q(\pi-\delta))}
+\right].
+\]</div>
+<p>At \(q=3/2\) this simplifies to \(D\). Laplace transformation of the heat kernel gives the displayed resolvent formula. Summing the two doubled-cone angular differences imposes Neumann conditions on the wedge. At \(q=3\), corresponding to the acute corners, the two fractions cancel identically and only images remain.</p>
+</details>
+</section>
+
+<section id="shadow"><p class="eyebrow">03 / A cancellation that the exact formula must preserve</p><h2>Specular and diffractive pieces are not globally independent weights</h2>
+<p>At an optical boundary \(\delta+k\beta=\pm\pi\), an image enters or exits the geometric sum. Its jump is \(g_\kappa(r+r')\). The diffraction integral has the opposite jump. For example, when \(\theta'\) crosses \(\theta+\pi/3\),</p>
+<div class="math-scroll">\[
+\Delta W_{\mathrm{geom}}=+g_\kappa(r+r'),\qquad
+\Delta W_{\mathrm{diff}}=-g_\kappa(r+r').
+\]</div>
+<p>Exactly at the boundary, count the tangent image with weight \(1/2\) and use the average of the two one-sided diffraction limits. In the corresponding angular density this is \(D=0\) for that shadow component away from \(s=0\). The combined kernel is continuous and agrees with its angular-mode definition.</p>
+<p>Derivatives in the global construction below are derivatives of the complete wedge kernel. Separating its image and diffraction derivatives first requires their canceling optical-boundary distributions. Ignoring those distributions would give an incorrect expansion.</p>
+<figure><img src="data/rhombus-corner-expansion.png" alt="The geometric and diffractive corner kernels have opposite jumps while their sum is continuous. A separate finite-element graph shows convergence of the local gluing expansion."><figcaption>Left: continuum wedge calculation across an optical boundary. Right: finite-dimensional validation of the gluing-series algebra on the actual rhombus. The right panel is not a continuum error estimate.</figcaption></figure>
+</section>
+
+<section id="global"><p class="eyebrow">04 / Eliminate the global boundary inverse</p><h2>A series built entirely from known local kernels</h2>
+<p>Cover the rhombus by corner, side, and interior patches. Choose real smooth cutoffs \(\chi_j\), supported in their patches, with \(\sum_j\chi_j^2=1\) and zero normal derivative on each physical boundary side. Let \(R_{j,\mu}\) be the explicit resolvent of the matching infinite wedge, half-plane, or plane. Multiplication by \(\chi_j\) includes extension by zero into the model and restriction back to the rhombus.</p>
+<div class="math-scroll">\[
+Q_\mu=\sum_j\chi_jR_{j,\mu}\chi_j,\qquad
+E_\mu=\sum_j[-\Delta,\chi_j]R_{j,\mu}\chi_j
+=\sum_j[-\Delta\chi_j-2\nabla\chi_j\cdot\nabla]R_{j,\mu}\chi_j .
+\]</div>
+<p>These are explicit kernel operators. They contain no global rhombus resolvent or boundary inverse. Put</p>
+<div class="math-scroll">\[
+\mathfrak g=\sum_j\|\nabla\chi_j\|_\infty,\quad
+\mathfrak d=\sum_j\|\Delta\chi_j\|_\infty,\quad
+q_\mu=\frac{\mathfrak d}{\mu^2}+\frac{2\sqrt\pi\,\mathfrak g}{\mu}.
+\]</div>
+<div class="theorem"><span class="badge">Theorem · convergent construction for the actual reflecting operator</span>
+<p>For \(q_\mu&lt;1\),</p>
+<div class="math-scroll">\[
+\boxed{\mathscr R_\mu=
+\sum_{n=0}^\infty(-1)^nQ_\mu E_\mu^n
+=(h+\mu^2)^{-1}.}
+\]</div>
+<p>The series converges in operator norm and in \(L^3(\Omega^2)\) for its kernels. After the first, logarithmically singular term, the kernel corrections converge absolutely and uniformly. For every target \(0&lt;\kappa&lt;\mu\),</p>
+<div class="math-scroll">\[
+\boxed{R_\kappa=
+\sum_{m=0}^\infty(\mu^2-\kappa^2)^m
+\mathscr R_\mu^{\,m+1}.}
+\]</div>
+<p>The second series converges in operator norm and in kernel \(L^3\), with geometric ratio \(1-\kappa^2/\mu^2\). Evaluate the local gluing series before the mass-shift series; unconditional convergence of all possible joint regroupings is not asserted.</p>
+</div>
+<details class="proof"><summary>A fully specified nine-patch choice and coarse constants</summary>
+<p>Let \(b(s)=e^{-1/(1-s)}\) for \(s&lt;1\), and \(b(s)=0\) otherwise. For each corner \(v\), take raw cutoff \(b(|x-v|^2/(9/20)^2)\). On each unit side use arclength \(s_e\) from its first endpoint and inward distance \(d_e\), with raw cutoff \(b((s_e-1/2)^2/(1/5)^2)b(d_e^2/(1/10)^2)\). For the interior take \(\prod_e a(d_e/(3/100))\), where \(a(s)=e^{-1/(s-1)^2}\) for \(s&gt;1\), zero otherwise. Normalize these nine raw cutoffs by the square root of the sum of their squares.</p>
+<p>The supports meet only their matching physical boundary sides. Radial corner cutoffs and even side cutoffs have zero normal derivative; the interior cutoff vanishes near the boundary. The normalizer is at least \(e^{-4}\): if all wall distances exceed \(3/50\), use the interior cutoff; otherwise the nearest-side foot lies either in its central interval \([7/20,13/20]\), where the side cutoff suffices, or within distance \(7/20\) of a corner, where the corner cutoff suffices.</p>
+<p>Elementary differentiation gives \(|b'|\leq1\), \(|b''|\leq8\), \(|a'|\leq1\), \(|a''|\leq9\). The Euclidean norms of the nine raw gradients have squared sum below \(22000\); the raw Laplacians have squared sum below \(55000^2\). Differentiating the vector normalization and using \(e^4&lt;55\) gives the deliberately coarse bounds</p>
+<div class="math-scroll">\[
+\mathfrak g&lt;10^5,\qquad \mathfrak d&lt;3\cdot10^9.
+\]</div>
+<p>Thus \(\mu=\kappa+10^6\) certainly gives \(q_\mu&lt;1\). This very conservative choice establishes a fully specified construction, not an efficient numerical parameter. Tighter bounds or better patches can reduce it substantially. The finite-model test below uses its directly checked matrix norm instead.</p>
+</details>
+</section>
+
+<section id="proof"><p class="eyebrow">05 / Why this is an identity rather than a formal expansion</p><h2>Contraction and kernel convergence</h2>
+<details class="proof" open><summary>Proof of the global theorem</summary>
+<p>The partition and the matching local differential equations give \((h+\mu^2)Q_\mu=I+E_\mu\), with the actual Neumann boundary condition. For every local model, \(\|R_{j,\mu}\|_{2\to2}\leq\mu^{-2}\) and \(\|\nabla R_{j,\mu}\|_{2\to2}\leq(2\mu)^{-1}\). Hence \(\|E_\mu\|_{2\to2}\leq\mathfrak d/\mu^2+\mathfrak g/\mu\leq q_\mu&lt;1\). The operator series follows by the geometric-series identity and coercive uniqueness.</p>
+<p>For kernel convergence let \(p_j(t;x,y)\) be a local heat kernel. These convex Neumann models have mass one. If \(I(t)=\int p_j|\nabla\log p_j|^2\), the Bochner identity and the flat convex boundary give \(I'(t)\leq-I(t)^2\), so \(I(t)\leq1/t\). Excising the wedge vertex and passing to the limit is valid: the first nonconstant angular exponent is at least \(3/2\), and the extra small-circle terms vanish. Cauchy–Schwarz and Laplace transformation yield</p>
+<div class="math-scroll">\[
+\int|\nabla_x p_j(t;x,y)|\,dx\leq t^{-1/2},
+\qquad
+\int|\nabla_xR_{j,\mu}(x,y)|\,dx\leq\frac{\sqrt\pi}{\mu}.
+\]</div>
+<p>It follows that \(\sup_y\int_\Omega|E_\mu(x,y)|\,dx\leq q_\mu\). Also \(p_j(t;x,y)\leq C_0/t\), with \(C_0=3/(2\pi)\): the acute wedge has six images; bisecting the obtuse wedge and comparing its Neumann and mixed half-wedge kernels bounds it by the acute-wedge kernel. Plane and half-plane bounds are smaller.</p>
+<p>These estimates give uniformly bounded \(L^3\) rows of \(Q_\mu\) and \(L^{3/2}\) columns of \(E_\mu\). For \(J\) patches one explicit bound is</p>
+<div class="math-scroll">\[
+\sup_{x,y}|(Q_\mu E_\mu)(x,y)|\leq B_\mu,\qquad
+B_\mu=J C_0\Gamma(1/3)
+\left[\frac{\mathfrak d\,\Gamma(2/3)}{\mu^2}
++\frac{2\mathfrak g\,\Gamma(1/6)}{\mu}\right].
+\]</div>
+<p>For example, the gradient-column bound follows from the Fisher estimate and the heat-kernel maximum, which give \(\|\nabla p_j(t;\cdot,y)\|_{3/2}\leq C_0^{1/3}t^{-5/6}\); all required time integrals are finite gamma integrals. Hölder's inequality supplies the displayed bound. Right composition with \(E_\mu\) then gives</p>
+<div class="math-scroll">\[
+|(Q_\mu E_\mu^n)(x,y)|\leq B_\mu q_\mu^{n-1}\quad(n\geq1),\qquad
+\left|G_\mu-\sum_{n=0}^N(-1)^n(Q_\mu E_\mu^n)\right|
+\leq\frac{B_\mu q_\mu^N}{1-q_\mu}.
+\]</div>
+<p>The first kernel has integrable logarithmic singularities, so the full series converges absolutely in kernel \(L^3\). Finally \(\|( \mu^2-\kappa^2)\mathscr R_\mu\|_{2\to2}=1-\kappa^2/\mu^2&lt;1\), proving the mass shift. Kernels of powers of \(\mathscr R_\mu\) of order at least two are uniformly bounded; inserting one bounded operator power between two uniformly \(L^2\) kernel rows gives a geometric uniform bound on the mass-shift tail. This proves its kernel \(L^3\) convergence as well.</p>
+</details>
+</section>
+
+<section id="trace"><p class="eyebrow">06 / The resulting exact network-integral trace</p><h2>Three chains joined at their two common vertices</h2>
+<p>Define \(\mathcal K_{n,\mu}(x,y)=(Q_\mu E_\mu^n)(x,y)\), where \(n=0\) means \(Q_\mu\). Then</p>
+<div class="theorem"><span class="badge">Exact network series · full Neumann rhombus</span>
+<div class="math-scroll">\[
+\boxed{
+\mathcal T_\Omega(\mu)=
+\sum_{n_1,n_2,n_3\geq0}(-1)^{n_1+n_2+n_3}
+\int_{\Omega^2}
+\mathcal K_{n_1,\mu}(x,y)
+\mathcal K_{n_2,\mu}(x,y)
+\mathcal K_{n_3,\mu}(x,y)\,dx\,dy .
+}
+\]</div>
+<p>This triple series is absolutely convergent. Each chain is a finite sum of integrals of explicit local mirror/corner kernels and cutoff derivatives. For arbitrary positive \(\kappa\), use</p>
+<div class="math-scroll">\[
+\boxed{\mathcal T_\Omega(\kappa)=
+\int_{\Omega^2}
+\left[\sum_{m=0}^\infty
+(\mu^2-\kappa^2)^m
+(\mathscr R_\mu^{\,m+1})(x,y)\right]^3dx\,dy .}
+\]</div>
+<p>The outer kernel series is nonnegative and convergent; the inner definition of \(\mathscr R_\mu\) is the preceding convergent local series. Powers mean ordinary kernel composition. Thus the construction uses only explicitly known local kernels, integrations, and specified sums, while the left side uses the actual rhombus spectral data.</p>
+</div>
+<p>Absolute convergence of the first trace formula follows from \(\sum_n\|\mathcal K_{n,\mu}\|_{L^3}&lt;\infty\) and Hölder's inequality. Kernel \(L^3\) convergence justifies the second cube and its limit. The cutoffs affect individual chain weights but the total is independent of them by uniqueness of the Neumann resolvent.</p>
+<details class="proof"><summary>An explicit trace truncation bound</summary>
+<p>Put \(A=|\Omega|\), \(S_N=\sum_{n=0}^N(-1)^n\mathcal K_{n,\mu}\), and \(M_3=\|Q_\mu\|_{L^3(\Omega^2)}+A^{2/3}B_\mu/(1-q_\mu)\). Both \(\|S_N\|_3\) and \(\|G_\mu\|_3\) are bounded by \(M_3\). The kernel tail estimate and the difference of two cubes give</p>
+<div class="math-scroll">\[
+\left|\mathcal T_\Omega(\mu)-\int_{\Omega^2}S_N(x,y)^3\,dx\,dy\right|
+\leq
+\frac{3M_3^2A^{2/3}B_\mu q_\mu^N}{1-q_\mu}.
+\]</div>
+<p>Thus the continuum series has a proved geometric tail bound. Numerical quadrature of its individual integrals would need its own error control.</p>
+</details>
+</section>
+
+<section id="family"><p class="eyebrow">07 / What this does and does not say about the continua</p><h2>Exact chain weights and intrinsic family weights are different stages</h2>
+<p>The free junction integrations are still \(x\) and \(y\). Away from optical boundaries, stationary phase of the geometric pieces imposes the two equal-weight \(120^\circ\) junction balances. The additional patch integration points impose straight continuation; they are auxiliary interfaces, not new physical net nodes. The corner integrals supply actual diffraction at the two obtuse vertices.</p>
+<p>For a compact nondegenerate part of the displayed family, the leading clean weight is still the <a href="family-trace.html#cancellation">proved area density</a></p>
+<div class="math-scroll">\[
+\mathcal W(\mathcal C_U)=
+\frac{2\,\operatorname{Area}(U)}{\sqrt{3L}},
+\qquad L=3.
+\]</div>
+<p>The exact network series retains the full kernel integrals, including directions transverse to the family, cutoff interfaces, and the continuous diffraction variables. It has not been regrouped bijectively into maximal physical geodesic-net families with closed scalar weights. Such a regrouping must preserve the optical-boundary cancellation shown above; separate globally positive family and corner weights would not do so.</p>
+<p>This construction therefore removes the global boundary inverse and proves an exact convergent local-kernel formula. The remaining gap is the intrinsic family organization, rather than an unspecified operator correction or an unproved formal geometric series.</p>
+</section>
+
+<section id="checks"><p class="eyebrow">08 / Evidence and literature</p><h2>Independent corner checks and a finite-model convergence check</h2>
+<p>The continuum wedge image-plus-diffraction formula was checked against the independent angular \(I_\nu K_\nu\) series, including both sides of an optical boundary and its half-weight value. The six displayed tests agree within \(3.4\times10^{-16}\) in absolute floating-point discrepancy. The plotted angular profile is included in the data. These are numerical checks of the derived identity, not interval certificates.</p>
+<p>A separate finite-element test uses the actual rhombus, with \(49\) nodes, nine overlapping local subdomain resolvents, and the same series algebra. At auxiliary mass \(10\), the directly computed residual matrix norm is \(0.4112852\); order \(40\) agrees with the direct global resolvent and cubic graph trace to roundoff. The positive mass-shift series then reaches target \(\kappa=1.5\). This validates finite-dimensional assembly and convergence; it is not an implementation or continuum error certificate for the infinite-wedge patch construction.</p>
+<p><a href="https://arxiv.org/abs/physics/0303093">Hannay and Thain, <em>Exact scattering theory for any straight reflectors in two dimensions</em></a>, give a multiple-corner ray construction. Appendix C establishes convergence in the slit example and describes general convergence as encouragement rather than a proof. That does not supply the rhombus trace interchange needed here. The local-kernel contraction and ordered continuation above give a different, explicitly controlled construction.</p>
+<p><a href="data/rhombus-corner-expansion.json">All checks and optical-boundary data</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/rhombus_corner_expansion.py">Reproducible calculation</a> · <a href="data/rhombus-corner-expansion.svg">Export the figure</a></p>
+<pre>python3 -m pip install -r research-requirements.txt
+python3 scripts/rhombus_corner_expansion.py</pre>
+</section><footer><a href="rhombus-exact-trace.html">Previous boundary-corrected formula</a> · <a href="polygon-families.html#viewer">Move the actual nets</a></footer>
+</main></body></html>
