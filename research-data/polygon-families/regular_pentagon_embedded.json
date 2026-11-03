@@ -1,0 +1,50 @@
+{
+  "max_reflections_per_non_direct_edge": 5,
+  "word_counts_by_depth": [
+    1,
+    5,
+    20,
+    70,
+    200,
+    580
+  ],
+  "counters": {
+    "word_pairs": 380925,
+    "rank_two": 597260,
+    "fixed_orientation": 158740,
+    "direction_incompatible": 75550,
+    "lp_no_positive_margin": 4580,
+    "nonplanar_rotation_system": 82000,
+    "zero_dual_length": 2450,
+    "lp_feasible": 10,
+    "independent_trace_rejected": 10,
+    "free_orientation_dual": 3400
+  },
+  "witnesses": [],
+  "elapsed": 24.242710042002727,
+  "name": "regular_pentagon",
+  "vertices": [
+    [
+      6.123233995736766e-17,
+      1.0
+    ],
+    [
+      -0.9510565162951535,
+      0.3090169943749475
+    ],
+    [
+      -0.5877852522924732,
+      -0.8090169943749473
+    ],
+    [
+      0.5877852522924729,
+      -0.8090169943749476
+    ],
+    [
+      0.9510565162951536,
+      0.3090169943749472
+    ]
+  ],
+  "scope": "One direct edge and two reflected edges; freely moving 120-degree junctions; fixed polygon; immersed paths; finite itinerary search.",
+  "embedded_only": true
+}

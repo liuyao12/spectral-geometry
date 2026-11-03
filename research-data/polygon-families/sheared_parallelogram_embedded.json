@@ -1,0 +1,46 @@
+{
+  "max_reflections_per_non_direct_edge": 4,
+  "word_counts_by_depth": [
+    1,
+    4,
+    12,
+    32,
+    76
+  ],
+  "counters": {
+    "word_pairs": 7610,
+    "rank_two": 12632,
+    "fixed_orientation": 2020,
+    "lp_no_positive_margin": 62,
+    "nonplanar_rotation_system": 2268,
+    "direction_incompatible": 226,
+    "free_orientation_dual": 540,
+    "zero_dual_length": 28,
+    "lp_feasible": 4,
+    "additional_family_positions_checked": 4,
+    "crossing_continuation_rejected": 4
+  },
+  "witnesses": [],
+  "elapsed": 0.38785187499888707,
+  "name": "sheared_parallelogram",
+  "vertices": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1.5,
+      1
+    ],
+    [
+      0.5,
+      1
+    ]
+  ],
+  "scope": "One direct edge and two reflected edges; freely moving 120-degree junctions; fixed polygon; immersed paths; finite itinerary search.",
+  "embedded_only": true
+}

@@ -1,0 +1,104 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polygon theta-net experiments · Spectral Geometry</title><link rel="icon" href="data:,"><link rel="stylesheet" href="many-body-nets.css">
+<style>.family-controls{display:flex;flex-wrap:wrap;gap:12px 22px;margin:15px 0}.family-controls label{display:flex;flex-direction:column;gap:5px;font-size:14px}.family-controls select{padding:7px;background:#fffdf8;border:1px solid #b4c7c4;border-radius:4px;max-width:100%}.family-view{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:20px;background:#edf2ef;padding:20px;border-radius:6px}#netView{width:100%;height:420px}#netNumbers{font-size:15px}#caseInfo,#angleCheck{font-size:13px;color:#50656b}#netType{font-weight:650;font-size:15px}#position{width:100%;accent-color:#007c83}.family-legend{display:flex;flex-wrap:wrap;gap:15px;font-size:13px}.family-legend span:before{content:"";display:inline-block;width:18px;border-top:3px solid var(--edge);margin-right:6px;vertical-align:middle}.small{font-size:14px;color:#50656b}#angleCheck{overflow-x:auto}@media(max-width:720px){.family-view{grid-template-columns:1fr;padding:12px;gap:5px}#netView{height:290px}#netNumbers mjx-container[display=true]{margin:.5em 0!important}.family-controls{gap:8px}.family-controls select{font-size:13px}.family-side{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.family-side #angleCheck,.family-side #caseInfo{grid-column:1/-1}.family-side #netType{margin:0}.family-side #netNumbers{grid-column:2;grid-row:1/4}}</style>
+<script>window.MathJax={tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]]},svg:{fontCache:"global"}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script><script defer src="polygon-families.js"></script>
+</head><body><main>
+<nav><a href="index.html">Spectral geometry</a><span>Polygon experiments · November 2, 2026</span></nav>
+<header><p class="eyebrow">Reproducing and testing the continua</p><h1>Theta nets in<br>parallelograms and pentagons</h1>
+<p class="lede">Constant-length families occur in the tested parallelograms and in a regular pentagon. Crossing restrictions matter: the rhombus has a crossing-free family, while the regular-pentagon witness displayed here is immersed.</p>
+<p>The model has two free interior junctions, equal-weight angles \(120^\circ\), and ordinary specular reflections at straight polygon sides. No anchor, equal-edge-length constraint, or prescribed reflection point is imposed.</p>
+<div class="caution"><strong>Search scope.</strong> One edge is direct. The other two have at most four reflections each in the baseline search; the regular-pentagon crossing-free search was extended to five. A failed search is not a global nonexistence theorem.</div>
+</header>
+<div class="toc"><a href="#viewer">Move a family</a><a href="#results">Results</a><a href="#rhombus">Exact rhombus family</a><a href="#pentagon">Regular pentagon</a><a href="#perturb">Perturb the region</a><a href="#method">Method and limits</a></div>
+
+<section id="viewer"><p class="eyebrow">01 / An actual continuation</p><h2>Move the junctions</h2>
+<div class="family-controls"><label>Polygon<select id="shape" aria-label="Polygon"></select></label><label>Crossing rule<select id="mode" aria-label="Crossing rule"><option value="immersed">Crossings allowed</option><option value="embedded">Crossing-free search</option></select></label><label style="justify-content:end;flex-direction:row;align-items:center"><input type="checkbox" id="showCrossings" checked> Mark crossings</label></div>
+<div class="family-view"><div><svg id="netView" role="img" aria-label="Three reflected paths joining two junctions in the selected polygon"></svg><div class="family-legend"><span style="--edge:#bd6335">Direct path</span><span style="--edge:#007c83">Reflected path</span><span style="--edge:#6876a4">Reflected path</span></div></div>
+<div class="family-side"><p id="netType">Loading verified families.</p><label class="small" for="position">Position along the family</label><input id="position" type="range" min="0" max="1000" value="500" aria-label="Position along the family"><div id="netNumbers" aria-live="polite"></div><p id="angleCheck"></p><p id="caseInfo"></p></div></div>
+<p class="small">The slider follows an affine solution family with the same reflection words. Corresponding bounce coordinates are affine functions of the parameter, so the continuation between the checked frames preserves the path directions and reflection law. Corner hits, collapsed edges, coincident bounces, and intermediate junction visits bound the continuation chamber.</p>
+</section>
+
+<section id="results"><p class="eyebrow">02 / The most obvious examples, then perturbations</p><h2>What the experiments found</h2>
+<div class="table-scroll"><table><thead><tr><th>Region</th><th>Verified family</th><th>Crossing-free witness</th></tr></thead><tbody>
+<tr><td>Unit square</td><td>Two parameters; \(L\approx3.863703305\)</td><td>None found in the bounded search</td></tr>
+<tr><td>Rectangle of height \(3\sqrt3/4\)</td><td>Two parameters; \(L\approx4.444097209\)</td><td>None found in the bounded search</td></tr>
+<tr><td>Unit-side rhombus, angle \(\pi/3\)</td><td>Two parameters; exactly \(L=3\)</td><td>Yes, with changing individual edge lengths</td></tr>
+<tr><td>Sheared parallelogram</td><td>Two parameters; \(L\approx3.787157586\)</td><td>None found in the bounded search</td></tr>
+<tr><td>Regular pentagon, circumradius \(1\)</td><td>Two parameters; \(L\approx11.644065166\)</td><td>None found with up to five reflections per non-direct edge</td></tr>
+<tr><td>House-shaped pentagon</td><td>Two parameters; \(L\approx8.468341805\)</td><td>None found in the bounded search</td></tr>
+<tr><td>Pentagon with one vertex perturbed</td><td>No witness in the baseline search</td><td>No witness in the baseline search</td></tr>
+</tbody></table></div>
+<p>The sheared parallelogram has vertices \((0,0),(1,0),(3/2,1),(1/2,1)\). The house-shaped pentagon has vertices \((0,0),(2,0),(2,1),(1,2),(0,1)\). The regular pentagon is centered at the origin with its first vertex at the top.</p>
+<p>A further grid used parallelograms \((0,0),(1,0),(1+s,h),(s,h)\), with \(s\in\{0,1/4,1/2,3/4,1\}\) and \(h\in\{1/2,1,3/2\}\). The bounded search found immersed continua in \(14\) of the \(15\) cases. It found no witness for \(s=1,h=1/2\) within that window; this does not establish nonexistence.</p>
+<figure><img src="data/polygon-families/families.png" alt="Three crossing-free rhombus nets of total length three, and three immersed regular-pentagon nets of the same total length in their respective family."><figcaption>Each row shows different junction positions in a single region. The rhombus redistributes lengths among its three edges. In the displayed pentagon family all three unfolded edge lengths stay fixed while the folded paths and bounce positions move.</figcaption></figure>
+</section>
+
+<section id="rhombus"><p class="eyebrow">03 / A particularly simple exact reproduction</p><h2>A crossing-free rhombus family of total length three</h2>
+<p>Take the rhombus with vertices</p>
+<div class="math-scroll">\[(0,0),\ (1,0),\ (3/2,\sqrt3/2),\ (1/2,\sqrt3/2).\]</div>
+<p>For every point in the open triangle</p>
+<div class="math-scroll">\[0<y<\frac{\sqrt3}{2},\qquad \sqrt3y<x<1+\frac{y}{\sqrt3},\]</div>
+<p>put</p>
+<div class="math-scroll">\[u=(x,y),\qquad v=\left(\frac{x}{2}+\frac{\sqrt3y}{2},\frac{\sqrt3x}{2}-\frac y2\right).\]</div>
+<p>Join them directly, and use the two reflected paths whose side sequences are \((1,4)\) and \((2,3)\), with sides numbered counterclockwise from the bottom. Their lengths are</p>
+<div class="theorem"><span class="badge">Exact two-parameter embedded family</span>
+<div class="math-scroll">\[\ell_1=x-\sqrt3y,\quad \ell_2=x+\sqrt3y,\quad \ell_3=3-2x,\qquad L=3.\]</div>
+<p>All lengths are positive in the stated region. Both junctions have three angles \(120^\circ\); every boundary event is an ordinary specular reflection. The paths meet only at the two junctions.</p></div>
+<details class="proof"><summary>Direct verification</summary>
+<p>The two reflected paths bounce at</p>
+<div class="math-scroll">\[\left(x-\frac y{\sqrt3},0\right),\quad
+\left(\frac x2-\frac y{2\sqrt3},\frac{\sqrt3x}{2}-\frac y2\right)\]</div>
+<p>and</p>
+<div class="math-scroll">\[\left(1+\frac y{\sqrt3},y\right),\quad
+\left(\frac12+\frac{2y}{\sqrt3},\frac{\sqrt3}{2}\right),\]</div>
+<p>respectively. The inequalities above put every bounce strictly inside its side. Their initial directions are \((-1/2,\sqrt3/2)\), \((-1/2,-\sqrt3/2)\), and \((1,0)\); the corresponding terminal directions also balance. Summing the segment lengths gives the three displayed formulas. Ordering the parallel segments shows that the paths have no extra crossings.</p>
+</details>
+<p>The viewer fixes \(x=3/4\) and varies \(y\) through a safe interior interval. In that slice two edge lengths change in opposite directions and the third remains \(3/2\).</p>
+</section>
+
+<section id="pentagon"><p class="eyebrow">04 / A regular-pentagon witness</p><h2>A certified positive-width immersed family</h2>
+<p>Number the sides from the top vertex counterclockwise, with vertices \(p_k=(\cos(\pi/2+2\pi k/5),\sin(\pi/2+2\pi k/5))\). The reflected paths have side sequences \((1,3,1,4)\) and \((5,3,1,3)\), in addition to the direct edge.</p>
+<p>Set</p>
+<div class="math-scroll">\[a=\frac{5+3\sqrt5}{2},\qquad c=\cos\frac\pi5,\qquad s=\sin\frac\pi5,\]</div>
+<div class="math-scroll">\[\rho=a\left(s-\frac c{\sqrt3}\right),\qquad
+r=\rho\left(\cos\frac{2\pi}{5},-\sin\frac{2\pi}{5}\right).\]</div>
+<p>Use \(v=u+r\). The lengths are constant throughout the family:</p>
+<div class="math-scroll">\[\left(\rho,\frac{2ac}{\sqrt3},\frac{2ac}{\sqrt3}\right),\qquad
+L=a(s+\sqrt3c)\approx11.644065166.\]</div>
+<p>Composing the side reflections gives identity linear parts and translations \(a(\cos(9\pi/10),\sin(9\pi/10))\) and \(a(\cos(3\pi/10),\sin(3\pi/10))\). Their anchor triangle is isosceles; the formulas above give its interior Fermat point and the two junction balances.</p>
+<details class="proof"><summary>Verify the exact unfolded identities</summary>
+<p>Identify the plane with the complex numbers. Side \(k+1\) has outward normal angle \(\mu_k=7\pi/10+2\pi k/5\) and distance \(c\) from the origin. Its reflection is</p>
+<div class="math-scroll">\[R_k(z)=-e^{2i\mu_k}\overline z+2ce^{i\mu_k}.\]</div>
+<p>The two unfolded maps are \(R_0R_2R_0R_3\) and \(R_4R_2R_0R_2\), with the rightmost map applied first. Substitution gives the two translations above. Adding \(r\) to those translation vectors gives vectors of length \(2ac/\sqrt3\), at angles \(14\pi/15\) and \(4\pi/15\). The direct vector has angle \(-2\pi/5\). These three unit directions sum to zero. Since both linear parts are the identity, the terminal directions also sum to zero. Translating both junctions preserves these unfolded vectors; the interval certificate below ensures that the prescribed folded paths remain admissible.</p>
+</details>
+<p>A rational interval-arithmetic check, with outward rounding after every operation, validates all reflection inequalities for the whole box</p>
+<div class="math-scroll">\[u\in[1/2-10^{-5},\,1/2+10^{-5}]^2.\]</div>
+<p>It certifies positive flight lengths, nongrazing reflections, side-interior hits, no coincident bounces, and no intermediate visits to either junction. This is a genuine positive-width family, not a numerical null vector alone. The displayed pentagon paths are immersed and have extra crossings.</p>
+<p>The computed maximal first-junction region for these words occupies about \(0.62\%\) of the polygon’s area. That area estimate is numerical; the smaller box above is certified. A coarse position search could miss such a narrow region.</p>
+</section>
+
+<section id="perturb"><p class="eyebrow">05 / Existence can be fragile</p><h2>Changing the polygon can destroy a reflection pattern</h2>
+<p>Move only the top vertex of the regular pentagon from \((0,1)\) to \((1/20,103/100)\). The same two four-reflection words then have no stationary equal-weight theta net, at any junction positions. This particular nonexistence statement is certified by interval arithmetic.</p>
+<p>To see the obstruction, write the outgoing directions as a common rotation of three unit vectors \(120^\circ\) apart. Terminal balance has the form</p>
+<div class="math-scroll">\[C\binom{\cos\theta}{\sin\theta}=0.\]</div>
+<p>For both possible cyclic orders, the perturbed words give a nonsingular matrix. The certified determinant intervals are strictly positive, near \(0.0089782\) and \(0.0087316\). Thus no orientation satisfies terminal balance.</p>
+<p>This explains an important distinction: a family may disappear when the region changes. That does not produce an isolated nondegenerate theta net of the same reflection pattern. The certificate says nothing about other, longer itineraries in the perturbed pentagon.</p>
+</section>
+
+<section id="method"><p class="eyebrow">06 / What was actually checked</p><h2>Independent billiard tracing after linear feasibility</h2>
+<p>The search enumerates reflection words and solves the junction-angle compatibility condition. For compatible directions, node positions, side hits, and hit ordering satisfy linear constraints. A positive-margin linear program finds an admissible position region.</p>
+<p>Each reported continuation was then checked by a separate physical ray tracer using the polygon’s original sides. It verified both endpoints, the exact sequence of sides, corner clearance, no intermediate junction visits, and terminal angle balance. Across the reported numerical families, total-length variations and endpoint errors are at floating-point roundoff. Separate exact formulas and rational interval checks support the explicit examples above.</p>
+<p>The crossing-free search also checks the necessary opposite cyclic orders at the two junctions. Where needed it samples additional admissible family positions. Negative results remain bounded-search results, not global theorems.</p>
+<details class="proof"><summary>Why a valid nondegenerate polygonal theta net cannot be isolated</summary><p>For fixed itineraries, each unfolded displacement is affine in the four junction coordinates: \(d_e(z)=A_ez+b_e\). Preserving its direction is one scalar linear condition \(n_e\cdot A_e\delta z=0\). Three edges impose at most three conditions on four variables. A nonzero solution therefore exists. For small motion, all directions and junction balances remain fixed; the edge lengths vary affinely and their total slope vanishes by stationarity. Strict itinerary inequalities remain valid locally. This proves a local constant-length family, conditional on the initial net’s existence. Fixed junctions, corner hits, curved boundaries, or additional constraints change the argument.</p></details>
+<p><a href="data/polygon-families/report.json">All viewer data and checks</a> · <a href="data/polygon-families/certificates.json">Exact-example and interval certificates</a> · <a href="data/polygon-families/sweep.json">Parallelogram grid and perturbation data</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/polygon_theta_families.py">Search and independent ray-tracing source</a> · <a href="https://github.com/liuyao12/spectral-geometry/blob/main/scripts/polygon_theta_certificates.py">Certificate source</a></p>
+<pre>python3 -m pip install -r research-requirements.txt
+python3 scripts/polygon_theta_families.py --depth 4
+python3 scripts/polygon_theta_families.py --depth 4 --embedded
+python3 scripts/polygon_theta_families.py --shape regular_pentagon --depth 5 --embedded
+python3 scripts/polygon_theta_families.py --depth 4 --sweep
+python3 scripts/polygon_theta_certificates.py
+python3 scripts/build_polygon_family_report.py</pre>
+<p><a href="theta-trace.html">Exact theta-net spectral identity</a> · <a href="geodesic-first.html">Earlier geometric threshold experiments</a></p>
+</section><footer>Free junctions and reflection rules are explicit. Immersed and crossing-free witnesses are reported separately. Bounded searches are not global nonexistence proofs.</footer>
+</main></body></html>

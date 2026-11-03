@@ -1,0 +1,47 @@
+{
+  "max_reflections_per_non_direct_edge": 4,
+  "word_counts_by_depth": [
+    1,
+    5,
+    20,
+    62,
+    174
+  ],
+  "counters": {
+    "word_pairs": 33708,
+    "rank_two": 57806,
+    "fixed_orientation": 7326,
+    "lp_no_positive_margin": 138,
+    "nonplanar_rotation_system": 8496,
+    "direction_incompatible": 812,
+    "free_orientation_dual": 2120,
+    "zero_dual_length": 164
+  },
+  "witnesses": [],
+  "elapsed": 1.3665026250018855,
+  "name": "house_pentagon",
+  "vertices": [
+    [
+      0,
+      0
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "scope": "One direct edge and two reflected edges; freely moving 120-degree junctions; fixed polygon; immersed paths; finite itinerary search.",
+  "embedded_only": true
+}

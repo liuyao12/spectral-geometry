@@ -1,0 +1,44 @@
+{
+  "max_reflections_per_non_direct_edge": 4,
+  "word_counts_by_depth": [
+    1,
+    5,
+    20,
+    70,
+    222
+  ],
+  "counters": {
+    "word_pairs": 50086,
+    "rank_two": 100060,
+    "fixed_orientation": 52,
+    "direction_incompatible": 52,
+    "zero_dual_length": 60
+  },
+  "witnesses": [],
+  "elapsed": 1.6238996669999324,
+  "name": "perturbed_pentagon",
+  "vertices": [
+    [
+      0.050000000000000065,
+      1.03
+    ],
+    [
+      -0.9510565162951535,
+      0.3090169943749475
+    ],
+    [
+      -0.5877852522924732,
+      -0.8090169943749473
+    ],
+    [
+      0.5877852522924729,
+      -0.8090169943749476
+    ],
+    [
+      0.9510565162951536,
+      0.3090169943749472
+    ]
+  ],
+  "scope": "One direct edge and two reflected edges; freely moving 120-degree junctions; fixed polygon; immersed paths; finite itinerary search.",
+  "embedded_only": false
+}

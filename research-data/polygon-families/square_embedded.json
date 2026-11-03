@@ -1,0 +1,43 @@
+{
+  "max_reflections_per_non_direct_edge": 4,
+  "word_counts_by_depth": [
+    1,
+    4,
+    12,
+    28,
+    60
+  ],
+  "counters": {
+    "word_pairs": 5220,
+    "rank_two": 7088,
+    "fixed_orientation": 2360,
+    "lp_no_positive_margin": 100,
+    "nonplanar_rotation_system": 2872,
+    "direction_incompatible": 260,
+    "free_orientation_dual": 872,
+    "zero_dual_length": 120
+  },
+  "witnesses": [],
+  "elapsed": 0.4364300000015646,
+  "name": "square",
+  "vertices": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "scope": "One direct edge and two reflected edges; freely moving 120-degree junctions; fixed polygon; immersed paths; finite itinerary search.",
+  "embedded_only": true
+}
