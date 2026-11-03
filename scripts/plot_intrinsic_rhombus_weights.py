@@ -17,7 +17,7 @@ axes[0].legend(frameon=False)
 rows=data['collapsed_chamber_monte_carlo']
 axes[1].errorbar([r['kappa'] for r in rows],[r['scaled_weight'] for r in rows],
                  yerr=[2*r['standard_error'] for r in rows],fmt='o-',color='#176b67',capsize=3)
-axes[1].axhline(1/32,color='#aa542e',ls='--',label=r'Predicted limit $1/32$')
+axes[1].axhline(1/32,color='#aa542e',ls='--',label=r'Proved limit $1/32$')
 axes[1].set(xscale='log',xlabel=r'$\kappa$',ylabel=r'$\kappa^3 e^{\sqrt{3}\kappa}W_{\mathrm{coll}}(\kappa)$',title='Collapsed direct / bottom / top sector')
 axes[1].legend(frameon=False)
 for ax in axes:

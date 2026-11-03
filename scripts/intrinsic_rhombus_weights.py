@@ -157,7 +157,7 @@ def main():
                 local_coefficients=dict(bulk=bulk,bulk_quadrature_error_estimate=error,
                                         neumann_edge=edge,edge_exact='3/32-1/(8*sqrt(3))',
                                         edge_checks=edge_checks,
-                                        collapsed_bottom_top_predicted_leading_coefficient_per_ordered_chamber='1/32',
+                                        collapsed_bottom_top_proved_leading_coefficient_per_ordered_chamber='1/32',
                                         collapsed_bottom_top_length=math.sqrt(3)))
     for path in ['research-data/intrinsic-rhombus-weights.json','docs/data/intrinsic-rhombus-weights.json']:
         (ROOT/path).write_text(json.dumps(result,indent=2)+'\n')

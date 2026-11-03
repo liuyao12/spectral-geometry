@@ -90,11 +90,21 @@ W_{\mathcal D}(\kappa)\sim\frac{e^{-3\kappa}}{16\sqrt{6\pi}\,\kappa^{5/2}},\qqua
 \]</div>
 <p>Equality holds on the limiting stratum \(u=v=(x,y)\), \(1/2&lt;x&lt;1\), \(0&lt;y&lt;H\). The direct edge has zero length; the other edges are the vertical bottom and top reflection loops. No corner is involved.</p></div>
 <p>The inequality follows from \(|d_b|\geq u_y+v_y\), \(|d_t|\geq2H-u_y-v_y\), and \(|d_0|\geq0\). Equality requires a collapsed direct edge, and the two vertical wall hits are interior precisely on the stated strip. This exhibits a geometric stratum that a classification by noncollapsed theta nets and corner-diffractive nets alone would omit.</p>
-<p>A local asymptotic calculation predicts, per labeled chamber,</p>
+<p>For the physical direct/bottom/top chamber, the leading weight is also provable, per labeled chamber:</p>
 <div class="math-scroll">\[
 W_{\rm coll}(\kappa)\sim\frac{e^{-\sqrt3\kappa}}{32\kappa^3}.
 \]</div>
-<p>The proposed coefficient comes from \(\int_{\mathbb R^2}g_\kappa(|v-u|)\,d(v-u)=\kappa^{-2}\), the product of the two large-distance Bessel factors, strip width \(1/2\), and \(\int_0^H[y(H-y)]^{-1/2}dy=\pi\). The numerical check below supports this limit. Uniform control near the strip endpoints is not supplied here, so this coefficient is a prediction rather than one of the proved theorems.</p></section>
+<details class="proof"><summary>Proof, including control near the walls</summary>
+<p>Set \(v=u+\delta/\kappa\). The direct factor and its integration measure become \(\kappa^{-2}g_1(|\delta|)d\delta\), where \(\int g_1=1\). For fixed interior \(u=(x,y)\) and fixed \(\delta\), the two reflected lengths tend to \(2y,2(H-y)\); their sum is \(2H+O(\kappa^{-2})\). The physical visibility indicator tends almost everywhere to the indicator of \(1/2&lt;x&lt;1\). Therefore the pointwise limit of the scaled integrand, after removing the factor \(g_1(|\delta|)\), is</p>
+<div class="math-scroll">\[
+\frac{\boldsymbol1_{\{1/2&lt;x&lt;1\}}}{16\pi\sqrt{y(H-y)}}.
+\]</div>
+<p>To justify integration, use the exact bound \(K_0(t)\leq\sqrt{\pi/(2t)}e^{-t}\), obtained from its hyperbolic-cosine integral. For every accepted physical endpoint pair, put \(q=u_y+v_y\). The reflected lengths satisfy \(\ell_b\geq q\), \(\ell_t\geq2H-q\), so</p>
+<div class="math-scroll">\[
+\kappa e^{2H\kappa}g_\kappa(\ell_b)g_\kappa(\ell_t)
+\leq\frac1{8\pi\sqrt{q(2H-q)}}.
+\]</div>
+<p>For fixed \(\delta\), \(dq=2dy\), and the horizontal width of the rhombus is at most one. The integral of this bound over \(u\) is at most \(1/16\), uniformly in \(\delta,\kappa\). Its integral over either endpoint strip \(y&lt;\varepsilon\) or \(H-y&lt;\varepsilon\) is \(O(\sqrt\varepsilon)\), uniformly: the corresponding interval in \(q\) has length at most \(2\varepsilon\). The tails in \(\delta\) are bounded by \(\tfrac1{16}\int_{|\delta|&gt;M}g_1(|\delta|)d\delta\). On the remaining compact region ordinary dominated convergence applies. Sending \(\kappa\), then \(M\), then \(\varepsilon^{-1}\) to infinity proves convergence of the full integral. Finally the strip width is \(1/2\), and \(\int_0^H[y(H-y)]^{-1/2}dy=\pi\), giving \(1/32\).</p></details></section>
 
 <section id="local"><p class="eyebrow">05 / Explicit weights for local strata</p><h2>The flat-edge coefficient can be evaluated</h2>
 <p>Any complete trace formula must also account for zero-length local terms. Scaling the plane model gives the bulk density \(c_{\rm bulk}\kappa^{-2}\), where</p>
@@ -122,7 +132,7 @@ c_{\rm edge}=\frac3{64\pi}J,\qquad J=\int_\Delta\frac{ds_1ds_2}{\sqrt{U(1-s_3)}}
 <p>The necessary geometric index set now includes genuine theta families, positive-length collapsed strata, corner-diffractive strata, and the local bulk/edge/corner terms. An explicit scalar weight for every such stratum of the full reflecting rhombus has not been obtained.</p></section>
 
 <section id="checks"><p class="eyebrow">07 / Reproducible evidence</p><h2>Physical visibility, not unrestricted images</h2>
-<figure><img src="assets/intrinsic-rhombus-weights.png" width="1870" height="714" alt="The physical chamber probability rises toward one third; the scaled collapsed-sector weight rises toward the predicted one over thirty-two."><figcaption>Independent Monte Carlo samples; bars show twice the estimated standard error. Each point uses \(262144\) samples. The right-hand horizontal line is a prediction; the left-hand limit is proved above.</figcaption></figure>
+<figure><img src="assets/intrinsic-rhombus-weights.png" width="1870" height="714" alt="The physical chamber probability rises toward one third; the scaled collapsed-sector weight rises toward one over thirty-two."><figcaption>Independent Monte Carlo samples; bars show twice the estimated standard error. Each point uses \(262144\) samples. Both horizontal limits are proved above.</figcaption></figure>
 <table><thead><tr><th>\(\kappa\)</th><th>\(P_{\mathcal D}\)</th><th>Estimated standard error</th><th>Weight / leading term</th></tr></thead><tbody>
 <tr><td>\(1\)</td><td>\(0.040562\)</td><td>\(0.000385\)</td><td>\(0.20776\)</td></tr>
 <tr><td>\(5\)</td><td>\(0.157009\)</td><td>\(0.000711\)</td><td>\(0.53158\)</td></tr>
