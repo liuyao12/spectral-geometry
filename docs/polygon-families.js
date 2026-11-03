@@ -74,7 +74,7 @@ function render() {
     byId("netType").textContent="No witness found in this bounded search.";
     byId("caseInfo").textContent="Search: one direct edge, with at most "+depth+" reflections on each other edge. This does not establish nonexistence.";
     byId("angleCheck").textContent="";
-    math(byId("netNumbers"),"\\[\\text{No verified continuation in this search.}\\]");
+    math(byId("netNumbers"),"");
     return;
   }
   const first=witness.frames[0],last=witness.frames[witness.frames.length-1],t=Number(byId("position").value)/1000;
@@ -94,7 +94,7 @@ function render() {
   mathTimer=setTimeout(()=>{
     const total=lengths.reduce((a,b)=>a+b,0);
     math(byId("netNumbers"),"\\[\\begin{aligned}\\ell_1&="+number(lengths[0])+"\\\\\\ell_2&="+number(lengths[1])+"\\\\\\ell_3&="+number(lengths[2])+"\\\\L&="+number(total)+"\\end{aligned}\\]");
-    math(byId("angleCheck"),"\\(\\max |\\theta-120^\\circ|="+sci(angleError)+"{}^\\circ\\)");
+    math(byId("angleCheck"),"\\(\\varepsilon_{\\mathrm{angle}}="+sci(angleError)+"{}^\\circ\\)");
   },50);
 }
 
